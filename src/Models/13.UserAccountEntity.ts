@@ -2,7 +2,7 @@ import { Exclude } from "class-transformer";
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { MyBaseEntity } from "./0.base_entity";
 import { Staff } from "./7.StaffEntity";
-import { RoleEnum } from "./types/RoleEnum";
+import { RoleEnum } from "./Types/RoleEnum";
 
 @Entity("user_accounts")
 export class UserAccount extends MyBaseEntity {

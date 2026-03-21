@@ -1,23 +1,67 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AuthModule } from "./Auth/AuthModule";
+import { JwtStrategy } from "./Auth/JwtStrategy";
 import { EnvironmentVariables } from "./Config/env_types";
+import { SchoolModule } from "./Controllers/1.SchoolModule";
+import { StudentEnrollmentModule } from "./Controllers/10.StudentEnrollmentModule";
+import { StaffModule } from "./Controllers/11.StaffModule";
+import { ClassTeacherModule } from "./Controllers/12.ClassTeacherModule";
+import { SubjectTeacherModule } from "./Controllers/13.SubjectTeacherModule";
+import { AcademicYearModule } from "./Controllers/2.AcademicYearModule";
+import { TermModule } from "./Controllers/3.TermModule";
+import { GradeLevelModule } from "./Controllers/4.GradeLevelModule";
+import { StreamModule } from "./Controllers/5.StreamModule";
+import { SubjectModule } from "./Controllers/6.SubjectModule";
+import { GradeSubjectModule } from "./Controllers/7.GradeSubjectModule";
+import { UserAccountModule } from "./Controllers/8.UserAccountModule";
+import { StudentModule } from "./Controllers/9.StudentModule";
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(
       {
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
-          type: 'postgres',
+          type: 'sqlite',
           url: config.getOrThrow("DATABASE_URL"),
           entities: [__dirname + '**/*Entity.{ts,js}'],
           synchronize: config.getOrThrow("NODE_ENV") !== 'production',
         })
       }
     ),
+    JwtModule.registerAsync(
+      {
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
+          global: true,
+          secret: configService.get("JWT_ACCESS_TOKEN_SECRET"),
+          signOptions: {
+            expiresIn: configService.get("JWT_EXPIRES_IN"),
+          },
+        })
+      }
+    ),
+    AuthModule,
+    SchoolModule,
+    AcademicYearModule,
+    TermModule,
+    GradeLevelModule,
+    StreamModule,
+    SubjectModule,
+    GradeSubjectModule,
+    UserAccountModule,
+    StudentModule,
+    StudentEnrollmentModule,
+    StaffModule,
+    ClassTeacherModule,
+    SubjectTeacherModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [JwtStrategy],
 })
 export class AppModule { }

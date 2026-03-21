@@ -5,7 +5,7 @@ import { AcademicYear } from "./2.AcademicYearEntity";
 import { GradeLevel } from "./4.GradeLevelEntity";
 import { Subject } from "./6.SubjectEntity";
 import { Staff } from "./7.StaffEntity";
-import { SchoolTypeEnum } from "./types/SchoolType";
+import { SchoolTypeEnum } from "./Types/SchoolType";
 
 @Entity("schools")
 export class School extends MyBaseEntity {

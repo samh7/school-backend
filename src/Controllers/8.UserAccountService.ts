@@ -6,7 +6,7 @@ import { Repository } from "typeorm";
 import { ChangePasswordDto, CreateSystemAdminDto, LoginDto, ResetPasswordDto, UserAccountDto } from "../Models/13.UserAccountDto";
 import { UserAccount } from "../Models/13.UserAccountEntity";
 import { Staff } from "../Models/7.StaffEntity";
-import { RoleEnum } from "../Models/types/RoleEnum";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 @Injectable()
 export class UserAccountService {
 	constructor(

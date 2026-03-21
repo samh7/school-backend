@@ -5,7 +5,7 @@ import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { CreateSchoolDto } from "../Models/1.SchoolDto";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
 import { CreateStaffDto } from "../Models/7.StaffDto";
-import { RoleEnum } from "../Models/types/RoleEnum";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { SchoolService } from "./1.SchoolService";
 import { StaffService } from "./11.StaffService";
 import { UserAccountService } from "./8.UserAccountService";

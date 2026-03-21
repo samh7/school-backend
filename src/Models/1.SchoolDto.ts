@@ -1,4 +1,4 @@
-import { SchoolTypeEnum } from "./types/SchoolType";
+import { SchoolTypeEnum } from "./Types/SchoolType";
 
 export class CreateSchoolDto {
 	Name: string;

@@ -1,4 +1,4 @@
-import { RoleEnum } from "./types/RoleEnum";
+import { RoleEnum } from "./Types/RoleEnum";
 
 export class CreateStaffDto {
 	SchoolId: string;

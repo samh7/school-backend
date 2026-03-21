@@ -1,5 +1,5 @@
 import { Staff } from "./7.StaffEntity";
-import { RoleEnum } from "./types/RoleEnum";
+import { RoleEnum } from "./Types/RoleEnum";
 
 export class ChangePasswordDto {
 	CurrentPassword: string;

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserAccount } from "../../Models/13.UserAccountEntity";
-import { RoleEnum } from "../../Models/types/RoleEnum";
+import { RoleEnum } from "../../Models/Types/RoleEnum";
 
 export const ROLES_KEY = 'roles';
 

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { plainToInstance } from "class-transformer";
 import { UserAccountService } from "../Controllers/8.UserAccountService";
@@ -30,6 +30,20 @@ export class AuthService {
 
 		const user = plainToInstance(UserAccountDto, account);
 		return { user, accessToken };
+	}
+
+	async status(userAccount: UserAccountDto) {
+
+		if (!userAccount.Id || !userAccount.Email) {
+			throw new UnauthorizedException("UserAccount not found");
+		}
+		const account = await this.userAccountService.findOne(userAccount.Id);
+		if (!account) {
+			throw new UnauthorizedException("UserAccountnot found");
+		}
+
+		return plainToInstance(UserAccountDto, account);
+
 	}
 
 }

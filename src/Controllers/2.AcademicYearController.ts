@@ -3,7 +3,7 @@ import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorat
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
 import { CreateAcademicYearDto, UpdateAcademicYearDto } from "../Models/2.AcademicYeardto";
-import { RoleEnum } from "../Models/types/RoleEnum";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { AcademicYearService } from "./2.AcademicYearService";
 
 @Roles(RoleEnum.SCHOOL_ADMIN)

@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post } from "@nestjs/common";
 import { ChangePasswordDto, CreateSystemAdminDto, ResetPasswordDto } from "../Models/13.UserAccountDto";
-import { RoleEnum } from "../Models/types/RoleEnum";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { UserAccountService } from "./8.UserAccountService";
 
 @Controller("user-accounts")
