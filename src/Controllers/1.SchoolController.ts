@@ -1,4 +1,4 @@
-import { Controller, Delete, ForbiddenException, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
@@ -21,23 +21,16 @@ export class SchoolController {
 
 	@Get("all")
 	findAll(@CurrentUserAccount() account: UserAccountDto) {
-		if (account.Role !== RoleEnum.SYSTEM_ADMIN || !account.Email || !account.Id || account.StaffId != null) {
-			throw new ForbiddenException('Access denied — insufficient privileges');
-		}
 		return this.schoolService.findAll();
 	}
 	@Get("one/:id")
-	findOne(@CurrentUserAccount() account: UserAccountDto, @Param('id') id: string, schoolId: string) {
-		if (account.Role !== RoleEnum.SYSTEM_ADMIN || !account.Email || !account.Id || account.StaffId != null) {
-			throw new ForbiddenException('Access denied — insufficient privileges');
-		}
+	findOne(@Param('id') id: string, schoolId: string) {
+
 		return this.schoolService.findOne(schoolId);
 	}
 	@Post("create")
-	async createWithSchoolAdminAccount(@CurrentUserAccount() account: UserAccountDto, createSchoolDto: CreateSchoolDto, createStaffDto: CreateStaffDto) {
-		if (account.Role !== RoleEnum.SYSTEM_ADMIN || !account.Email || !account.Id || account.StaffId != null) {
-			throw new ForbiddenException('Access denied — insufficient privileges');
-		}
+	async createWithSchoolAdminAccount(@Body() createSchoolDto: CreateSchoolDto, createStaffDto: CreateStaffDto) {
+
 		const school = await this.schoolService.create(createSchoolDto);
 		const staff = await this.staffService.create(createStaffDto);
 		const userAccount = await this.userAccountService.CreateForStaff(staff.Id, createStaffDto.Role);
@@ -45,17 +38,12 @@ export class SchoolController {
 		return { ...plainToInstance(UserAccountDto, userAccount), school, staff };
 	}
 	@Put("update/:id")
-	update(@CurrentUserAccount() account: UserAccountDto, @Param('id') id: string, updateSchoolDto: CreateSchoolDto) {
-		if (account.Role !== RoleEnum.SYSTEM_ADMIN || !account.Email || !account.Id || account.StaffId != null) {
-			throw new ForbiddenException('Access denied — insufficient privileges');
-		}
+	update(@Param('id') id: string, @Body() updateSchoolDto: CreateSchoolDto) {
+
 		return this.schoolService.update(id, updateSchoolDto);
 	}
 	@Delete("remove/:id")
-	remove(@CurrentUserAccount() account: UserAccountDto, @Param('id') id: string) {
-		if (account.Role !== RoleEnum.SYSTEM_ADMIN || !account.Email || !account.Id || account.StaffId != null) {
-			throw new ForbiddenException('Access denied — insufficient privileges');
-		}
+	remove(@Param('id') id: string) {
 		return this.schoolService.remove(id);
 	}
 }

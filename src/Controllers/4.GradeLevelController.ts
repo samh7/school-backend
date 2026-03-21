@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
 import { CreateGradeLevelDto, UpdateGradeLevelDto } from "../Models/4.GradeLevelDto";
@@ -19,12 +19,12 @@ export class GradeLevelController {
 	}
 
 	@Post("create")
-	create(createGradeLevelDto: CreateGradeLevelDto) {
+	create(@Body() createGradeLevelDto: CreateGradeLevelDto) {
 		return this.gradeLevelService.create(createGradeLevelDto);
 	}
 
 	@Put("update/:id")
-	update(@Param('id') id: string, updateGradeLevelDto: UpdateGradeLevelDto) {
+	update(@Param('id') id: string, @Body() updateGradeLevelDto: UpdateGradeLevelDto) {
 		return this.gradeLevelService.update(id, updateGradeLevelDto);
 	}
 

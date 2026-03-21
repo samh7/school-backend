@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { BulkRolloverDto, CreateEnrollmentDto, UpdateEnrollmentDto } from "../Models/12.StudentEnrollmentDto";
 import { StudentEnrollmentService } from "./10.StudentEnrollmentService";
 
@@ -26,17 +26,17 @@ export class StudentEnrollmentController {
 	}
 
 	@Post("enroll")
-	enroll(createEnrollmentDto: CreateEnrollmentDto) {
+	enroll(@Body() createEnrollmentDto: CreateEnrollmentDto) {
 		return this.studentEnrollmentService.enroll(createEnrollmentDto);
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, updateEnrollmentDto: UpdateEnrollmentDto) {
+	update(@Param("id") id: string, @Body() updateEnrollmentDto: UpdateEnrollmentDto) {
 		return this.studentEnrollmentService.update(id, updateEnrollmentDto);
 	}
 
 	@Post("bulk-rollover")
-	bulkRollover(bulkRolloverDto: BulkRolloverDto) {
+	bulkRollover(@Body() bulkRolloverDto: BulkRolloverDto) {
 		return this.studentEnrollmentService.bulkRollover(bulkRolloverDto);
 	}
 

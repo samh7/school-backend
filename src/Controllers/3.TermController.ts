@@ -33,7 +33,7 @@ export class TermController {
 		return this.termService.update(id, dto);
 	}
 
-	@Put("set-current/:id")
+	@Post("set-current/:id")
 	setCurrent(@Param('id') id: string) {
 		return this.termService.setCurrent(id);
 	}

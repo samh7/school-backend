@@ -21,7 +21,7 @@ export class StaffController {
 	}
 
 	@Post("create")
-	create(createStaffDto: CreateStaffDto) {
+	create(@Body() createStaffDto: CreateStaffDto) {
 		return this.staffService.create(createStaffDto);
 	}
 
@@ -36,7 +36,7 @@ export class StaffController {
 	}
 
 	@Post("assign-class-teacher")
-	assignClassTeacher(assignClassTeacherDto: AssignClassTeacherDto) {
+	assignClassTeacher(@Body() assignClassTeacherDto: AssignClassTeacherDto) {
 		return this.staffService.assignClassTeacher(assignClassTeacherDto);
 	}
 
@@ -46,7 +46,7 @@ export class StaffController {
 	}
 
 	@Post("assign-subject-teacher")
-	assignSubjectTeacher(assignSubjectTeacherDto: AssignSubjectTeacherDto) {
+	assignSubjectTeacher(@Body() assignSubjectTeacherDto: AssignSubjectTeacherDto) {
 		return this.staffService.assignSubjectTeacher(assignSubjectTeacherDto);
 	}
 

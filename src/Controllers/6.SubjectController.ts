@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { CreateSubjectDto, UpdateSubjectDto } from "../Models/6.SubjectDto";
 import { SubjectService } from "./6.SubjectService";
 
@@ -19,12 +19,12 @@ export class SubjectController {
 	}
 
 	@Post("create")
-	create(createSubjectDto: CreateSubjectDto) {
+	create(@Body() createSubjectDto: CreateSubjectDto) {
 		return this.subjectService.create(createSubjectDto);
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, updateSubjectDto: UpdateSubjectDto) {
+	update(@Param("id") id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
 		return this.subjectService.update(id, updateSubjectDto);
 	}
 

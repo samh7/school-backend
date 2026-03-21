@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
@@ -27,14 +27,14 @@ export class AcademicYearController {
 		return this.academicYearService.findCurrent(account.SchoolId);
 	}
 	@Post("create")
-	create(@CurrentUserAccount() account: UserAccountDto, createAcademicYearDto: CreateAcademicYearDto) {
+	create(@CurrentUserAccount() account: UserAccountDto, @Body() createAcademicYearDto: CreateAcademicYearDto) {
 		if (!account.SchoolId) throw new Error('User account is not associated with a school');
 		if (createAcademicYearDto.SchoolId !== account.SchoolId) throw new Error('Cannot create academic year for a different school');
 		return this.academicYearService.create(createAcademicYearDto);
 	}
 
 	@Put("update/:id")
-	update(@Param('id') id: string, updateAcademicYearDto: UpdateAcademicYearDto) {
+	update(@Param('id') id: string, @Body() updateAcademicYearDto: UpdateAcademicYearDto) {
 		return this.academicYearService.update(id, updateAcademicYearDto);
 	}
 	@Put("current/:id")

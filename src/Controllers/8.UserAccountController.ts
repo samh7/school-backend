@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ChangePasswordDto, CreateSystemAdminDto, ResetPasswordDto } from "../Models/13.UserAccountDto";
 import { RoleEnum } from "../Models/Types/RoleEnum";
 import { UserAccountService } from "./8.UserAccountService";
@@ -8,12 +8,12 @@ export class UserAccountController {
 	constructor(private readonly userAccountService: UserAccountService) { }
 
 	@Post("create/system-admin")
-	createSystemAdmin(createSystemAdminDto: CreateSystemAdminDto) {
+	createSystemAdmin(@Body() createSystemAdminDto: CreateSystemAdminDto) {
 		return this.userAccountService.createSystemAdmin(createSystemAdminDto);
 	}
 
 	@Post("create/for-staff")
-	createForStaff({ Role, StaffId }: { Role: RoleEnum, StaffId: string; }) {
+	createForStaff(@Body() { Role, StaffId }: { Role: RoleEnum, StaffId: string; }) {
 		return this.userAccountService.CreateForStaff(StaffId, Role);
 	}
 
@@ -28,12 +28,12 @@ export class UserAccountController {
 	}
 
 	@Post("change-password/:id")
-	changePassword(@Param("id") id: string, changePasswordDto: ChangePasswordDto) {
+	changePassword(@Param("id") id: string, @Body() changePasswordDto: ChangePasswordDto) {
 		return this.userAccountService.changePassword(id, changePasswordDto);
 	}
 
 	@Post("reset-password")
-	resetPassword(resetPasswordDto: ResetPasswordDto) {
+	resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
 		return this.userAccountService.resetPassword(resetPasswordDto);
 	}
 

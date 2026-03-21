@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { CreateGradeSubjectDto, UpdateGradeSubjectDto } from "../Models/8.GradeSubjectDto";
 import { GradeSubjectService } from "./7.GradeSubjectService";
 
@@ -16,12 +16,12 @@ export class GradeSubjectController {
 	}
 
 	@Post("create")
-	create(createGradeSubjectDto: CreateGradeSubjectDto) {
+	create(@Body() createGradeSubjectDto: CreateGradeSubjectDto) {
 		return this.gradeSubjectService.create(createGradeSubjectDto);
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, updateGradeSubjectDto: UpdateGradeSubjectDto) {
+	update(@Param("id") id: string, @Body() updateGradeSubjectDto: UpdateGradeSubjectDto) {
 		return this.gradeSubjectService.update(id, updateGradeSubjectDto);
 	}
 

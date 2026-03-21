@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { CreateStreamDto, UpdateStreamDto } from "../Models/5.StreamDto";
 import { StreamService } from "./5.StreamService";
 
@@ -21,12 +21,12 @@ export class StreamController {
 	}
 
 	@Post("create")
-	create(createStreamDto: CreateStreamDto) {
+	create(@Body() createStreamDto: CreateStreamDto) {
 		return this.streamService.create(createStreamDto);
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, updateStreamDto: UpdateStreamDto) {
+	update(@Param("id") id: string, @Body() updateStreamDto: UpdateStreamDto) {
 		return this.streamService.update(id, updateStreamDto);
 	}
 
