@@ -27,7 +27,7 @@ import { StudentModule } from "./Controllers/9.StudentModule";
         useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
           type: 'better-sqlite3',
           database: config.getOrThrow("DATABASE_URL"),
-          entities: [__dirname + '**/*Entity.{ts,js}'],
+          entities: [__dirname + '/**/*Entity.{ts,js}'],
           synchronize: config.getOrThrow("NODE_ENV") !== 'production',
         })
       }

@@ -38,7 +38,7 @@ export class School extends MyBaseEntity {
 	@Column()
 	LogoUrl: string;
 
-	@Column("enum", { enum: SchoolTypeEnum, default: SchoolTypeEnum.JUNIOR })
+	@Column({ type: "text", enum: SchoolTypeEnum, default: SchoolTypeEnum.JUNIOR })
 	SchoolType: SchoolTypeEnum;
 
 

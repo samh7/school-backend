@@ -16,7 +16,7 @@ export class UserAccount extends MyBaseEntity {
 	@Column()
 	PasswordHash: string;
 
-	@Column("enum", { enum: RoleEnum })
+	@Column({ type: "text", enum: RoleEnum })
 	Role: RoleEnum;
 
 	@Column({ default: true })
