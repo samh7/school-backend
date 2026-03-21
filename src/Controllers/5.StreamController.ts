@@ -1,7 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
+import { Roles } from "../Auth/Decorators/RoleDecorator";
+import { JwtAuthGuard } from "../Auth/JwtGuard";
 import { CreateStreamDto, UpdateStreamDto } from "../Models/5.StreamDto";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { StreamService } from "./5.StreamService";
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("streams")
 export class StreamController {
 	constructor(private readonly streamService: StreamService) { }

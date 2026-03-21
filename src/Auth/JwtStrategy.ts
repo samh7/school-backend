@@ -12,7 +12,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 		readonly configService: ConfigService<EnvironmentVariables>
 	) {
 		const jwtSecret = configService.getOrThrow("JWT_ACCESS_TOKEN_SECRET");
-
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			ignoreExpiration: false,
@@ -21,8 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 	}
 
 	async validate(payload: any) {
-		const user = payload.user;
-		const account = await this.authService.status(user);
+		const user = payload;
+
+		const account = await this.authService._status(user);
+
 		if (!account) {
 			throw new UnauthorizedException("User not found.");
 		}

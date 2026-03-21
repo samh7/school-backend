@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { plainToInstance } from "class-transformer";
 import { UserAccountService } from "../Controllers/8.UserAccountService";
 import { LoginDto, UserAccountDto } from "../Models/13.UserAccountDto";
+import { UserAccount } from "../Models/13.UserAccountEntity";
 @Injectable()
 export class AuthService {
 	constructor(
@@ -32,17 +33,17 @@ export class AuthService {
 		return { user, accessToken };
 	}
 
-	async status(userAccount: UserAccountDto) {
+	async _status(userAccount: UserAccountDto) {
 
-		if (!userAccount.Id || !userAccount.Email) {
+		if (!userAccount) {
 			throw new UnauthorizedException("UserAccount not found");
 		}
-		const account = await this.userAccountService.findOne(userAccount.Id);
+		const { PasswordHash, ...account } = await this.userAccountService.findOne(userAccount.Id) as unknown as UserAccount;
 		if (!account) {
-			throw new UnauthorizedException("UserAccountnot found");
+			throw new UnauthorizedException("UserAccount not found");
 		}
 
-		return plainToInstance(UserAccountDto, account);
+		return account;
 
 	}
 

@@ -36,7 +36,7 @@ export class UserAccountService {
 		account.LastLogin = new Date();
 		await this.userAccountRepo.save(account);
 
-		return plainToInstance(UserAccountDto, account);
+		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
 	}
 
 	// REGULAR METHODS
@@ -45,10 +45,13 @@ export class UserAccountService {
 		const existing = await this.userAccountRepo.findOne({ where: { Email: dto.Email } });
 		if (existing) throw new ConflictException(`Email ${dto.Email} is already registered`);
 		const userAccount = this.userAccountRepo.create({
-			Email: dto.Email,
-			PasswordHash: await bcrypt.hash(dto.PasswordHash, 10),
+
+			...dto,
+			PasswordHash: await bcrypt.hash(dto.Password, 10),
+
 		});
-		return plainToInstance(UserAccountDto, this.userAccountRepo.save(userAccount));
+		const account = await this.userAccountRepo.save(userAccount);
+		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
 	}
 
 	async CreateForStaff(staffId: string, role: RoleEnum): Promise<UserAccountDto> {
@@ -58,10 +61,11 @@ export class UserAccountService {
 		const userAccount = this.userAccountRepo.create({
 			Email: staff.Email,
 			PasswordHash: await bcrypt.hash(staffId, 10),
+			Role: role
 		});
 		staff.UserAccount = userAccount;
 		await this.staffRepo.save(staff);
-		return plainToInstance(UserAccountDto, userAccount);
+		return plainToInstance(UserAccountDto, userAccount, { excludeExtraneousValues: true });
 
 	}
 
@@ -71,7 +75,7 @@ export class UserAccountService {
 			relations: ['Staff'],
 		});
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
-		return plainToInstance(UserAccountDto, account);
+		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
 	}
 
 	async findByEmail(email: string): Promise<UserAccountDto> {
@@ -80,7 +84,7 @@ export class UserAccountService {
 			relations: ['Staff', 'Staff.School'],
 		});
 		if (!account) throw new NotFoundException(`No account found for ${email}`);
-		return plainToInstance(UserAccountDto, account);
+		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
 	}
 
 	async changePassword(id: string, dto: ChangePasswordDto): Promise<void> {

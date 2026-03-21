@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
 import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
+import { JwtAuthGuard } from "../Auth/JwtGuard";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
-import { CreateAcademicYearDto, UpdateAcademicYearDto } from "../Models/2.AcademicYeardto";
+import { CreateAcademicYearDto, UpdateAcademicYearDto } from "../Models/2.AcademicYearDto";
 import { RoleEnum } from "../Models/Types/RoleEnum";
 import { AcademicYearService } from "./2.AcademicYearService";
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("academic-years")
 export class AcademicYearController {

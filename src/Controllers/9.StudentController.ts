@@ -1,7 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
+import { Roles } from "../Auth/Decorators/RoleDecorator";
+import { JwtAuthGuard } from "../Auth/JwtGuard";
 import { CreateStudentDto, UpdateStudentDto } from "../Models/11.StudentDto";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { StudentService } from "./9.StudentService";
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("students")
 export class StudentController {
 	constructor(private readonly studentService: StudentService) { }

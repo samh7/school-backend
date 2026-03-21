@@ -1,9 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
 import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
+import { Roles } from "../Auth/Decorators/RoleDecorator";
+import { JwtAuthGuard } from "../Auth/JwtGuard";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
 import { CreateGradeLevelDto, UpdateGradeLevelDto } from "../Models/4.GradeLevelDto";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { GradeLevelService } from "./4.GradeLevelService";
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("grade-levels")
 export class GradeLevelController {
 	constructor(private readonly gradeLevelService: GradeLevelService) { }

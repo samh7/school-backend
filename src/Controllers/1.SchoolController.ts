@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
-import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
+import { JwtAuthGuard } from "../Auth/JwtGuard";
 import { CreateSchoolDto } from "../Models/1.SchoolDto";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
 import { CreateStaffDto } from "../Models/7.StaffDto";
@@ -11,6 +12,8 @@ import { StaffService } from "./11.StaffService";
 import { UserAccountService } from "./8.UserAccountService";
 
 @Roles(RoleEnum.SYSTEM_ADMIN)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller("schools")
 export class SchoolController {
 	constructor(
@@ -20,13 +23,13 @@ export class SchoolController {
 	) { }
 
 	@Get("all")
-	findAll(@CurrentUserAccount() account: UserAccountDto) {
+	findAll() {
 		return this.schoolService.findAll();
 	}
 	@Get("one/:id")
-	findOne(@Param('id') id: string, schoolId: string) {
+	findOne(@Param('id') id: string) {
 
-		return this.schoolService.findOne(schoolId);
+		return this.schoolService.findOne(id);
 	}
 	@Post("create")
 	async createWithSchoolAdminAccount(@Body() createSchoolDto: CreateSchoolDto, createStaffDto: CreateStaffDto) {
@@ -35,7 +38,7 @@ export class SchoolController {
 		const staff = await this.staffService.create(createStaffDto);
 		const userAccount = await this.userAccountService.CreateForStaff(staff.Id, createStaffDto.Role);
 
-		return { ...plainToInstance(UserAccountDto, userAccount), school, staff };
+		return { ...plainToInstance(UserAccountDto, userAccount, { excludeExtraneousValues: true }), school, staff };
 	}
 	@Put("update/:id")
 	update(@Param('id') id: string, @Body() updateSchoolDto: CreateSchoolDto) {

@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from "@nestjs/common
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { School } from "../Models/1.SchoolEntity";
-import { CreateAcademicYearDto, UpdateAcademicYearDto } from "../Models/2.AcademicYeardto";
+import { CreateAcademicYearDto, UpdateAcademicYearDto } from "../Models/2.AcademicYearDto";
 import { AcademicYear } from "../Models/2.AcademicYearEntity";
 
 @Injectable()

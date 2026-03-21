@@ -1,9 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth } from "@nestjs/swagger";
 import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
+import { Roles } from "../Auth/Decorators/RoleDecorator";
+import { JwtAuthGuard } from "../Auth/JwtGuard";
 import { UserAccountDto } from "../Models/13.UserAccountDto";
 import { CreateTermDto } from "../Models/3.TermDto";
+import { RoleEnum } from "../Models/Types/RoleEnum";
 import { TermService } from "./3.TermService";
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("terms")
 export class TermController {
 	constructor(private readonly termService: TermService) { }

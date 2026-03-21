@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./Auth/AuthModule";
 import { EnvironmentVariables } from "./Config/EnvTypes";
@@ -23,28 +22,16 @@ import { StudentModule } from "./Controllers/9.StudentModule";
     TypeOrmModule.forRootAsync(
       {
         imports: [ConfigModule],
-        inject: [ConfigService],
         useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
           type: 'better-sqlite3',
           database: config.getOrThrow("DATABASE_URL"),
           entities: [__dirname + '/**/*Entity.{ts,js}'],
           synchronize: config.getOrThrow("NODE_ENV") !== 'production',
-        })
+        }),
+        inject: [ConfigService]
       }
     ),
-    JwtModule.registerAsync(
-      {
-        imports: [ConfigModule],
-        inject: [ConfigService],
-        useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
-          global: true,
-          secret: configService.get("JWT_ACCESS_TOKEN_SECRET"),
-          signOptions: {
-            expiresIn: configService.get("JWT_EXPIRES_IN"),
-          },
-        })
-      }
-    ),
+
     AuthModule,
     SchoolModule,
     AcademicYearModule,
