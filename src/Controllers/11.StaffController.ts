@@ -1,8 +1,8 @@
-import { Body, Delete, Get, Injectable, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { AssignClassTeacherDto, AssignSubjectTeacherDto, CreateStaffDto, UpdateStaffDto } from "../Models/7.StaffDto";
 import { StaffService } from "./11.StaffService";
 
-@Injectable()
+@Controller()
 export class StaffController {
 	constructor(private readonly staffService: StaffService) { }
 	@Get("all/:id")

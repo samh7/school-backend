@@ -9,6 +9,7 @@ import { Staff } from "../Models/7.StaffEntity";
 import { GradeSubject } from "../Models/8.GradeSubjectEntity";
 import { SubjectTeacher } from "../Models/9.SubjectTeacherEntity";
 import { StaffController } from "./11.StaffController";
+import { StaffService } from "./11.StaffService";
 
 @Module({
 	imports: [
@@ -24,6 +25,7 @@ import { StaffController } from "./11.StaffController";
 		])
 	],
 	controllers: [StaffController],
-	providers: [],
+	providers: [StaffService],
+	exports: [StaffService],
 })
 export class StaffModule { }

@@ -3,8 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./Auth/AuthModule";
-import { JwtStrategy } from "./Auth/JwtStrategy";
-import { EnvironmentVariables } from "./Config/env_types";
+import { EnvironmentVariables } from "./Config/EnvTypes";
 import { SchoolModule } from "./Controllers/1.SchoolModule";
 import { StudentEnrollmentModule } from "./Controllers/10.StudentEnrollmentModule";
 import { StaffModule } from "./Controllers/11.StaffModule";
@@ -26,8 +25,8 @@ import { StudentModule } from "./Controllers/9.StudentModule";
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
-          type: 'sqlite',
-          url: config.getOrThrow("DATABASE_URL"),
+          type: 'better-sqlite3',
+          database: config.getOrThrow("DATABASE_URL"),
           entities: [__dirname + '**/*Entity.{ts,js}'],
           synchronize: config.getOrThrow("NODE_ENV") !== 'production',
         })
@@ -62,6 +61,6 @@ import { StudentModule } from "./Controllers/9.StudentModule";
     SubjectTeacherModule,
   ],
   controllers: [],
-  providers: [JwtStrategy],
+  // providers: [JwtStrategy],
 })
 export class AppModule { }

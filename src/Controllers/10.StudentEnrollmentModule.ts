@@ -6,12 +6,15 @@ import { AcademicYear } from "../Models/2.AcademicYearEntity";
 import { Term } from "../Models/3.TermEntity";
 import { Stream } from "../Models/5.StreamEntity";
 import { StudentEnrollmentController } from "./10.StudentEnrollmentController";
+import { StudentEnrollmentService } from "./10.StudentEnrollmentService";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([
 		StudentEnrollment, Student, Stream, AcademicYear, Term
 	])],
-	controllers: [StudentEnrollmentController]
+	controllers: [StudentEnrollmentController],
+	providers: [StudentEnrollmentService],
+	exports: [StudentEnrollmentService]
 
 })
 export class StudentEnrollmentModule { }
