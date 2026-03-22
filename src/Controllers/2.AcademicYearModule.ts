@@ -9,6 +9,6 @@ import { AcademicYearService } from "./2.AcademicYearService";
 	imports: [TypeOrmModule.forFeature([AcademicYear, School])],
 	controllers: [AcademicYearController],
 	providers: [AcademicYearService],
-	exports: [AcademicYearService]
+	exports: [AcademicYearService],
 })
-export class AcademicYearModule { }
+export class AcademicYearModule {}

@@ -27,19 +27,18 @@ export class StudentEnrollment extends MyBaseEntity {
 
 	// Relations
 	@ManyToOne(() => Student, (s) => s.Enrollments)
-	@JoinColumn({ name: 'StudentId' })
+	@JoinColumn({ name: "StudentId" })
 	Student: Student;
 
 	@ManyToOne(() => Stream, (s) => s.Enrollments)
-	@JoinColumn({ name: 'StreamId' })
+	@JoinColumn({ name: "StreamId" })
 	Stream: Stream;
 
 	@ManyToOne(() => AcademicYear, (ay) => ay.Enrollments)
-	@JoinColumn({ name: 'AcademicYearId' })
+	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 
 	@ManyToOne(() => Term, (t) => t.Enrollments)
-	@JoinColumn({ name: 'TermId' })
+	@JoinColumn({ name: "TermId" })
 	Term: Term;
-
 }

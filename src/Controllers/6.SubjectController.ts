@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
@@ -11,9 +20,7 @@ import { SubjectService } from "./6.SubjectService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("subjects")
 export class SubjectController {
-	constructor(
-		private readonly subjectService: SubjectService
-	) { }
+	constructor(private readonly subjectService: SubjectService) {}
 
 	@Get("all/:id")
 	findAll(@Param("id") id: string) {
@@ -39,5 +46,4 @@ export class SubjectController {
 	remove(@Param("id") id: string) {
 		return this.subjectService.remove(id);
 	}
-
 }

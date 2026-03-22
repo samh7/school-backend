@@ -23,7 +23,7 @@ export class AcademicYear extends MyBaseEntity {
 
 	// Relations
 	@ManyToOne(() => School, (s) => s.AcademicYears)
-	@JoinColumn({ name: 'SchoolId' })
+	@JoinColumn({ name: "SchoolId" })
 	School: School;
 
 	@OneToMany(() => Term, (t) => t.AcademicYear)

@@ -22,8 +22,11 @@ export class SubjectDto extends BaseDto {
 
 	@IsString()
 	@Expose()
-	LevelType: string;    // pre-primary | lower-primary | upper-primary | junior-secondary
+	LevelType: string; // pre-primary | lower-primary | upper-primary | junior-secondary
 }
 
-export class CreateSubjectDto extends IntersectionType(SubjectDto, BaseCreateDto) { }
-export class UpdateSubjectDto extends PartialType(CreateSubjectDto) { }
+export class CreateSubjectDto extends IntersectionType(
+	SubjectDto,
+	BaseCreateDto,
+) {}
+export class UpdateSubjectDto extends PartialType(CreateSubjectDto) {}

@@ -10,7 +10,7 @@ export class StreamDto extends BaseDto {
 
 	@Expose()
 	@IsString()
-	Name: string;         // e.g. "North"
+	Name: string; // e.g. "North"
 
 	@Expose()
 	@IsNumber()
@@ -18,6 +18,9 @@ export class StreamDto extends BaseDto {
 	Capacity?: number;
 }
 
-export class CreateStreamDto extends IntersectionType(StreamDto, BaseCreateDto) { }
+export class CreateStreamDto extends IntersectionType(
+	StreamDto,
+	BaseCreateDto,
+) {}
 
-export class UpdateStreamDto extends PartialType(CreateStreamDto) { }
+export class UpdateStreamDto extends PartialType(CreateStreamDto) {}

@@ -9,12 +9,17 @@ import { StudentEnrollmentController } from "./10.StudentEnrollmentController";
 import { StudentEnrollmentService } from "./10.StudentEnrollmentService";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([
-		StudentEnrollment, Student, Stream, AcademicYear, Term
-	])],
+	imports: [
+		TypeOrmModule.forFeature([
+			StudentEnrollment,
+			Student,
+			Stream,
+			AcademicYear,
+			Term,
+		]),
+	],
 	controllers: [StudentEnrollmentController],
 	providers: [StudentEnrollmentService],
-	exports: [StudentEnrollmentService]
-
+	exports: [StudentEnrollmentService],
 })
-export class StudentEnrollmentModule { }
+export class StudentEnrollmentModule {}

@@ -1,13 +1,22 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 import { School } from "../Models/1.SchoolEntity";
 import { ClassTeacher } from "../Models/10.ClassTeacherEntity";
 import { UserAccount } from "../Models/13.UserAccountEntity";
 import { AcademicYear } from "../Models/2.AcademicYearEntity";
 import { Stream } from "../Models/5.StreamEntity";
-import { AssignClassTeacherDto, AssignSubjectTeacherDto, CreateStaffDto, UpdateStaffDto } from "../Models/7.StaffDto";
+import {
+	AssignClassTeacherDto,
+	AssignSubjectTeacherDto,
+	CreateStaffDto,
+	UpdateStaffDto,
+} from "../Models/7.StaffDto";
 import { Staff } from "../Models/7.StaffEntity";
 import { GradeSubject } from "../Models/8.GradeSubjectEntity";
 import { SubjectTeacher } from "../Models/9.SubjectTeacherEntity";
@@ -31,13 +40,13 @@ export class StaffService {
 		private readonly gradeSubjectRepo: Repository<GradeSubject>,
 		@InjectRepository(AcademicYear)
 		private readonly academicYearRepo: Repository<AcademicYear>,
-	) { }
+	) {}
 
 	async findAll(schoolId: string): Promise<Staff[]> {
 		return this.staffRepo.find({
 			where: { School: { Id: schoolId } },
-			relations: ['UserAccount'],
-			order: { LastName: 'ASC' },
+			relations: ["UserAccount"],
+			order: { LastName: "ASC" },
 		});
 	}
 
@@ -45,17 +54,17 @@ export class StaffService {
 		const staff = await this.staffRepo.findOne({
 			where: { Id: id },
 			relations: [
-				'School',
-				'UserAccount',
-				'ClassTeacherAssignments',
-				'ClassTeacherAssignments.Stream',
-				'ClassTeacherAssignments.Stream.GradeLevel',
-				'ClassTeacherAssignments.AcademicYear',
-				'SubjectTeacherAssignments',
-				'SubjectTeacherAssignments.GradeSubject',
-				'SubjectTeacherAssignments.GradeSubject.Subject',
-				'SubjectTeacherAssignments.Stream',
-				'SubjectTeacherAssignments.AcademicYear',
+				"School",
+				"UserAccount",
+				"ClassTeacherAssignments",
+				"ClassTeacherAssignments.Stream",
+				"ClassTeacherAssignments.Stream.GradeLevel",
+				"ClassTeacherAssignments.AcademicYear",
+				"SubjectTeacherAssignments",
+				"SubjectTeacherAssignments.GradeSubject",
+				"SubjectTeacherAssignments.GradeSubject.Subject",
+				"SubjectTeacherAssignments.Stream",
+				"SubjectTeacherAssignments.AcademicYear",
 			],
 		});
 		if (!staff) throw new NotFoundException(`Staff ${id} not found`);
@@ -64,22 +73,27 @@ export class StaffService {
 
 	async findByRole(schoolId: string, role: string): Promise<Staff[]> {
 		return this.staffRepo.find({
-			where: { School: { Id: schoolId }, Role: role, Status: 'active' },
-			order: { LastName: 'ASC' },
+			where: { School: { Id: schoolId }, Role: role, Status: "active" },
+			order: { LastName: "ASC" },
 		});
 	}
 
-	async create(dto: CreateStaffDto): Promise<Staff & { TempPassword: string; }> {
-		const school = await this.schoolRepo.findOne({ where: { Id: dto.SchoolId } });
-		if (!school) throw new NotFoundException(`School ${dto.SchoolId} not found`);
+	async create(dto: CreateStaffDto): Promise<Staff & { TempPassword: string }> {
+		const school = await this.schoolRepo.findOne({
+			where: { Id: dto.SchoolId },
+		});
+		if (!school)
+			throw new NotFoundException(`School ${dto.SchoolId} not found`);
 
-		const emailTaken = await this.staffRepo.findOne({ where: { Email: dto.Email } });
-		if (emailTaken) throw new ConflictException(`Email ${dto.Email} is already in use`);
+		const emailTaken = await this.staffRepo.findOne({
+			where: { Email: dto.Email },
+		});
+		if (emailTaken)
+			throw new ConflictException(`Email ${dto.Email} is already in use`);
 
 		const staff = this.staffRepo.create({
-
 			School: school,
-			...dto
+			...dto,
 		});
 		const savedStaff = await this.staffRepo.save(staff);
 
@@ -107,7 +121,7 @@ export class StaffService {
 
 	async deactivate(id: string): Promise<Staff> {
 		const staff = await this.findOne(id);
-		staff.Status = 'inactive';
+		staff.Status = "inactive";
 		if (staff.UserAccount) {
 			staff.UserAccount.IsActive = false;
 			await this.userAccountRepo.save(staff.UserAccount);
@@ -121,15 +135,26 @@ export class StaffService {
 		const staff = await this.staffRepo.findOne({ where: { Id: dto.StaffId } });
 		if (!staff) throw new NotFoundException(`Staff ${dto.StaffId} not found`);
 
-		const stream = await this.streamRepo.findOne({ where: { Id: dto.StreamId } });
-		if (!stream) throw new NotFoundException(`Stream ${dto.StreamId} not found`);
+		const stream = await this.streamRepo.findOne({
+			where: { Id: dto.StreamId },
+		});
+		if (!stream)
+			throw new NotFoundException(`Stream ${dto.StreamId} not found`);
 
-		const academicYear = await this.academicYearRepo.findOne({ where: { Id: dto.AcademicYearId } });
-		if (!academicYear) throw new NotFoundException(`Academic year ${dto.AcademicYearId} not found`);
+		const academicYear = await this.academicYearRepo.findOne({
+			where: { Id: dto.AcademicYearId },
+		});
+		if (!academicYear)
+			throw new NotFoundException(
+				`Academic year ${dto.AcademicYearId} not found`,
+			);
 
 		const existing = await this.classTeacherRepo.findOne({
-			where: { Stream: { Id: dto.StreamId }, AcademicYear: { Id: dto.AcademicYearId } },
-			relations: ['Staff'],
+			where: {
+				Stream: { Id: dto.StreamId },
+				AcademicYear: { Id: dto.AcademicYearId },
+			},
+			relations: ["Staff"],
 		});
 		if (existing) {
 			throw new ConflictException(
@@ -146,28 +171,44 @@ export class StaffService {
 	}
 
 	async removeClassTeacher(id: string): Promise<void> {
-		const assignment = await this.classTeacherRepo.findOne({ where: { Id: id } });
-		if (!assignment) throw new NotFoundException(`Class teacher assignment ${id} not found`);
+		const assignment = await this.classTeacherRepo.findOne({
+			where: { Id: id },
+		});
+		if (!assignment)
+			throw new NotFoundException(`Class teacher assignment ${id} not found`);
 		await this.classTeacherRepo.remove(assignment);
 	}
 
 	// ── Subject teacher assignment ────────────────────────────────────────────
 
-	async assignSubjectTeacher(dto: AssignSubjectTeacherDto): Promise<SubjectTeacher> {
+	async assignSubjectTeacher(
+		dto: AssignSubjectTeacherDto,
+	): Promise<SubjectTeacher> {
 		const staff = await this.staffRepo.findOne({ where: { Id: dto.StaffId } });
 		if (!staff) throw new NotFoundException(`Staff ${dto.StaffId} not found`);
 
 		const gradeSubject = await this.gradeSubjectRepo.findOne({
 			where: { Id: dto.GradeSubjectId },
-			relations: ['Subject', 'GradeLevel'],
+			relations: ["Subject", "GradeLevel"],
 		});
-		if (!gradeSubject) throw new NotFoundException(`Grade subject ${dto.GradeSubjectId} not found`);
+		if (!gradeSubject)
+			throw new NotFoundException(
+				`Grade subject ${dto.GradeSubjectId} not found`,
+			);
 
-		const stream = await this.streamRepo.findOne({ where: { Id: dto.StreamId } });
-		if (!stream) throw new NotFoundException(`Stream ${dto.StreamId} not found`);
+		const stream = await this.streamRepo.findOne({
+			where: { Id: dto.StreamId },
+		});
+		if (!stream)
+			throw new NotFoundException(`Stream ${dto.StreamId} not found`);
 
-		const academicYear = await this.academicYearRepo.findOne({ where: { Id: dto.AcademicYearId } });
-		if (!academicYear) throw new NotFoundException(`Academic year ${dto.AcademicYearId} not found`);
+		const academicYear = await this.academicYearRepo.findOne({
+			where: { Id: dto.AcademicYearId },
+		});
+		if (!academicYear)
+			throw new NotFoundException(
+				`Academic year ${dto.AcademicYearId} not found`,
+			);
 
 		const existing = await this.subjectTeacherRepo.findOne({
 			where: {
@@ -177,7 +218,9 @@ export class StaffService {
 			},
 		});
 		if (existing) {
-			throw new ConflictException(`A teacher is already assigned to this subject in this stream for this year`);
+			throw new ConflictException(
+				`A teacher is already assigned to this subject in this stream for this year`,
+			);
 		}
 
 		const assignment = this.subjectTeacherRepo.create({
@@ -190,8 +233,11 @@ export class StaffService {
 	}
 
 	async removeSubjectTeacher(id: string): Promise<void> {
-		const assignment = await this.subjectTeacherRepo.findOne({ where: { Id: id } });
-		if (!assignment) throw new NotFoundException(`Subject teacher assignment ${id} not found`);
+		const assignment = await this.subjectTeacherRepo.findOne({
+			where: { Id: id },
+		});
+		if (!assignment)
+			throw new NotFoundException(`Subject teacher assignment ${id} not found`);
 		await this.subjectTeacherRepo.remove(assignment);
 	}
 }

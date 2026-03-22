@@ -5,7 +5,6 @@ import { GradeSubject } from "./8.GradeSubjectEntity";
 
 @Entity("subjects")
 export class Subject extends MyBaseEntity {
-
 	@Column()
 	SchoolId: string;
 
@@ -21,10 +20,9 @@ export class Subject extends MyBaseEntity {
 	@Column()
 	LearningType: string;
 
-
 	// Relations
 	@ManyToOne(() => School, (s) => s.Subjects)
-	@JoinColumn({ name: 'SchoolId' })
+	@JoinColumn({ name: "SchoolId" })
 	School: School;
 
 	@OneToMany(() => GradeSubject, (gs) => gs.Subject)

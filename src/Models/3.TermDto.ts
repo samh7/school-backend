@@ -10,7 +10,7 @@ export class TermDto extends BaseDto {
 
 	@IsString()
 	@Expose()
-	TermNumber: number;   // 1 | 2 | 3
+	TermNumber: number; // 1 | 2 | 3
 
 	@IsString()
 	@Expose()
@@ -26,6 +26,6 @@ export class TermDto extends BaseDto {
 	IsCurrent?: boolean;
 }
 
-export class CreateTermDto extends IntersectionType(TermDto, BaseCreateDto) { }
+export class CreateTermDto extends IntersectionType(TermDto, BaseCreateDto) {}
 
-export class UpdateTermDto extends PartialType(CreateTermDto) { }
+export class UpdateTermDto extends PartialType(CreateTermDto) {}

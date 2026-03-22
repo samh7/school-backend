@@ -20,7 +20,7 @@ export class GradeLevel extends MyBaseEntity {
 
 	// Relations
 	@ManyToOne(() => School, (s) => s.GradeLevels)
-	@JoinColumn({ name: 'SchoolId' })
+	@JoinColumn({ name: "SchoolId" })
 	School: School;
 
 	@OneToMany(() => Stream, (s) => s.GradeLevel)

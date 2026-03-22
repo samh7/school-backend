@@ -9,7 +9,6 @@ import { TermService } from "./3.TermService";
 	imports: [TypeOrmModule.forFeature([Term, AcademicYear])],
 	controllers: [TermController],
 	providers: [TermService],
-	exports: [TermService]
-
+	exports: [TermService],
 })
-export class TermModule { }
+export class TermModule {}

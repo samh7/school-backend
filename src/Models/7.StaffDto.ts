@@ -6,47 +6,44 @@ import { RoleEnum } from "./Types/RoleEnum";
 
 export class StaffDto extends BaseDto {
 	@IsString()
-
-	@Expose() SchoolId: string;
+	@Expose()
+	SchoolId: string;
 	@IsString()
-
-	@Expose() FirstName: string;
+	@Expose()
+	FirstName: string;
 	@IsString()
-
-	@Expose() LastName: string;
+	@Expose()
+	LastName: string;
 	@IsString()
-
-	@Expose() Email: string;
+	@Expose()
+	Email: string;
 	@IsString()
 	@IsOptional()
-
-	@Expose() Phone?: string;
+	@Expose()
+	Phone?: string;
 	@IsEnum(RoleEnum)
-
-	@Expose() Role: RoleEnum;
+	@Expose()
+	Role: RoleEnum;
 	@IsString()
-	@IsOptional()     //STAFFrOL // teacher | principal | bursar | hod | admin
-
-	@Expose() TscNumber?: string;
+	@IsOptional() //STAFFrOL // teacher | principal | bursar | hod | admin
+	@Expose()
+	TscNumber?: string;
 }
 
-export class CreateStaffDto extends IntersectionType(StaffDto, BaseCreateDto) { }
-export class UpdateStaffDto extends PartialType(CreateStaffDto) { }
+export class CreateStaffDto extends IntersectionType(StaffDto, BaseCreateDto) {}
+export class UpdateStaffDto extends PartialType(CreateStaffDto) {}
 
 // teachers
 export class AssignClassTeacherDto {
-
 	@IsString()
 	StaffId: string;
 	@IsString()
 	StreamId: string;
 	@IsString()
 	AcademicYearId: string;
-
 }
 
 export class AssignSubjectTeacherDto {
-
 	@IsString()
 	StaffId: string;
 	@IsString()

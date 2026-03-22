@@ -10,7 +10,7 @@ import { SubjectTeacherService } from "./13.SubjectTeacherService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("subject-teachers")
 export class SubjectTeacherController {
-	constructor(private readonly subjectTeacherService: SubjectTeacherService) { }
+	constructor(private readonly subjectTeacherService: SubjectTeacherService) {}
 
 	@Get("all/:id")
 	findAll(@Param("id") id: string) {
@@ -24,7 +24,6 @@ export class SubjectTeacherController {
 
 	@Get("grade-subject/:id")
 	findByGradeSubject(@Param("id") id: string) {
-		return;
+		return this.subjectTeacherService.findByGradeSubject(id);
 	}
-
 }

@@ -26,8 +26,6 @@ export class UserAccount extends MyBaseEntity {
 	LastLogin: Date;
 
 	@OneToOne(() => Staff, (s) => s.UserAccount)
-	@JoinColumn({ name: 'StaffId' })
+	@JoinColumn({ name: "StaffId" })
 	Staff: Staff;
-
-
 }

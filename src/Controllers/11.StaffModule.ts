@@ -21,11 +21,11 @@ import { StaffService } from "./11.StaffService";
 			SubjectTeacher,
 			Stream,
 			GradeSubject,
-			AcademicYear
-		])
+			AcademicYear,
+		]),
 	],
 	controllers: [StaffController],
 	providers: [StaffService],
 	exports: [StaffService],
 })
-export class StaffModule { }
+export class StaffModule {}

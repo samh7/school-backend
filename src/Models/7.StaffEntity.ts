@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+} from "typeorm";
 import { MyBaseEntity } from "./0.BaseEntity";
 import { School } from "./1.SchoolEntity";
 import { ClassTeacher } from "./10.ClassTeacherEntity";
@@ -31,10 +38,9 @@ export class Staff extends MyBaseEntity {
 	@Column()
 	Role: string;
 
-
 	// Relations
 	@ManyToOne(() => School, (s) => s.Staff)
-	@JoinColumn({ name: 'SchoolId' })
+	@JoinColumn({ name: "SchoolId" })
 	School: School;
 
 	@OneToMany(() => ClassTeacher, (ct) => ct.Staff)

@@ -5,7 +5,6 @@ import { AcademicYear } from "./2.AcademicYearEntity";
 
 @Entity("terms")
 export class Term extends MyBaseEntity {
-
 	@Column()
 	AcademicYearId: string;
 
@@ -23,10 +22,9 @@ export class Term extends MyBaseEntity {
 
 	// Relations
 	@ManyToOne(() => AcademicYear, (ay) => ay.Terms)
-	@JoinColumn({ name: 'AcademicYearId' })
+	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 
 	@OneToMany(() => StudentEnrollment, (e) => e.Term)
 	Enrollments: StudentEnrollment[];
-
 }

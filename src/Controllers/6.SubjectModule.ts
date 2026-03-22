@@ -9,6 +9,6 @@ import { SubjectService } from "./6.SubjectService";
 	imports: [TypeOrmModule.forFeature([Subject, School])],
 	controllers: [SubjectController],
 	providers: [SubjectService],
-	exports: [SubjectService]
+	exports: [SubjectService],
 })
-export class SubjectModule { }
+export class SubjectModule {}

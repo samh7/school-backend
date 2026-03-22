@@ -9,7 +9,6 @@ import { StreamService } from "./5.StreamService";
 	imports: [TypeOrmModule.forFeature([Stream, GradeLevel])],
 	controllers: [StreamController],
 	providers: [StreamService],
-	exports: [StreamService]
-
+	exports: [StreamService],
 })
-export class StreamModule { }
+export class StreamModule {}

@@ -9,7 +9,6 @@ import { SchoolTypeEnum } from "./Types/SchoolType";
 
 @Entity("schools")
 export class School extends MyBaseEntity {
-
 	@Column()
 	Name: string;
 
@@ -26,7 +25,6 @@ export class School extends MyBaseEntity {
 	SubCounty: string;
 
 	@Column()
-
 	Address: string;
 
 	@Column()
@@ -38,9 +36,12 @@ export class School extends MyBaseEntity {
 	@Column()
 	LogoUrl: string;
 
-	@Column({ type: "text", enum: SchoolTypeEnum, default: SchoolTypeEnum.JUNIOR })
+	@Column({
+		type: "text",
+		enum: SchoolTypeEnum,
+		default: SchoolTypeEnum.JUNIOR,
+	})
 	SchoolType: SchoolTypeEnum;
-
 
 	// Relations
 	@OneToMany(() => AcademicYear, (ay) => ay.School)

@@ -46,5 +46,8 @@ export class SchoolDto extends BaseDto {
 	SchoolType: SchoolTypeEnum;
 }
 
-export class CreateSchoolDto extends IntersectionType(SchoolDto, BaseCreateDto) { }
-export class UpdateSchoolDto extends PartialType(CreateSchoolDto) { }
+export class CreateSchoolDto extends IntersectionType(
+	SchoolDto,
+	BaseCreateDto,
+) {}
+export class UpdateSchoolDto extends PartialType(CreateSchoolDto) {}

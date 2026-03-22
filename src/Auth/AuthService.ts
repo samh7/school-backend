@@ -3,18 +3,14 @@ import { JwtService } from "@nestjs/jwt";
 import { plainToInstance } from "class-transformer";
 import { UserAccountService } from "../Controllers/8.UserAccountService";
 import { LoginDto, UserAccountDto } from "../Models/13.UserAccountDto";
-import { UserAccount } from "../Models/13.UserAccountEntity";
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly userAccountService: UserAccountService,
-		private readonly jwtService: JwtService
-
-	) {
-	}
+		private readonly jwtService: JwtService,
+	) {}
 
 	async login(loginDto: LoginDto) {
-
 		const account = await this.userAccountService._login(loginDto);
 
 		const payload: UserAccountDto = {
@@ -24,7 +20,7 @@ export class AuthService {
 			StaffId: account.StaffId,
 			IsActive: account.IsActive,
 			LastLogin: account.LastLogin,
-			SchoolId: account.Staff?.SchoolId
+			SchoolId: account.Staff?.SchoolId,
 		};
 
 		const accessToken = this.jwtService.sign(payload);
@@ -34,17 +30,14 @@ export class AuthService {
 	}
 
 	async _status(userAccount: UserAccountDto) {
-
 		if (!userAccount) {
 			throw new UnauthorizedException("UserAccount not found");
 		}
-		const { PasswordHash, ...account } = await this.userAccountService.findOne(userAccount.Id) as unknown as UserAccount;
+		const account = await this.userAccountService.findOne(userAccount.Id);
 		if (!account) {
 			throw new UnauthorizedException("UserAccount not found");
 		}
 
 		return account;
-
 	}
-
 }

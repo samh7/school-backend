@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
@@ -11,7 +20,7 @@ import { StreamService } from "./5.StreamService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("streams")
 export class StreamController {
-	constructor(private readonly streamService: StreamService) { }
+	constructor(private readonly streamService: StreamService) {}
 	@Get("all/:id")
 	findAll(@Param("id") id: string) {
 		return this.streamService.findAll(id);
@@ -23,7 +32,10 @@ export class StreamController {
 	}
 
 	@Get("enrollments/:streamId/:termId")
-	countEnrollments(@Param("streamId") streamId: string, @Param("termId") termId: string) {
+	countEnrollments(
+		@Param("streamId") streamId: string,
+		@Param("termId") termId: string,
+	) {
 		return this.streamService.countEnrollments(streamId, termId);
 	}
 

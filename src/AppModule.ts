@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./Auth/AuthModule";
@@ -17,37 +17,35 @@ import { GradeSubjectModule } from "./Controllers/7.GradeSubjectModule";
 import { UserAccountModule } from "./Controllers/8.UserAccountModule";
 import { StudentModule } from "./Controllers/9.StudentModule";
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync(
-      {
-        imports: [ConfigModule],
-        useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
-          type: 'better-sqlite3',
-          database: config.getOrThrow("DATABASE_URL"),
-          entities: [__dirname + '/**/*Entity.{ts,js}'],
-          synchronize: config.getOrThrow("NODE_ENV") !== 'production',
-        }),
-        inject: [ConfigService]
-      }
-    ),
+	imports: [
+		ConfigModule.forRoot({ isGlobal: true }),
+		TypeOrmModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
+				type: "better-sqlite3",
+				database: config.getOrThrow("DATABASE_URL"),
+				entities: [__dirname + "/**/*Entity.{ts,js}"],
+				synchronize: config.getOrThrow("NODE_ENV") !== "production",
+			}),
+			inject: [ConfigService],
+		}),
 
-    AuthModule,
-    SchoolModule,
-    AcademicYearModule,
-    TermModule,
-    GradeLevelModule,
-    StreamModule,
-    SubjectModule,
-    GradeSubjectModule,
-    UserAccountModule,
-    StudentModule,
-    StudentEnrollmentModule,
-    StaffModule,
-    ClassTeacherModule,
-    SubjectTeacherModule,
-  ],
-  controllers: [],
-  // providers: [JwtStrategy],
+		AuthModule,
+		SchoolModule,
+		AcademicYearModule,
+		TermModule,
+		GradeLevelModule,
+		StreamModule,
+		SubjectModule,
+		GradeSubjectModule,
+		UserAccountModule,
+		StudentModule,
+		StudentEnrollmentModule,
+		StaffModule,
+		ClassTeacherModule,
+		SubjectTeacherModule,
+	],
+	controllers: [],
+	// providers: [JwtStrategy],
 })
-export class AppModule { }
+export class AppModule {}

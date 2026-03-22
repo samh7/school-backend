@@ -3,7 +3,6 @@ import { Expose } from "class-transformer";
 import { IsEmpty } from "class-validator";
 
 export class BaseDto {
-
 	@Expose()
 	@IsEmpty()
 	Id: string;
@@ -21,10 +20,9 @@ export class BaseDto {
 	DeletedAt: Date | null;
 }
 
-
 export class BaseCreateDto extends OmitType(BaseDto, [
-	'Id',
-	'CreatedAt',
-	'UpdatedAt',
-	'DeletedAt'
-] as const) { }
+	"Id",
+	"CreatedAt",
+	"UpdatedAt",
+	"DeletedAt",
+] as const) {}

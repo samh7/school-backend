@@ -2,12 +2,12 @@ import {
 	ConflictException,
 	Injectable,
 	NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { School } from '../Models/1.SchoolEntity';
-import { CreateStudentDto, UpdateStudentDto } from '../Models/11.StudentDto';
-import { Student } from '../Models/11.StudentEntity';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { School } from "../Models/1.SchoolEntity";
+import { CreateStudentDto, UpdateStudentDto } from "../Models/11.StudentDto";
+import { Student } from "../Models/11.StudentEntity";
 
 @Injectable()
 export class StudentService {
@@ -20,8 +20,8 @@ export class StudentService {
 
 	async findAll(schoolId: string): Promise<Student[]> {
 		return this.studentRepo.find({
-			where: { School: { Id: schoolId }, Status: 'active' },
-			order: { LastName: 'ASC', FirstName: 'ASC' },
+			where: { School: { Id: schoolId }, Status: "active" },
+			order: { LastName: "ASC", FirstName: "ASC" },
 		});
 	}
 
@@ -29,12 +29,12 @@ export class StudentService {
 		const student = await this.studentRepo.findOne({
 			where: { Id: id },
 			relations: [
-				'School',
-				'Enrollments',
-				'Enrollments.Stream',
-				'Enrollments.Stream.GradeLevel',
-				'Enrollments.AcademicYear',
-				'Enrollments.Term',
+				"School",
+				"Enrollments",
+				"Enrollments.Stream",
+				"Enrollments.Stream.GradeLevel",
+				"Enrollments.AcademicYear",
+				"Enrollments.Term",
 			],
 		});
 		if (!student) throw new NotFoundException(`Student ${id} not found`);
@@ -44,7 +44,7 @@ export class StudentService {
 	async findByAdmissionNumber(admissionNumber: string): Promise<Student> {
 		const student = await this.studentRepo.findOne({
 			where: { AdmissionNumber: admissionNumber },
-			relations: ['School'],
+			relations: ["School"],
 		});
 		if (!student)
 			throw new NotFoundException(
@@ -55,12 +55,12 @@ export class StudentService {
 
 	async findByStream(streamId: string, termId: string): Promise<Student[]> {
 		return this.studentRepo
-			.createQueryBuilder('student')
-			.innerJoin('student.Enrollments', 'enrollment')
-			.where('enrollment.Stream.Id = :streamId', { streamId })
-			.andWhere('enrollment.Term.Id = :termId', { termId })
-			.andWhere('enrollment.Status = :status', { status: 'active' })
-			.orderBy('student.LastName', 'ASC')
+			.createQueryBuilder("student")
+			.innerJoin("student.Enrollments", "enrollment")
+			.where("enrollment.Stream.Id = :streamId", { streamId })
+			.andWhere("enrollment.Term.Id = :termId", { termId })
+			.andWhere("enrollment.Status = :status", { status: "active" })
+			.orderBy("student.LastName", "ASC")
 			.getMany();
 	}
 
@@ -92,7 +92,7 @@ export class StudentService {
 	async remove(id: string): Promise<void> {
 		// Soft delete — NEMIS records must be retained
 		const student = await this.findOne(id);
-		student.Status = 'inactive';
+		student.Status = "inactive";
 		await this.studentRepo.save(student);
 	}
 }

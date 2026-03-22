@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AcademicYear } from "../Models/2.AcademicYearEntity";
@@ -12,19 +16,19 @@ export class TermService {
 		private readonly termRepo: Repository<Term>,
 		@InjectRepository(AcademicYear)
 		private readonly academicYearRepo: Repository<AcademicYear>,
-	) { }
+	) {}
 
 	async findAll(academicYearId: string): Promise<Term[]> {
 		return this.termRepo.find({
 			where: { AcademicYear: { Id: academicYearId } },
-			order: { TermNumber: 'ASC' },
+			order: { TermNumber: "ASC" },
 		});
 	}
 
 	async findOne(id: string): Promise<Term> {
 		const term = await this.termRepo.findOne({
 			where: { Id: id },
-			relations: ['AcademicYear'],
+			relations: ["AcademicYear"],
 		});
 		if (!term) throw new NotFoundException(`Term ${id} not found`);
 		return term;
@@ -33,20 +37,31 @@ export class TermService {
 	async findCurrent(SchoolId: string): Promise<Term> {
 		const term = await this.termRepo.findOne({
 			where: { IsCurrent: true, AcademicYear: { SchoolId } },
-			relations: ['AcademicYear', 'AcademicYear.School'],
+			relations: ["AcademicYear", "AcademicYear.School"],
 		});
-		if (!term) throw new NotFoundException('No current term is set');
+		if (!term) throw new NotFoundException("No current term is set");
 		return term;
 	}
 
 	async create(SchoolId: string, dto: CreateTermDto): Promise<Term> {
-		const academicYear = await this.academicYearRepo.findOne({ where: { Id: dto.AcademicYearId, SchoolId } });
-		if (!academicYear) throw new NotFoundException(`Academic year ${dto.AcademicYearId} not found`);
+		const academicYear = await this.academicYearRepo.findOne({
+			where: { Id: dto.AcademicYearId, SchoolId },
+		});
+		if (!academicYear)
+			throw new NotFoundException(
+				`Academic year ${dto.AcademicYearId} not found`,
+			);
 
 		const duplicate = await this.termRepo.findOne({
-			where: { AcademicYear: { Id: dto.AcademicYearId, SchoolId }, TermNumber: dto.TermNumber },
+			where: {
+				AcademicYear: { Id: dto.AcademicYearId, SchoolId },
+				TermNumber: dto.TermNumber,
+			},
 		});
-		if (duplicate) throw new ConflictException(`Term ${dto.TermNumber} already exists for this academic year`);
+		if (duplicate)
+			throw new ConflictException(
+				`Term ${dto.TermNumber} already exists for this academic year`,
+			);
 
 		if (dto.IsCurrent) await this.clearCurrent();
 
@@ -76,7 +91,8 @@ export class TermService {
 
 	async remove(id: string): Promise<void> {
 		const term = await this.findOne(id);
-		if (term.IsCurrent) throw new ConflictException('Cannot delete the current term');
+		if (term.IsCurrent)
+			throw new ConflictException("Cannot delete the current term");
 		await this.termRepo.remove(term);
 	}
 

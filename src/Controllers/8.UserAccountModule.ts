@@ -9,6 +9,6 @@ import { UserAccountService } from "./8.UserAccountService";
 	imports: [TypeOrmModule.forFeature([UserAccount, Staff])],
 	controllers: [UserAccountController],
 	providers: [UserAccountService],
-	exports: [UserAccountService]
+	exports: [UserAccountService],
 })
-export class UserAccountModule { }
+export class UserAccountModule {}

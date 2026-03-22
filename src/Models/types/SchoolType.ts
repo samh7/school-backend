@@ -1,4 +1,4 @@
 export enum SchoolTypeEnum {
 	JUNIOR = "JUNIOR",
-	SENIOR = "SENIOR"
+	SENIOR = "SENIOR",
 }

@@ -9,7 +9,6 @@ import { StudentService } from "./9.StudentService";
 	imports: [TypeOrmModule.forFeature([Student, School])],
 	controllers: [StudentController],
 	providers: [StudentService],
-	exports: [StudentService]
-
+	exports: [StudentService],
 })
-export class StudentModule { }
+export class StudentModule {}

@@ -18,7 +18,7 @@ export class Stream extends MyBaseEntity {
 
 	// Relations
 	@ManyToOne(() => GradeLevel, (gl) => gl.Streams)
-	@JoinColumn({ name: 'GradeLevelId' })
+	@JoinColumn({ name: "GradeLevelId" })
 	GradeLevel: GradeLevel;
 
 	@OneToMany(() => StudentEnrollment, (e) => e.Stream)

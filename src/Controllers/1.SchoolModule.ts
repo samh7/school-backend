@@ -10,7 +10,6 @@ import { UserAccountModule } from "./8.UserAccountModule";
 	imports: [StaffModule, UserAccountModule, TypeOrmModule.forFeature([School])],
 	controllers: [SchoolController],
 	providers: [SchoolService],
-	exports: [SchoolService]
-
+	exports: [SchoolService],
 })
-export class SchoolModule { }
+export class SchoolModule {}

@@ -1,9 +1,20 @@
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+	UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
-import { ChangePasswordDto, CreateSystemAdminDto, LoginDto, ResetPasswordDto, UserAccountDto } from "../Models/13.UserAccountDto";
+import {
+	ChangePasswordDto,
+	CreateSystemAdminDto,
+	LoginDto,
+	ResetPasswordDto,
+	UserAccountDto,
+} from "../Models/13.UserAccountDto";
 import { UserAccount } from "../Models/13.UserAccountEntity";
 import { Staff } from "../Models/7.StaffEntity";
 import { RoleEnum } from "../Models/Types/RoleEnum";
@@ -14,7 +25,7 @@ export class UserAccountService {
 		private readonly userAccountRepo: Repository<UserAccount>,
 		@InjectRepository(Staff)
 		private readonly staffRepo: Repository<Staff>,
-	) { }
+	) {}
 
 	// AUTH FACING METHODS
 	async _login(loginDto: LoginDto) {
@@ -22,88 +33,112 @@ export class UserAccountService {
 			where: { Email: loginDto.Email },
 		});
 
-		if (!account)
-			throw new UnauthorizedException('User Not Authneticated');
+		if (!account) throw new UnauthorizedException("User Not Authneticated");
 
 		const compareHashes = await bcrypt.compare(
 			loginDto.Password,
-			account.PasswordHash
+			account.PasswordHash,
 		);
 
-
-		if (!compareHashes) throw new UnauthorizedException('User Not Authneticated');
+		if (!compareHashes)
+			throw new UnauthorizedException("User Not Authneticated");
 
 		account.LastLogin = new Date();
 		await this.userAccountRepo.save(account);
 
-		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
+		return plainToInstance(UserAccountDto, account, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	// REGULAR METHODS
 	async createSystemAdmin(dto: CreateSystemAdminDto): Promise<UserAccountDto> {
-		if (dto.Role !== RoleEnum.SYSTEM_ADMIN) throw new ConflictException('Only system admins can be created with this endpoint');
-		const existing = await this.userAccountRepo.findOne({ where: { Email: dto.Email } });
-		if (existing) throw new ConflictException(`Email ${dto.Email} is already registered`);
+		if (dto.Role !== RoleEnum.SYSTEM_ADMIN)
+			throw new ConflictException(
+				"Only system admins can be created with this endpoint",
+			);
+		const existing = await this.userAccountRepo.findOne({
+			where: { Email: dto.Email },
+		});
+		if (existing)
+			throw new ConflictException(`Email ${dto.Email} is already registered`);
 		const userAccount = this.userAccountRepo.create({
-
 			...dto,
 			PasswordHash: await bcrypt.hash(dto.Password, 10),
-
 		});
 		const account = await this.userAccountRepo.save(userAccount);
-		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
+		return plainToInstance(UserAccountDto, account, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async CreateForStaff(staffId: string, role: RoleEnum): Promise<UserAccountDto> {
+	async CreateForStaff(
+		staffId: string,
+		role: RoleEnum,
+	): Promise<UserAccountDto> {
 		const staff = await this.staffRepo.findOneBy({ Id: staffId });
 		if (!staff) throw new NotFoundException(`Staff ${staffId} not found`);
-		if (staff.UserAccount) throw new ConflictException(`Staff ${staffId} already has a user account`);
+		if (staff.UserAccount)
+			throw new ConflictException(
+				`Staff ${staffId} already has a user account`,
+			);
 		const userAccount = this.userAccountRepo.create({
 			Email: staff.Email,
 			PasswordHash: await bcrypt.hash(staffId, 10),
-			Role: role
+			Role: role,
 		});
 		staff.UserAccount = userAccount;
 		await this.staffRepo.save(staff);
-		return plainToInstance(UserAccountDto, userAccount, { excludeExtraneousValues: true });
-
+		return plainToInstance(UserAccountDto, userAccount, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async findOne(id: string): Promise<UserAccountDto> {
 		const account = await this.userAccountRepo.findOne({
 			where: { Id: id },
-			relations: ['Staff'],
+			relations: ["Staff"],
 		});
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
-		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
+		return plainToInstance(UserAccountDto, account, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async findByEmail(email: string): Promise<UserAccountDto> {
 		const account = await this.userAccountRepo.findOne({
 			where: { Email: email },
-			relations: ['Staff', 'Staff.School'],
+			relations: ["Staff", "Staff.School"],
 		});
 		if (!account) throw new NotFoundException(`No account found for ${email}`);
-		return plainToInstance(UserAccountDto, account, { excludeExtraneousValues: true });
+		return plainToInstance(UserAccountDto, account, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async changePassword(id: string, dto: ChangePasswordDto): Promise<void> {
 		const account = await this.userAccountRepo.findOneBy({ Id: id });
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
-		const valid = await bcrypt.compare(dto.CurrentPassword, account.PasswordHash);
-		if (!valid) throw new ConflictException('Current password is incorrect');
+		const valid = await bcrypt.compare(
+			dto.CurrentPassword,
+			account.PasswordHash,
+		);
+		if (!valid) throw new ConflictException("Current password is incorrect");
 
 		account.PasswordHash = await bcrypt.hash(dto.NewPassword, 10);
 		await this.userAccountRepo.save(account);
 	}
 
-	async resetPassword(dto: ResetPasswordDto): Promise<{ TempPassword: string; }> {
+	async resetPassword(
+		dto: ResetPasswordDto,
+	): Promise<{ TempPassword: string }> {
 		const staff = await this.staffRepo.findOne({
 			where: { Id: dto.StaffId },
-			relations: ['UserAccount'],
+			relations: ["UserAccount"],
 		});
 		if (!staff) throw new NotFoundException(`Staff ${dto.StaffId} not found`);
-		if (!staff.UserAccount) throw new NotFoundException(`Staff ${dto.StaffId} has no user account`);
+		if (!staff.UserAccount)
+			throw new NotFoundException(`Staff ${dto.StaffId} has no user account`);
 
 		const tempPassword = `${staff.FirstName.toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`;
 		staff.UserAccount.PasswordHash = await bcrypt.hash(tempPassword, 10);

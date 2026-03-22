@@ -4,7 +4,6 @@ import { IsBoolean, IsDate, IsString } from "class-validator";
 import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 
 export class AcademicYearDto extends BaseDto {
-
 	@IsString()
 	@Expose()
 	SchoolId: string;
@@ -26,6 +25,9 @@ export class AcademicYearDto extends BaseDto {
 	IsCurrent?: boolean;
 }
 
-export class CreateAcademicYearDto extends IntersectionType(AcademicYearDto, BaseCreateDto) { }
+export class CreateAcademicYearDto extends IntersectionType(
+	AcademicYearDto,
+	BaseCreateDto,
+) {}
 
-export class UpdateAcademicYearDto extends PartialType(CreateAcademicYearDto) { }
+export class UpdateAcademicYearDto extends PartialType(CreateAcademicYearDto) {}

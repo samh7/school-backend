@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
@@ -20,33 +29,42 @@ export class SchoolController {
 		private readonly schoolService: SchoolService,
 		private readonly userAccountService: UserAccountService,
 		private readonly staffService: StaffService,
-	) { }
+	) {}
 
 	@Get("all")
 	findAll() {
 		return this.schoolService.findAll();
 	}
 	@Get("one/:id")
-	findOne(@Param('id') id: string) {
-
+	findOne(@Param("id") id: string) {
 		return this.schoolService.findOne(id);
 	}
 	@Post("create")
-	async createWithSchoolAdminAccount(@Body() createSchoolDto: CreateSchoolDto, createStaffDto: CreateStaffDto) {
-
+	async createWithSchoolAdminAccount(
+		@Body() createSchoolDto: CreateSchoolDto,
+		createStaffDto: CreateStaffDto,
+	) {
 		const school = await this.schoolService.create(createSchoolDto);
 		const staff = await this.staffService.create(createStaffDto);
-		const userAccount = await this.userAccountService.CreateForStaff(staff.Id, createStaffDto.Role);
+		const userAccount = await this.userAccountService.CreateForStaff(
+			staff.Id,
+			createStaffDto.Role,
+		);
 
-		return { ...plainToInstance(UserAccountDto, userAccount, { excludeExtraneousValues: true }), school, staff };
+		return {
+			...plainToInstance(UserAccountDto, userAccount, {
+				excludeExtraneousValues: true,
+			}),
+			school,
+			staff,
+		};
 	}
 	@Put("update/:id")
-	update(@Param('id') id: string, @Body() updateSchoolDto: CreateSchoolDto) {
-
+	update(@Param("id") id: string, @Body() updateSchoolDto: CreateSchoolDto) {
 		return this.schoolService.update(id, updateSchoolDto);
 	}
 	@Delete("remove/:id")
-	remove(@Param('id') id: string) {
+	remove(@Param("id") id: string) {
 		return this.schoolService.remove(id);
 	}
 }

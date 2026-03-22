@@ -20,11 +20,11 @@ export class GradeSubject extends MyBaseEntity {
 
 	// Relations
 	@ManyToOne(() => GradeLevel, (gl) => gl.GradeSubjects)
-	@JoinColumn({ name: 'GradeLevelId' })
+	@JoinColumn({ name: "GradeLevelId" })
 	GradeLevel: GradeLevel;
 
 	@ManyToOne(() => Subject, (s) => s.GradeSubjects)
-	@JoinColumn({ name: 'SubjectId' })
+	@JoinColumn({ name: "SubjectId" })
 	Subject: Subject;
 
 	@OneToMany(() => SubjectTeacher, (st) => st.GradeSubject)

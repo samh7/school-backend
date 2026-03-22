@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { School } from "../Models/1.SchoolEntity";
@@ -12,12 +16,12 @@ export class SubjectService {
 		private readonly subjectRepo: Repository<Subject>,
 		@InjectRepository(School)
 		private readonly schoolRepo: Repository<School>,
-	) { }
+	) {}
 
 	async findAll(schoolId: string): Promise<Subject[]> {
 		return this.subjectRepo.find({
 			where: { School: { Id: schoolId } },
-			order: { Name: 'ASC' },
+			order: { Name: "ASC" },
 		});
 	}
 
@@ -31,20 +35,24 @@ export class SubjectService {
 	async findOne(id: string): Promise<Subject> {
 		const subject = await this.subjectRepo.findOne({
 			where: { Id: id },
-			relations: ['School', 'GradeSubjects', 'GradeSubjects.GradeLevel'],
+			relations: ["School", "GradeSubjects", "GradeSubjects.GradeLevel"],
 		});
 		if (!subject) throw new NotFoundException(`Subject ${id} not found`);
 		return subject;
 	}
 
 	async create(dto: CreateSubjectDto): Promise<Subject> {
-		const school = await this.schoolRepo.findOne({ where: { Id: dto.SchoolId } });
-		if (!school) throw new NotFoundException(`School ${dto.SchoolId} not found`);
+		const school = await this.schoolRepo.findOne({
+			where: { Id: dto.SchoolId },
+		});
+		if (!school)
+			throw new NotFoundException(`School ${dto.SchoolId} not found`);
 
 		const duplicate = await this.subjectRepo.findOne({
 			where: { School: { Id: dto.SchoolId }, Code: dto.Code },
 		});
-		if (duplicate) throw new ConflictException(`Subject code "${dto.Code}" already exists`);
+		if (duplicate)
+			throw new ConflictException(`Subject code "${dto.Code}" already exists`);
 
 		const subject = this.subjectRepo.create({ ...dto, School: school });
 		return this.subjectRepo.save(subject);

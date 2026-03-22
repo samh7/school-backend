@@ -1,8 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
-import { CreateGradeSubjectDto, UpdateGradeSubjectDto } from "../Models/8.GradeSubjectDto";
+import {
+	CreateGradeSubjectDto,
+	UpdateGradeSubjectDto,
+} from "../Models/8.GradeSubjectDto";
 import { RoleEnum } from "../Models/Types/RoleEnum";
 import { GradeSubjectService } from "./7.GradeSubjectService";
 
@@ -11,7 +23,7 @@ import { GradeSubjectService } from "./7.GradeSubjectService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("grade-subjects")
 export class GradeSubjectController {
-	constructor(private readonly gradeSubjectService: GradeSubjectService) { }
+	constructor(private readonly gradeSubjectService: GradeSubjectService) {}
 	@Get("all/:id")
 	findAll(@Param("id") id: string) {
 		return this.gradeSubjectService.findAll(id);
@@ -28,7 +40,10 @@ export class GradeSubjectController {
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, @Body() updateGradeSubjectDto: UpdateGradeSubjectDto) {
+	update(
+		@Param("id") id: string,
+		@Body() updateGradeSubjectDto: UpdateGradeSubjectDto,
+	) {
 		return this.gradeSubjectService.update(id, updateGradeSubjectDto);
 	}
 
@@ -36,5 +51,4 @@ export class GradeSubjectController {
 	remove(@Param("id") id: string) {
 		return this.gradeSubjectService.remove(id);
 	}
-
 }

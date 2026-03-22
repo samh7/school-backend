@@ -1,8 +1,20 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
-import { BulkRolloverDto, CreateEnrollmentDto, UpdateEnrollmentDto } from "../Models/12.StudentEnrollmentDto";
+import {
+	BulkRolloverDto,
+	CreateEnrollmentDto,
+	UpdateEnrollmentDto,
+} from "../Models/12.StudentEnrollmentDto";
 import { RoleEnum } from "../Models/Types/RoleEnum";
 import { StudentEnrollmentService } from "./10.StudentEnrollmentService";
 
@@ -11,14 +23,19 @@ import { StudentEnrollmentService } from "./10.StudentEnrollmentService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("student-enrollments")
 export class StudentEnrollmentController {
-	constructor(private readonly studentEnrollmentService: StudentEnrollmentService) { }
+	constructor(
+		private readonly studentEnrollmentService: StudentEnrollmentService,
+	) {}
 	@Get("student/:id")
 	findByStudent(@Param("id") id: string) {
 		return this.studentEnrollmentService.findByStudent(id);
 	}
 
 	@Get("stream/:streamId/term/:termId")
-	findByStream(@Param("streamId") streamId: string, @Param("termId") termId: string) {
+	findByStream(
+		@Param("streamId") streamId: string,
+		@Param("termId") termId: string,
+	) {
 		return this.studentEnrollmentService.findByStream(streamId, termId);
 	}
 
@@ -38,7 +55,10 @@ export class StudentEnrollmentController {
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, @Body() updateEnrollmentDto: UpdateEnrollmentDto) {
+	update(
+		@Param("id") id: string,
+		@Body() updateEnrollmentDto: UpdateEnrollmentDto,
+	) {
 		return this.studentEnrollmentService.update(id, updateEnrollmentDto);
 	}
 
@@ -51,6 +71,4 @@ export class StudentEnrollmentController {
 	completeTermEnrollments(@Param("id") id: string) {
 		return this.studentEnrollmentService.completeTermEnrollments(id);
 	}
-
-
 }

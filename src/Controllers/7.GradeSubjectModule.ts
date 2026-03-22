@@ -8,10 +8,11 @@ import { GradeSubjectController } from "./7.GradeSubjectController";
 import { GradeSubjectService } from "./7.GradeSubjectService";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([GradeSubject, GradeLevel, Subject, School])],
+	imports: [
+		TypeOrmModule.forFeature([GradeSubject, GradeLevel, Subject, School]),
+	],
 	controllers: [GradeSubjectController],
 	providers: [GradeSubjectService],
-	exports: [GradeSubjectService]
-
+	exports: [GradeSubjectService],
 })
-export class GradeSubjectModule { }
+export class GradeSubjectModule {}

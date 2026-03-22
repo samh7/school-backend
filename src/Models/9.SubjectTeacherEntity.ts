@@ -7,7 +7,6 @@ import { GradeSubject } from "./8.GradeSubjectEntity";
 
 @Entity("subject_teachers")
 export class SubjectTeacher extends MyBaseEntity {
-
 	@Column()
 	StaffId: string;
 
@@ -17,24 +16,22 @@ export class SubjectTeacher extends MyBaseEntity {
 	@Column()
 	StreamId: string;
 	@Column()
-
 	AcademicYearId: string;
-
 
 	// Relations
 	@ManyToOne(() => Staff, (s) => s.SubjectTeacherAssignments)
-	@JoinColumn({ name: 'StaffId' })
+	@JoinColumn({ name: "StaffId" })
 	Staff: Staff;
 
 	@ManyToOne(() => GradeSubject, (gs) => gs.SubjectTeachers)
-	@JoinColumn({ name: 'GradeSubjectId' })
+	@JoinColumn({ name: "GradeSubjectId" })
 	GradeSubject: GradeSubject;
 
 	@ManyToOne(() => Stream, (s) => s.SubjectTeachers)
-	@JoinColumn({ name: 'StreamId' })
+	@JoinColumn({ name: "StreamId" })
 	Stream: Stream;
 
 	@ManyToOne(() => AcademicYear)
-	@JoinColumn({ name: 'AcademicYearId' })
+	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 }

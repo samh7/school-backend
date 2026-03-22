@@ -9,7 +9,6 @@ import { GradeLevelService } from "./4.GradeLevelService";
 	imports: [TypeOrmModule.forFeature([GradeLevel, School])],
 	controllers: [GradeLevelController],
 	providers: [GradeLevelService],
-	exports: [GradeLevelService]
-
+	exports: [GradeLevelService],
 })
-export class GradeLevelModule { }
+export class GradeLevelModule {}

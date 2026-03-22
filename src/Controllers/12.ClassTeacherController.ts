@@ -10,7 +10,7 @@ import { ClassTeacherService } from "./12.ClassTeacherService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("class-teachers")
 export class ClassTeacherController {
-	constructor(private readonly classTeacherService: ClassTeacherService) { }
+	constructor(private readonly classTeacherService: ClassTeacherService) {}
 
 	@Get("all/:id")
 	findAll(@Param("id") id: string) {
@@ -26,5 +26,4 @@ export class ClassTeacherController {
 	findByStream(@Param("id") id: string) {
 		return this.classTeacherService.findByStream(id);
 	}
-
 }

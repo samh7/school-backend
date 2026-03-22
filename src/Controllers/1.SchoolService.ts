@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateSchoolDto, UpdateSchoolDto } from "../Models/1.SchoolDto";
@@ -9,18 +13,18 @@ export class SchoolService {
 	constructor(
 		@InjectRepository(School)
 		private readonly schoolRepo: Repository<School>,
-	) { }
+	) {}
 
 	async findAll(): Promise<School[]> {
 		return this.schoolRepo.find({
-			order: { Name: 'ASC' },
+			order: { Name: "ASC" },
 		});
 	}
 
 	async findOne(id: string): Promise<School> {
 		const school = await this.schoolRepo.findOne({
 			where: { Id: id },
-			relations: ['AcademicYears', 'GradeLevels', 'Subjects'],
+			relations: ["AcademicYears", "GradeLevels", "Subjects"],
 		});
 		if (!school) throw new NotFoundException(`School ${id} not found`);
 		return school;
@@ -28,8 +32,13 @@ export class SchoolService {
 
 	async create(dto: CreateSchoolDto): Promise<School> {
 		if (dto.KnecCode) {
-			const existing = await this.schoolRepo.findOne({ where: { KnecCode: dto.KnecCode } });
-			if (existing) throw new ConflictException(`KNEC code ${dto.KnecCode} is already registered`);
+			const existing = await this.schoolRepo.findOne({
+				where: { KnecCode: dto.KnecCode },
+			});
+			if (existing)
+				throw new ConflictException(
+					`KNEC code ${dto.KnecCode} is already registered`,
+				);
 		}
 		const school = this.schoolRepo.create({ ...dto });
 		return this.schoolRepo.save(school);

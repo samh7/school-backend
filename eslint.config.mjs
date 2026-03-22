@@ -30,7 +30,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-argument': 'warn',
       "@typescript-eslint/await-thenable": "error",
       '@typescript-eslint/no-floating-promises': 'error',
-      "prettier/prettier": ["error", { endOfLine: "auto", useTabs: true, tabWidth: 2, bracketSpacing: true }],
+      "prettier/prettier": ["error", { endOfLine: "auto", useTabs: true, singleQuote: false,tabWidth: 2, bracketSpacing: true }],
     }
   }
 );

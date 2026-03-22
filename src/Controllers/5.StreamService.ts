@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { StudentEnrollment } from "../Models/12.StudentEnrollmentEntity";
@@ -13,13 +17,13 @@ export class StreamService {
 		private readonly streamRepo: Repository<Stream>,
 		@InjectRepository(GradeLevel)
 		private readonly gradeLevelRepo: Repository<GradeLevel>,
-	) { }
+	) {}
 
 	async findAll(gradeLevelId: string): Promise<Stream[]> {
 		return this.streamRepo.find({
 			where: { GradeLevel: { Id: gradeLevelId } },
-			relations: ['GradeLevel'],
-			order: { Name: 'ASC' },
+			relations: ["GradeLevel"],
+			order: { Name: "ASC" },
 		});
 	}
 
@@ -27,14 +31,14 @@ export class StreamService {
 		const stream = await this.streamRepo.findOne({
 			where: { Id: id },
 			relations: [
-				'GradeLevel',
-				'ClassTeachers',
-				'ClassTeachers.Staff',
-				'ClassTeachers.AcademicYear',
-				'SubjectTeachers',
-				'SubjectTeachers.Staff',
-				'SubjectTeachers.GradeSubject',
-				'SubjectTeachers.GradeSubject.Subject',
+				"GradeLevel",
+				"ClassTeachers",
+				"ClassTeachers.Staff",
+				"ClassTeachers.AcademicYear",
+				"SubjectTeachers",
+				"SubjectTeachers.Staff",
+				"SubjectTeachers.GradeSubject",
+				"SubjectTeachers.GradeSubject.Subject",
 			],
 		});
 		if (!stream) throw new NotFoundException(`Stream ${id} not found`);
@@ -48,13 +52,19 @@ export class StreamService {
 	}
 
 	async create(dto: CreateStreamDto): Promise<Stream> {
-		const gradeLevel = await this.gradeLevelRepo.findOne({ where: { Id: dto.GradeLevelId } });
-		if (!gradeLevel) throw new NotFoundException(`Grade level ${dto.GradeLevelId} not found`);
+		const gradeLevel = await this.gradeLevelRepo.findOne({
+			where: { Id: dto.GradeLevelId },
+		});
+		if (!gradeLevel)
+			throw new NotFoundException(`Grade level ${dto.GradeLevelId} not found`);
 
 		const duplicate = await this.streamRepo.findOne({
 			where: { GradeLevel: { Id: dto.GradeLevelId }, Name: dto.Name },
 		});
-		if (duplicate) throw new ConflictException(`Stream "${dto.Name}" already exists in this grade level`);
+		if (duplicate)
+			throw new ConflictException(
+				`Stream "${dto.Name}" already exists in this grade level`,
+			);
 
 		const stream = this.streamRepo.create({
 			Name: dto.Name,

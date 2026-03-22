@@ -16,28 +16,25 @@ import { JwtStrategy } from "./JwtStrategy";
 		TypeOrmModule.forFeature([UserAccount, Staff]),
 		ConfigModule,
 		UserAccountModule,
-		JwtModule.registerAsync(
-			{
-				imports: [ConfigModule],
-				useFactory: (configService: ConfigService<EnvironmentVariables>) => {
-					const secret = configService.getOrThrow("JWT_ACCESS_TOKEN_SECRET");
-					return {
-						global: true,
-						secret: secret,
-						signOptions: {
-							expiresIn: configService.getOrThrow("JWT_EXPIRES_IN"),
-						}
-					};
-
-				},
-				inject: [ConfigService]
-			}
-		),
-
+		JwtModule.registerAsync({
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService<EnvironmentVariables>) => {
+				const secret = configService.getOrThrow<string>(
+					"JWT_ACCESS_TOKEN_SECRET",
+				);
+				return {
+					global: true,
+					secret: secret,
+					signOptions: {
+						expiresIn: configService.getOrThrow("JWT_EXPIRES_IN"),
+					},
+				};
+			},
+			inject: [ConfigService],
+		}),
 	],
 	controllers: [AuthController],
 	providers: [AuthService, JwtStrategy, UserAccountService],
 	exports: [AuthService, JwtStrategy],
 })
-export class AuthModule {
-}
+export class AuthModule {}

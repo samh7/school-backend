@@ -1,8 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
-import { AssignClassTeacherDto, AssignSubjectTeacherDto, CreateStaffDto, UpdateStaffDto } from "../Models/7.StaffDto";
+import {
+	AssignClassTeacherDto,
+	AssignSubjectTeacherDto,
+	CreateStaffDto,
+	UpdateStaffDto,
+} from "../Models/7.StaffDto";
 import { RoleEnum } from "../Models/Types/RoleEnum";
 import { StaffService } from "./11.StaffService";
 
@@ -11,7 +25,7 @@ import { StaffService } from "./11.StaffService";
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller()
 export class StaffController {
-	constructor(private readonly staffService: StaffService) { }
+	constructor(private readonly staffService: StaffService) {}
 	@Get("all/:id")
 	findAll(@Param("id") id: string) {
 		return this.staffService.findAll(id);
@@ -53,7 +67,9 @@ export class StaffController {
 	}
 
 	@Post("assign-subject-teacher")
-	assignSubjectTeacher(@Body() assignSubjectTeacherDto: AssignSubjectTeacherDto) {
+	assignSubjectTeacher(
+		@Body() assignSubjectTeacherDto: AssignSubjectTeacherDto,
+	) {
 		return this.staffService.assignSubjectTeacher(assignSubjectTeacherDto);
 	}
 
@@ -61,5 +77,4 @@ export class StaffController {
 	removeSubjectTeacher(@Param("id") id: string) {
 		return this.staffService.removeSubjectTeacher(id);
 	}
-
 }

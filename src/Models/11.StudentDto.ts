@@ -1,7 +1,7 @@
-import { IntersectionType, PartialType } from '@nestjs/mapped-types';
-import { Expose } from 'class-transformer';
-import { IsDate, IsOptional, IsString } from 'class-validator';
-import { BaseCreateDto, BaseDto } from './0.BaseDto';
+import { IntersectionType, PartialType } from "@nestjs/mapped-types";
+import { Expose } from "class-transformer";
+import { IsDate, IsOptional, IsString } from "class-validator";
+import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 
 export class StudentDto extends BaseDto {
 	@IsString()
