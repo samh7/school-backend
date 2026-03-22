@@ -16,15 +16,17 @@ export class ClassTeacher extends MyBaseEntity {
 	AcademicYearId: string;
 
 	// Relations
-	@ManyToOne(() => Staff, (s) => s.ClassTeacherAssignments)
+	@ManyToOne(() => Staff, (s) => s.ClassTeacherAssignments, {
+		onDelete: "CASCADE",
+	})
 	@JoinColumn({ name: "StaffId" })
 	Staff: Staff;
 
-	@ManyToOne(() => Stream, (s) => s.ClassTeachers)
+	@ManyToOne(() => Stream, (s) => s.ClassTeachers, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "StreamId" })
 	Stream: Stream;
 
-	@ManyToOne(() => AcademicYear)
+	@ManyToOne(() => AcademicYear, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 }

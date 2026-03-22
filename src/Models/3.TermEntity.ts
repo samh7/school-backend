@@ -21,7 +21,7 @@ export class Term extends MyBaseEntity {
 	IsCurrent: boolean;
 
 	// Relations
-	@ManyToOne(() => AcademicYear, (ay) => ay.Terms)
+	@ManyToOne(() => AcademicYear, (ay) => ay.Terms, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 

@@ -23,6 +23,10 @@ export class SubjectDto extends BaseDto {
 	@IsString()
 	@Expose()
 	LevelType: string; // pre-primary | lower-primary | upper-primary | junior-secondary
+
+	@IsString()
+	@Expose()
+	LearningType: string;
 }
 
 export class CreateSubjectDto extends OmitType(SubjectDto, BASE_DTO_KEYS) {}

@@ -29,7 +29,7 @@ export class Student extends MyBaseEntity {
 	@Column()
 	NemisId: string;
 
-	@Column()
+	@Column({ nullable: true })
 	PhotoUrl: string;
 
 	@Column()
@@ -39,7 +39,7 @@ export class Student extends MyBaseEntity {
 	Status: string;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.Students)
+	@ManyToOne(() => School, (s) => s.Students, { onDelete: "RESTRICT" })
 	@JoinColumn({ name: "SchoolId" })
 	School: School;
 

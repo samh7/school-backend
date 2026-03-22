@@ -17,7 +17,7 @@ export class Stream extends MyBaseEntity {
 	Capacity: number;
 
 	// Relations
-	@ManyToOne(() => GradeLevel, (gl) => gl.Streams)
+	@ManyToOne(() => GradeLevel, (gl) => gl.Streams, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "GradeLevelId" })
 	GradeLevel: GradeLevel;
 

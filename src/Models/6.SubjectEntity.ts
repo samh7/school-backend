@@ -21,7 +21,7 @@ export class Subject extends MyBaseEntity {
 	LearningType: string;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.Subjects)
+	@ManyToOne(() => School, (s) => s.Subjects, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "SchoolId" })
 	School: School;
 

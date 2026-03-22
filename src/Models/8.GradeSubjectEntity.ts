@@ -19,11 +19,13 @@ export class GradeSubject extends MyBaseEntity {
 	PeriodsPerWeek: number;
 
 	// Relations
-	@ManyToOne(() => GradeLevel, (gl) => gl.GradeSubjects)
+	@ManyToOne(() => GradeLevel, (gl) => gl.GradeSubjects, {
+		onDelete: "CASCADE",
+	})
 	@JoinColumn({ name: "GradeLevelId" })
 	GradeLevel: GradeLevel;
 
-	@ManyToOne(() => Subject, (s) => s.GradeSubjects)
+	@ManyToOne(() => Subject, (s) => s.GradeSubjects, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "SubjectId" })
 	Subject: Subject;
 

@@ -9,11 +9,9 @@ import {
 	UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
-import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
-import { UserAccountDto } from "../Models/13.UserAccountDto";
-import { CreateTermDto } from "../Models/3.TermDto";
+import { CreateTermDto, UpdateTermDto } from "../Models/3.TermDto";
 import { RoleEnum } from "../Models/Types/RoleEnum";
 import { TermService } from "./3.TermService";
 
@@ -33,22 +31,17 @@ export class TermController {
 		return this.termService.findOne(id);
 	}
 
-	@Get("current")
-	findCurrent(@CurrentUserAccount() account: UserAccountDto) {
-		if (!account.SchoolId) throw new Error("User account is missing SchoolId");
-		return this.termService.findCurrent(account.SchoolId);
+	@Get("current/:id")
+	findCurrent(@Param("id") id: string) {
+		return this.termService.findCurrent(id);
 	}
-	@Post("create")
-	create(
-		@CurrentUserAccount() account: UserAccountDto,
-		@Body() dto: CreateTermDto,
-	) {
-		if (!account.SchoolId) throw new Error("User account is missing SchoolId");
-		return this.termService.create(account.SchoolId, dto);
+	@Post("create/:id")
+	create(@Param("id") id: string, @Body() dto: CreateTermDto) {
+		return this.termService.create(id, dto);
 	}
 
 	@Put("update/:id")
-	update(@Param("id") id: string, @Body() dto: CreateTermDto) {
+	update(@Param("id") id: string, @Body() dto: UpdateTermDto) {
 		return this.termService.update(id, dto);
 	}
 

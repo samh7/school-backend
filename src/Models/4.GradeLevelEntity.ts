@@ -19,7 +19,7 @@ export class GradeLevel extends MyBaseEntity {
 	SortOrder: number;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.GradeLevels)
+	@ManyToOne(() => School, (s) => s.GradeLevels, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "SchoolId" })
 	School: School;
 

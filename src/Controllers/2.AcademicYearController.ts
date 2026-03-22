@@ -9,10 +9,8 @@ import {
 	UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
-import { CurrentUserAccount } from "../Auth/Decorators/CurrentUserAccountDecorator";
 import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
-import { UserAccountDto } from "../Models/13.UserAccountDto";
 import {
 	CreateAcademicYearDto,
 	UpdateAcademicYearDto,
@@ -27,32 +25,21 @@ import { AcademicYearService } from "./2.AcademicYearService";
 export class AcademicYearController {
 	constructor(private readonly academicYearService: AcademicYearService) {}
 
-	@Get("all")
-	findAll(@CurrentUserAccount() account: UserAccountDto) {
-		if (!account.SchoolId)
-			throw new Error("User account is not associated with a school");
-		return this.academicYearService.findAll(account.SchoolId);
+	@Get("all/:id")
+	findAll(@Param("id") id: string) {
+		return this.academicYearService.findAll(id);
 	}
 
 	@Get("one/:id")
 	findOne(@Param("id") id: string) {
 		return this.academicYearService.findOne(id);
 	}
-	@Get("current")
-	findCurrent(@CurrentUserAccount() account: UserAccountDto) {
-		if (!account.SchoolId)
-			throw new Error("User account is not associated with a school");
-		return this.academicYearService.findCurrent(account.SchoolId);
+	@Get("current/:id")
+	findCurrent(@Param("id") id: string) {
+		return this.academicYearService.findCurrent(id);
 	}
 	@Post("create")
-	create(
-		@CurrentUserAccount() account: UserAccountDto,
-		@Body() createAcademicYearDto: CreateAcademicYearDto,
-	) {
-		if (!account.SchoolId)
-			throw new Error("User account is not associated with a school");
-		if (createAcademicYearDto.SchoolId !== account.SchoolId)
-			throw new Error("Cannot create academic year for a different school");
+	create(@Body() createAcademicYearDto: CreateAcademicYearDto) {
 		return this.academicYearService.create(createAcademicYearDto);
 	}
 

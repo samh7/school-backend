@@ -20,7 +20,7 @@ export class StudentService {
 
 	async findAll(schoolId: string): Promise<Student[]> {
 		return this.studentRepo.find({
-			where: { School: { Id: schoolId }, Status: "active" },
+			where: { School: { Id: schoolId } },
 			order: { LastName: "ASC", FirstName: "ASC" },
 		});
 	}

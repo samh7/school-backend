@@ -25,7 +25,7 @@ export class UserAccount extends MyBaseEntity {
 	@Column({ nullable: true })
 	LastLogin: Date;
 
-	@OneToOne(() => Staff, (s) => s.UserAccount)
+	@OneToOne(() => Staff, (s) => s.UserAccount, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "StaffId" })
 	Staff: Staff;
 }

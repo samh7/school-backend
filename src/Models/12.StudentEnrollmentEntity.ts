@@ -26,19 +26,21 @@ export class StudentEnrollment extends MyBaseEntity {
 	Status: string;
 
 	// Relations
-	@ManyToOne(() => Student, (s) => s.Enrollments)
+	@ManyToOne(() => Student, (s) => s.Enrollments, { onDelete: "RESTRICT" })
 	@JoinColumn({ name: "StudentId" })
 	Student: Student;
 
-	@ManyToOne(() => Stream, (s) => s.Enrollments)
+	@ManyToOne(() => Stream, (s) => s.Enrollments, { onDelete: "RESTRICT" })
 	@JoinColumn({ name: "StreamId" })
 	Stream: Stream;
 
-	@ManyToOne(() => AcademicYear, (ay) => ay.Enrollments)
+	@ManyToOne(() => AcademicYear, (ay) => ay.Enrollments, {
+		onDelete: "RESTRICT",
+	})
 	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 
-	@ManyToOne(() => Term, (t) => t.Enrollments)
+	@ManyToOne(() => Term, (t) => t.Enrollments, { onDelete: "RESTRICT" })
 	@JoinColumn({ name: "TermId" })
 	Term: Term;
 }

@@ -39,7 +39,7 @@ export class Staff extends MyBaseEntity {
 	Role: string;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.Staff)
+	@ManyToOne(() => School, (s) => s.Staff, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "SchoolId" })
 	School: School;
 

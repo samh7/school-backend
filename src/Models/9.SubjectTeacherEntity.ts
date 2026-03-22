@@ -19,19 +19,23 @@ export class SubjectTeacher extends MyBaseEntity {
 	AcademicYearId: string;
 
 	// Relations
-	@ManyToOne(() => Staff, (s) => s.SubjectTeacherAssignments)
+	@ManyToOne(() => Staff, (s) => s.SubjectTeacherAssignments, {
+		onDelete: "CASCADE",
+	})
 	@JoinColumn({ name: "StaffId" })
 	Staff: Staff;
 
-	@ManyToOne(() => GradeSubject, (gs) => gs.SubjectTeachers)
+	@ManyToOne(() => GradeSubject, (gs) => gs.SubjectTeachers, {
+		onDelete: "CASCADE",
+	})
 	@JoinColumn({ name: "GradeSubjectId" })
 	GradeSubject: GradeSubject;
 
-	@ManyToOne(() => Stream, (s) => s.SubjectTeachers)
+	@ManyToOne(() => Stream, (s) => s.SubjectTeachers, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "StreamId" })
 	Stream: Stream;
 
-	@ManyToOne(() => AcademicYear)
+	@ManyToOne(() => AcademicYear, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "AcademicYearId" })
 	AcademicYear: AcademicYear;
 }

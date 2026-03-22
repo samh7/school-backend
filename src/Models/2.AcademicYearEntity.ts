@@ -22,7 +22,7 @@ export class AcademicYear extends MyBaseEntity {
 	IsCurrent: boolean;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.AcademicYears)
+	@ManyToOne(() => School, (s) => s.AcademicYears, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "SchoolId" })
 	School: School;
 
