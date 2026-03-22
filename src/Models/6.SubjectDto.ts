@@ -1,7 +1,7 @@
-import { IntersectionType, PartialType } from "@nestjs/mapped-types";
+import { OmitType, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsString } from "class-validator";
-import { BaseCreateDto, BaseDto } from "./0.BaseDto";
+import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 
 export class SubjectDto extends BaseDto {
 	@IsString()
@@ -25,8 +25,5 @@ export class SubjectDto extends BaseDto {
 	LevelType: string; // pre-primary | lower-primary | upper-primary | junior-secondary
 }
 
-export class CreateSubjectDto extends IntersectionType(
-	SubjectDto,
-	BaseCreateDto,
-) {}
+export class CreateSubjectDto extends OmitType(SubjectDto, BASE_DTO_KEYS) {}
 export class UpdateSubjectDto extends PartialType(CreateSubjectDto) {}

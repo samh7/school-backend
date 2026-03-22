@@ -1,7 +1,7 @@
-import { IntersectionType, PartialType } from "@nestjs/mapped-types";
+import { OmitType, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsNumber, IsOptional, IsString } from "class-validator";
-import { BaseCreateDto, BaseDto } from "./0.BaseDto";
+import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 
 export class StreamDto extends BaseDto {
 	@Expose()
@@ -18,9 +18,6 @@ export class StreamDto extends BaseDto {
 	Capacity?: number;
 }
 
-export class CreateStreamDto extends IntersectionType(
-	StreamDto,
-	BaseCreateDto,
-) {}
+export class CreateStreamDto extends OmitType(StreamDto, BASE_DTO_KEYS) {}
 
 export class UpdateStreamDto extends PartialType(CreateStreamDto) {}

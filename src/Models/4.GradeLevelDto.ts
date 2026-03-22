@@ -1,7 +1,7 @@
-import { IntersectionType, PartialType } from "@nestjs/mapped-types";
+import { OmitType, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsNumber, IsString } from "class-validator";
-import { BaseCreateDto, BaseDto } from "./0.BaseDto";
+import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 
 export class GradeLevelDto extends BaseDto {
 	@Expose()
@@ -21,8 +21,8 @@ export class GradeLevelDto extends BaseDto {
 	SortOrder: number;
 }
 
-export class CreateGradeLevelDto extends IntersectionType(
+export class CreateGradeLevelDto extends OmitType(
 	GradeLevelDto,
-	BaseCreateDto,
+	BASE_DTO_KEYS,
 ) {}
 export class UpdateGradeLevelDto extends PartialType(CreateGradeLevelDto) {}

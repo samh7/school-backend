@@ -1,7 +1,7 @@
-import { IntersectionType } from "@nestjs/mapped-types";
+import { OmitType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsDate, IsOptional, IsString } from "class-validator";
-import { BaseCreateDto, BaseDto } from "./0.BaseDto";
+import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 
 export class EnrollmentDto extends BaseDto {
 	@IsString()
@@ -25,9 +25,9 @@ export class EnrollmentDto extends BaseDto {
 	Status: string;
 }
 
-export class CreateEnrollmentDto extends IntersectionType(
+export class CreateEnrollmentDto extends OmitType(
 	EnrollmentDto,
-	BaseCreateDto,
+	BASE_DTO_KEYS,
 ) {}
 export class UpdateEnrollmentDto {
 	@IsString()

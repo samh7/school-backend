@@ -4,6 +4,7 @@ import { Roles } from "../Auth/Decorators/RoleDecorator";
 import { JwtAuthGuard } from "../Auth/JwtGuard";
 import {
 	ChangePasswordDto,
+	CreateFroStaffDto,
 	CreateSystemAdminDto,
 	ResetPasswordDto,
 } from "../Models/13.UserAccountDto";
@@ -23,10 +24,11 @@ export class UserAccountController {
 	}
 
 	@Post("create/for-staff")
-	createForStaff(
-		@Body() { Role, StaffId }: { Role: RoleEnum; StaffId: string },
-	) {
-		return this.userAccountService.CreateForStaff(StaffId, Role);
+	createForStaff(@Body() createFroStaffDto: CreateFroStaffDto) {
+		return this.userAccountService.CreateForStaff(
+			createFroStaffDto.StaffId,
+			createFroStaffDto.Role,
+		);
 	}
 
 	@Get("one/:id")

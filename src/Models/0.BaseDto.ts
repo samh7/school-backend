@@ -1,4 +1,3 @@
-import { OmitType } from "@nestjs/mapped-types";
 import { Expose } from "class-transformer";
 import { IsEmpty } from "class-validator";
 
@@ -20,9 +19,9 @@ export class BaseDto {
 	DeletedAt: Date | null;
 }
 
-export class BaseCreateDto extends OmitType(BaseDto, [
+export const BASE_DTO_KEYS = [
 	"Id",
 	"CreatedAt",
 	"UpdatedAt",
 	"DeletedAt",
-] as const) {}
+] as const;

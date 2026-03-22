@@ -1,7 +1,7 @@
-import { IntersectionType, PartialType } from "@nestjs/mapped-types";
+import { OmitType, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsEnum, IsOptional, IsString } from "class-validator";
-import { BaseCreateDto, BaseDto } from "./0.BaseDto";
+import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 import { RoleEnum } from "./Types/RoleEnum";
 
 export class StaffDto extends BaseDto {
@@ -30,7 +30,7 @@ export class StaffDto extends BaseDto {
 	TscNumber?: string;
 }
 
-export class CreateStaffDto extends IntersectionType(StaffDto, BaseCreateDto) {}
+export class CreateStaffDto extends OmitType(StaffDto, BASE_DTO_KEYS) {}
 export class UpdateStaffDto extends PartialType(CreateStaffDto) {}
 
 // teachers

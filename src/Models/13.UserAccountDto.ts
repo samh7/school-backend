@@ -40,6 +40,15 @@ export class LoginDto {
 	Password: string;
 }
 
+export class CreateFroStaffDto {
+	@Expose()
+	@IsEnum(RoleEnum)
+	Role: RoleEnum;
+	@IsString()
+	@Expose()
+	StaffId: string;
+}
+
 export class UserAccountDto {
 	@IsString()
 	@Expose()
