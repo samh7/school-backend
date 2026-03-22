@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { MyBaseEntity } from "./0.base_entity";
+import { MyBaseEntity } from "./0.BaseEntity";
 import { AcademicYear } from "./2.AcademicYearEntity";
 import { Stream } from "./5.StreamEntity";
 import { Staff } from "./7.StaffEntity";

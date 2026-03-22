@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
-import { MyBaseEntity } from "./0.base_entity";
+import { MyBaseEntity } from "./0.BaseEntity";
 import { GradeLevel } from "./4.GradeLevelEntity";
 import { Subject } from "./6.SubjectEntity";
 import { SubjectTeacher } from "./9.SubjectTeacherEntity";

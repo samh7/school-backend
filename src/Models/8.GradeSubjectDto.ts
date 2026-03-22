@@ -1,7 +1,9 @@
+import { IntersectionType, PartialType } from "@nestjs/mapped-types";
 import { Expose } from "class-transformer";
-import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNumber, IsString } from "class-validator";
+import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 
-export class CreateGradeSubjectDto {
+export class GradeSubjectDto extends BaseDto {
 	@IsString()
 
 	@Expose()
@@ -20,15 +22,5 @@ export class CreateGradeSubjectDto {
 	PeriodsPerWeek: number;
 }
 
-export class UpdateGradeSubjectDto {
-	@IsString()
-	@IsOptional()
-
-	@Expose()
-	IsExaminable?: boolean;
-	@IsNumber()
-	@IsOptional()
-
-	@Expose()
-	PeriodsPerWeek?: number;
-}
+export class CreateGradeSubjectDto extends IntersectionType(GradeSubjectDto, BaseCreateDto) { }
+export class UpdateGradeSubjectDto extends PartialType(CreateGradeSubjectDto) { }

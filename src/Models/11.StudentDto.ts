@@ -1,7 +1,9 @@
-import { Expose } from "class-transformer";
-import { IsDate, IsOptional, IsString } from "class-validator";
+import { IntersectionType, PartialType } from '@nestjs/mapped-types';
+import { Expose } from 'class-transformer';
+import { IsDate, IsOptional, IsString } from 'class-validator';
+import { BaseCreateDto, BaseDto } from './0.BaseDto';
 
-export class CreateStudentDto {
+export class StudentDto extends BaseDto {
 	@IsString()
 	@Expose()
 	SchoolId: string;
@@ -13,6 +15,9 @@ export class CreateStudentDto {
 	FirstName: string;
 	@IsString()
 	@Expose()
+	MiddleName: string;
+	@IsString()
+	@Expose()
 	LastName: string;
 	@IsDate()
 	@IsOptional()
@@ -21,7 +26,7 @@ export class CreateStudentDto {
 	@IsString()
 	@IsOptional()
 	@Expose()
-	Gender?: string;      // male | female
+	Gender?: string; // male | female
 	@IsString()
 	@IsOptional()
 	@Expose()
@@ -29,31 +34,15 @@ export class CreateStudentDto {
 	@IsDate()
 	@Expose()
 	AdmissionDate: Date;
+
+	@IsString()
+	@Expose()
+	Status: string;
 }
 
-export class UpdateStudentDto {
-	@IsString()
-	@IsOptional()
-	@Expose()
-	FirstName?: string;
-	@IsString()
-	@IsOptional()
-	@Expose()
-	LastName?: string;
-	@IsDate()
-	@IsOptional()
-	@Expose()
-	DateOfBirth?: Date;
-	@IsString()
-	@IsOptional()
-	@Expose()
-	Gender?: string;
-	@IsString()
-	@IsOptional()
-	@Expose()
-	NemisId?: string;
-	@IsString()
-	@IsOptional()
-	@Expose()
-	Status?: string;      // active | transferred | completed | deferred | expelled
-}
+export class CreateStudentDto extends IntersectionType(
+	StudentDto,
+	BaseCreateDto,
+) {}
+
+export class UpdateStudentDto extends PartialType(CreateStudentDto) {}

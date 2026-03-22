@@ -1,7 +1,9 @@
-import { Expose } from "class-transformer";
-import { IsDate, IsOptional, IsString } from "class-validator";
+import { IntersectionType } from '@nestjs/mapped-types';
+import { Expose } from 'class-transformer';
+import { IsDate, IsOptional, IsString } from 'class-validator';
+import { BaseCreateDto, BaseDto } from './0.BaseDto';
 
-export class CreateEnrollmentDto {
+export class EnrollmentDto extends BaseDto {
 	@IsString()
 	@Expose()
 	StudentId: string;
@@ -12,20 +14,26 @@ export class CreateEnrollmentDto {
 	@Expose()
 	AcademicYearId: string;
 	@IsString()
-
 	@Expose()
 	TermId: string;
 	@IsDate()
-
 	@Expose()
 	EnrollmentDate: Date;
+
+	@Expose()
+	@IsString()
+	Status: string;
 }
 
+export class CreateEnrollmentDto extends IntersectionType(
+	EnrollmentDto,
+	BaseCreateDto,
+) {}
 export class UpdateEnrollmentDto {
 	@IsString()
 	@IsOptional()
 	@Expose()
-	Status?: string;      // active | completed | transferred_out | transferred_in
+	Status?: string; // active | completed | transferred_out | transferred_in
 }
 
 export class BulkRolloverDto {

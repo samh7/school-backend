@@ -1,9 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
-import { MyBaseEntity } from "./0.base_entity";
-import { School } from "./1.SchoolEntity";
-import { StudentEnrollment } from "./12.StudentEnrollmentEntity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { MyBaseEntity } from './0.BaseEntity';
+import { School } from './1.SchoolEntity';
+import { StudentEnrollment } from './12.StudentEnrollmentEntity';
 
-@Entity("students")
+@Entity('students')
 export class Student extends MyBaseEntity {
 	@Column()
 	SchoolId: string;
@@ -45,6 +45,4 @@ export class Student extends MyBaseEntity {
 
 	@OneToMany(() => StudentEnrollment, (e) => e.Student)
 	Enrollments: StudentEnrollment[];
-
-
 }

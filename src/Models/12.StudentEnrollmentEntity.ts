@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { MyBaseEntity } from "./0.base_entity";
+import { MyBaseEntity } from "./0.BaseEntity";
 import { Student } from "./11.StudentEntity";
 import { AcademicYear } from "./2.AcademicYearEntity";
 import { Term } from "./3.TermEntity";

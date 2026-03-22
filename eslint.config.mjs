@@ -26,10 +26,11 @@ export default tseslint.config(
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
-    },
-  },
+      "@typescript-eslint/await-thenable": "error",
+      '@typescript-eslint/no-floating-promises': 'error',
+      "prettier/prettier": ["error", { endOfLine: "auto", useTabs: true, tabWidth: 2, bracketSpacing: true }],
+    }
+  }
 );

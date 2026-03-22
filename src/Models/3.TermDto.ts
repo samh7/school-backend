@@ -1,7 +1,9 @@
+import { IntersectionType, PartialType } from "@nestjs/mapped-types";
 import { Expose } from "class-transformer";
-import { IsBoolean, IsDate, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
+import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 
-export class CreateTermDto {
+export class TermDto extends BaseDto {
 	@IsString()
 	@Expose()
 	AcademicYearId: string;
@@ -24,25 +26,6 @@ export class CreateTermDto {
 	IsCurrent?: boolean;
 }
 
-export class UpdateTermDto {
+export class CreateTermDto extends IntersectionType(TermDto, BaseCreateDto) { }
 
-	@IsOptional()
-	@IsNumber()
-	@Expose()
-	TermNumber?: number;
-
-	@IsOptional()
-	@IsDate()
-	@Expose()
-	StartDate?: Date;
-
-	@IsOptional()
-	@IsDate()
-	@Expose()
-	EndDate?: Date;
-
-	@IsOptional()
-	@IsBoolean()
-	@Expose()
-	IsCurrent?: boolean;
-}
+export class UpdateTermDto extends PartialType(CreateTermDto) { }

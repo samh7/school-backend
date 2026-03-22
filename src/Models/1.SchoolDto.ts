@@ -1,82 +1,50 @@
+import { IntersectionType, PartialType } from "@nestjs/mapped-types";
 import { Expose } from "class-transformer";
-import { IsBoolean, IsEnum, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsString } from "class-validator";
+import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 import { SchoolTypeEnum } from "./Types/SchoolType";
 
-export class CreateSchoolDto {
+export class SchoolDto extends BaseDto {
 	@IsString()
 	@Expose()
 	Name: string;
 
 	@IsString()
 	@Expose()
-	@IsOptional()
-	KnecCode?: string;
+	KnecCode: string;
 
 	@IsString()
 	@Expose()
-	@IsOptional()
-	County?: string;
+	Motto: string;
 
 	@IsString()
 	@Expose()
-	@IsOptional()
-	SubCounty?: string;
+	County: string;
 
 	@IsString()
 	@Expose()
-	@IsOptional()
-	Phone?: string;
+	SubCounty: string;
 
 	@IsString()
 	@Expose()
-	@IsOptional()
-	Email?: string;
+	Address: string;
+
+	@IsString()
+	@Expose()
+	Phone: string;
+
+	@IsString()
+	@Expose()
+	Email: string;
+
+	@IsString()
+	@Expose()
+	LogoUrl: string;
 
 	@IsEnum(SchoolTypeEnum)
 	@Expose()
-	@IsOptional()
-	SchoolType?: SchoolTypeEnum; // public | private | mission
+	SchoolType: SchoolTypeEnum;
 }
 
-export class UpdateSchoolDto {
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	Name?: string;
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	KnecCode?: string;
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	County?: string;
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	SubCounty?: string;
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	Phone?: string;
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	Email?: string;
-
-	@IsString()
-	@Expose()
-	@IsOptional()
-	SchoolType?: string;
-
-	@IsBoolean()
-	@Expose()
-	@IsOptional()
-	IsActive?: boolean;
-}
+export class CreateSchoolDto extends IntersectionType(SchoolDto, BaseCreateDto) { }
+export class UpdateSchoolDto extends PartialType(CreateSchoolDto) { }

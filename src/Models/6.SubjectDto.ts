@@ -1,7 +1,9 @@
+import { IntersectionType, PartialType } from "@nestjs/mapped-types";
 import { Expose } from "class-transformer";
-import { IsOptional, IsString } from "class-validator";
+import { IsString } from "class-validator";
+import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 
-export class CreateSubjectDto {
+export class SubjectDto extends BaseDto {
 	@IsString()
 	@Expose()
 	SchoolId: string;
@@ -23,24 +25,5 @@ export class CreateSubjectDto {
 	LevelType: string;    // pre-primary | lower-primary | upper-primary | junior-secondary
 }
 
-export class UpdateSubjectDto {
-	@IsString()
-	@IsOptional()
-	@Expose()
-	Name?: string;
-
-	@IsString()
-	@IsOptional()
-	@Expose()
-	Code?: string;
-
-	@IsString()
-	@IsOptional()
-	@Expose()
-	CbcLearningArea?: string;
-
-	@IsString()
-	@IsOptional()
-	@Expose()
-	LevelType?: string;
-}
+export class CreateSubjectDto extends IntersectionType(SubjectDto, BaseCreateDto) { }
+export class UpdateSubjectDto extends PartialType(CreateSubjectDto) { }

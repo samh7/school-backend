@@ -1,6 +1,6 @@
 import { Expose, Type } from "class-transformer";
 import { IsBoolean, IsDate, IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
-import { StaffDto } from "./7.StaffDto";
+import { CreateStaffDto } from "./7.StaffDto";
 import { RoleEnum } from "./Types/RoleEnum";
 
 export class ChangePasswordDto {
@@ -41,10 +41,8 @@ export class LoginDto {
 export class UserAccountDto {
 	@IsString()
 	@Expose()
-
 	Id: string;
 	@IsString()
-
 	@Expose()
 
 
@@ -64,8 +62,8 @@ export class UserAccountDto {
 	@Expose()
 	@IsOptional()
 	@ValidateNested()
-	@Type(() => StaffDto)
-	Staff?: StaffDto;
+	@Type(() => CreateStaffDto)
+	Staff?: CreateStaffDto;
 
 	@Expose()
 	@IsString()

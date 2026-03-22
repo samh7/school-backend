@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany } from "typeorm";
-import { MyBaseEntity } from "./0.base_entity";
+import { MyBaseEntity } from "./0.BaseEntity";
 import { Student } from "./11.StudentEntity";
 import { AcademicYear } from "./2.AcademicYearEntity";
 import { GradeLevel } from "./4.GradeLevelEntity";

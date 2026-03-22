@@ -1,9 +1,13 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { School } from "../Models/1.SchoolEntity";
-import { CreateStudentDto, UpdateStudentDto } from "../Models/11.StudentDto";
-import { Student } from "../Models/11.StudentEntity";
+import {
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { School } from '../Models/1.SchoolEntity';
+import { CreateStudentDto, UpdateStudentDto } from '../Models/11.StudentDto';
+import { Student } from '../Models/11.StudentEntity';
 
 @Injectable()
 export class StudentService {
@@ -12,7 +16,7 @@ export class StudentService {
 		private readonly studentRepo: Repository<Student>,
 		@InjectRepository(School)
 		private readonly schoolRepo: Repository<School>,
-	) { }
+	) {}
 
 	async findAll(schoolId: string): Promise<Student[]> {
 		return this.studentRepo.find({
@@ -42,7 +46,10 @@ export class StudentService {
 			where: { AdmissionNumber: admissionNumber },
 			relations: ['School'],
 		});
-		if (!student) throw new NotFoundException(`Admission number ${admissionNumber} not found`);
+		if (!student)
+			throw new NotFoundException(
+				`Admission number ${admissionNumber} not found`,
+			);
 		return student;
 	}
 
@@ -58,13 +65,19 @@ export class StudentService {
 	}
 
 	async create(dto: CreateStudentDto): Promise<Student> {
-		const school = await this.schoolRepo.findOne({ where: { Id: dto.SchoolId } });
-		if (!school) throw new NotFoundException(`School ${dto.SchoolId} not found`);
+		const school = await this.schoolRepo.findOne({
+			where: { Id: dto.SchoolId },
+		});
+		if (!school)
+			throw new NotFoundException(`School ${dto.SchoolId} not found`);
 
 		const duplicate = await this.studentRepo.findOne({
 			where: { AdmissionNumber: dto.AdmissionNumber },
 		});
-		if (duplicate) throw new ConflictException(`Admission number ${dto.AdmissionNumber} already exists`);
+		if (duplicate)
+			throw new ConflictException(
+				`Admission number ${dto.AdmissionNumber} already exists`,
+			);
 
 		const student = this.studentRepo.create({ School: school, ...dto });
 		return this.studentRepo.save(student);

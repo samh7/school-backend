@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
-import { MyBaseEntity } from "./0.base_entity";
+import { MyBaseEntity } from "./0.BaseEntity";
 import { Staff } from "./7.StaffEntity";
 import { RoleEnum } from "./Types/RoleEnum";
 

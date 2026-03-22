@@ -1,7 +1,9 @@
+import { IntersectionType, PartialType } from "@nestjs/mapped-types";
 import { Expose } from "class-transformer";
 import { IsNumber, IsOptional, IsString } from "class-validator";
+import { BaseCreateDto, BaseDto } from "./0.BaseDto";
 
-export class CreateStreamDto {
+export class StreamDto extends BaseDto {
 	@Expose()
 	@IsString()
 	GradeLevelId: string;
@@ -16,14 +18,6 @@ export class CreateStreamDto {
 	Capacity?: number;
 }
 
-export class UpdateStreamDto {
-	@Expose()
-	@IsString()
-	@IsOptional()
-	Name?: string;
+export class CreateStreamDto extends IntersectionType(StreamDto, BaseCreateDto) { }
 
-	@Expose()
-	@IsString()
-	@IsOptional()
-	Capacity?: number;
-}
+export class UpdateStreamDto extends PartialType(CreateStreamDto) { }
