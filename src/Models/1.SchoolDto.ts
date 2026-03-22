@@ -1,7 +1,8 @@
 import { OmitType, PartialType } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
-import { IsEnum, IsString } from "class-validator";
+import { Expose, Type } from "class-transformer";
+import { IsEnum, IsString, ValidateNested } from "class-validator";
 import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
+import { CreateStaffWithoutSchoolDto } from "./7.StaffDto";
 import { SchoolTypeEnum } from "./Types/SchoolType";
 
 export class SchoolDto extends BaseDto {
@@ -48,3 +49,15 @@ export class SchoolDto extends BaseDto {
 
 export class CreateSchoolDto extends OmitType(SchoolDto, BASE_DTO_KEYS) {}
 export class UpdateSchoolDto extends PartialType(CreateSchoolDto) {}
+
+export class CreateWithSchoolAdminAccountDto {
+	@ValidateNested()
+	@Type(() => CreateSchoolDto)
+	@Expose()
+	CreateSchoolDto: CreateSchoolDto;
+
+	@ValidateNested()
+	@Type(() => CreateStaffWithoutSchoolDto)
+	@Expose()
+	CreateStaffDto: CreateStaffWithoutSchoolDto;
+}

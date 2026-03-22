@@ -73,7 +73,7 @@ export class StaffService {
 
 	async findByRole(schoolId: string, role: string): Promise<Staff[]> {
 		return this.staffRepo.find({
-			where: { School: { Id: schoolId }, Role: role, Status: "active" },
+			where: { SchoolId: schoolId, Role: role },
 			order: { LastName: "ASC" },
 		});
 	}

@@ -1,6 +1,6 @@
 import { OmitType, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsBoolean, IsDate, IsString } from "class-validator";
+import { IsBoolean, IsDateString, IsString } from "class-validator";
 import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 
 export class AcademicYearDto extends BaseDto {
@@ -12,11 +12,11 @@ export class AcademicYearDto extends BaseDto {
 	@Expose()
 	Label: string;
 
-	@IsDate()
+	@IsDateString()
 	@Expose()
 	StartDate: Date;
 
-	@IsDate()
+	@IsDateString()
 	@Expose()
 	EndDate: Date;
 

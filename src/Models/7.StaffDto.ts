@@ -1,6 +1,6 @@
 import { OmitType, PartialType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsEnum, IsOptional, IsString } from "class-validator";
+import { IsDateString, IsEnum, IsOptional, IsString } from "class-validator";
 import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 import { RoleEnum } from "./Types/RoleEnum";
 
@@ -28,9 +28,21 @@ export class StaffDto extends BaseDto {
 	@IsOptional() //STAFFrOL // teacher | principal | bursar | hod | admin
 	@Expose()
 	TscNumber?: string;
+
+	@IsDateString()
+	@Expose()
+	JoinDate: Date;
+
+	@IsString()
+	@Expose()
+	Status: string;
 }
 
 export class CreateStaffDto extends OmitType(StaffDto, BASE_DTO_KEYS) {}
+export class CreateStaffWithoutSchoolDto extends OmitType(CreateStaffDto, [
+	"SchoolId",
+] as const) {}
+
 export class UpdateStaffDto extends PartialType(CreateStaffDto) {}
 
 // teachers

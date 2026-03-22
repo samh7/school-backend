@@ -40,7 +40,7 @@ export class SchoolService {
 					`KNEC code ${dto.KnecCode} is already registered`,
 				);
 		}
-		const school = this.schoolRepo.create({ ...dto });
+		const school = this.schoolRepo.create(dto);
 		return this.schoolRepo.save(school);
 	}
 

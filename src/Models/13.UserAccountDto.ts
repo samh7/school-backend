@@ -1,7 +1,7 @@
 import { Expose, Type } from "class-transformer";
 import {
 	IsBoolean,
-	IsDate,
+	IsDateString,
 	IsEnum,
 	IsOptional,
 	IsString,
@@ -62,7 +62,7 @@ export class UserAccountDto {
 	@IsBoolean()
 	IsActive: boolean;
 	@Expose()
-	@IsDate()
+	@IsDateString()
 	LastLogin: Date;
 
 	@Expose()
