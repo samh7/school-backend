@@ -4,12 +4,14 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { GradeSubject } from "../models/grade-subject.entity";
 import { StudentEnrollment } from "../models/student-enrollment.entity";
 import {
 	AssignSubjectDto,
 	BulkAssignSubjectsDto,
+	StudentSubjectAssignmentDto,
 } from "../models/student-subject-assignment.dto";
 import { StudentSubjectAssignment } from "../models/student-subject-assignment.entity";
 import { Student } from "../models/student.entity";
@@ -31,8 +33,8 @@ export class StudentSubjectAssignmentService {
 
 	async findByEnrollment(
 		enrollmentId: string,
-	): Promise<StudentSubjectAssignment[]> {
-		return this.assignmentRepo.find({
+	): Promise<StudentSubjectAssignmentDto[]> {
+		const studentSubjectAssignment = await this.assignmentRepo.find({
 			where: { enrollment: { id: enrollmentId } },
 			relations: [
 				"gradeSubject",
@@ -41,12 +43,19 @@ export class StudentSubjectAssignmentService {
 				"gradeSubject.subjectTeachers.staff",
 			],
 		});
+		return plainToInstance(
+			StudentSubjectAssignmentDto,
+			studentSubjectAssignment,
+			{ excludeExtraneousValues: true },
+		);
 	}
 
 	// ── Find all subject assignments across all terms for a student ─────────────
 
-	async findByStudent(studentId: string): Promise<StudentSubjectAssignment[]> {
-		return this.assignmentRepo.find({
+	async findByStudent(
+		studentId: string,
+	): Promise<StudentSubjectAssignmentDto[]> {
+		const ssa = await this.assignmentRepo.find({
 			where: { student: { id: studentId } },
 			relations: [
 				"enrollment",
@@ -56,11 +65,14 @@ export class StudentSubjectAssignmentService {
 				"gradeSubject.subject",
 			],
 		});
+		return plainToInstance(StudentSubjectAssignmentDto, ssa, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	// ── Assign a single subject to a student enrollment ─────────────────────────
 
-	async assign(dto: AssignSubjectDto): Promise<StudentSubjectAssignment> {
+	async assign(dto: AssignSubjectDto): Promise<StudentSubjectAssignmentDto> {
 		const enrollment = await this.enrollmentRepo.findOne({
 			where: { id: dto.enrollmentId },
 			relations: ["stream", "stream.gradeLevel"],
@@ -107,7 +119,10 @@ export class StudentSubjectAssignmentService {
 			student: student,
 			gradeSubject: gradeSubject,
 		});
-		return this.assignmentRepo.save(assignment);
+		const ssa = await this.assignmentRepo.save(assignment);
+		return plainToInstance(StudentSubjectAssignmentDto, ssa, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	// ── Bulk assign all mandatory subjects for a grade level ────────────────────

@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { MyBaseEntity } from "./base.entity";
-import { Student } from "./student.entity";
-import { StudentEnrollment } from "./student-enrollment.entity";
 import { GradeSubject } from "./grade-subject.entity";
+import { StudentEnrollment } from "./student-enrollment.entity";
+import { Student } from "./student.entity";
 
 @Entity("student-subject-assignments")
 export class StudentSubjectAssignment extends MyBaseEntity {

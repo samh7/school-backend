@@ -46,7 +46,9 @@ export class UserAccountService {
 		account.lastLogin = new Date();
 		await this.userAccountRepo.save(account);
 
-		return account;
+		return plainToInstance(UserAccountDto, account, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async _updatePassword(userId: string, newPasswordHash: string) {
@@ -152,9 +154,12 @@ export class UserAccountService {
 		return { TempPassword: tempPassword };
 	}
 
-	async toggleActive(id: string): Promise<UserAccount> {
+	async toggleActive(id: string): Promise<UserAccountDto> {
 		const account = await this.findOne(id);
 		account.isActive = !account.isActive;
-		return this.userAccountRepo.save(account);
+		const userAccount = await this.userAccountRepo.save(account);
+		return plainToInstance(UserAccountDto, userAccount, {
+			excludeExtraneousValues: true,
+		});
 	}
 }

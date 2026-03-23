@@ -1,6 +1,23 @@
 import { Expose } from "class-transformer";
 import { IsArray, IsBoolean, IsOptional, IsString } from "class-validator";
 
+export class StudentSubjectAssignmentDto {
+	@IsBoolean()
+	@Expose()
+	isOptional: boolean;
+
+	@Expose()
+	@IsString()
+	enrollmentId: string;
+
+	@Expose()
+	@IsString()
+	studentId: string;
+
+	@Expose()
+	@IsString()
+	gradeSubjectId: string;
+}
 export class AssignSubjectDto {
 	@Expose()
 	@IsString()

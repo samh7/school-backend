@@ -8,6 +8,7 @@ import * as bcrypt from "bcrypt";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { AcademicYear } from "../models/academic-year.entity";
+import { ClassTeacherDto } from "../models/class-teacher.dto";
 import { ClassTeacher } from "../models/class-teacher.entity";
 import { GradeSubject } from "../models/grade-subject.entity";
 import { School } from "../models/school.entity";
@@ -21,6 +22,7 @@ import {
 } from "../models/staff.dto";
 import { Staff } from "../models/staff.entity";
 import { Stream } from "../models/stream.entity";
+import { SubjectTeacherDto } from "../models/subject-teacher.dto";
 import { SubjectTeacher } from "../models/subject-teacher.entity";
 import { UserAccount } from "../models/user-account.entity";
 
@@ -154,7 +156,9 @@ export class StaffService {
 
 	// ── Class teacher assignment ──────────────────────────────────────────────
 
-	async assignClassTeacher(dto: AssignClassTeacherDto): Promise<ClassTeacher> {
+	async assignClassTeacher(
+		dto: AssignClassTeacherDto,
+	): Promise<ClassTeacherDto> {
 		const staff = await this.staffRepo.findOne({ where: { id: dto.staffId } });
 		if (!staff) throw new NotFoundException(`Staff ${dto.staffId} not found`);
 
@@ -190,7 +194,10 @@ export class StaffService {
 			stream,
 			academicYear,
 		});
-		return this.classTeacherRepo.save(assignment);
+		const classTeacher = await this.classTeacherRepo.save(assignment);
+		return plainToInstance(ClassTeacherDto, classTeacher, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async removeClassTeacher(id: string): Promise<void> {
@@ -204,7 +211,7 @@ export class StaffService {
 
 	async assignSubjectTeacher(
 		dto: AssignSubjectTeacherDto,
-	): Promise<SubjectTeacher> {
+	): Promise<SubjectTeacherDto> {
 		const staff = await this.staffRepo.findOne({ where: { id: dto.staffId } });
 		if (!staff) throw new NotFoundException(`Staff ${dto.staffId} not found`);
 
@@ -250,7 +257,10 @@ export class StaffService {
 			stream,
 			academicYear,
 		});
-		return this.subjectTeacherRepo.save(assignment);
+		const subjectTeacher = await this.subjectTeacherRepo.save(assignment);
+		return plainToInstance(SubjectTeacherDto, subjectTeacher, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async removeSubjectTeacher(id: string): Promise<void> {
