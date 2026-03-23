@@ -7,13 +7,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { GradeLevel } from "../models/grade-level.entity";
-import { Subject } from "../models/subject.entity";
 import {
 	CreateGradeSubjectDto,
 	GradeSubjectDto,
 	UpdateGradeSubjectDto,
 } from "../models/grade-subject.dto";
 import { GradeSubject } from "../models/grade-subject.entity";
+import { Subject } from "../models/subject.entity";
 
 @Injectable()
 export class GradeSubjectService {

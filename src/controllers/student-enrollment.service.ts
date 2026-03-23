@@ -6,7 +6,8 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
-import { Student } from "../models/student.entity";
+import { AcademicYear } from "../models/academic-year.entity";
+import { Stream } from "../models/stream.entity";
 import {
 	BulkRolloverDto,
 	CreateEnrollmentDto,
@@ -14,9 +15,8 @@ import {
 	UpdateEnrollmentDto,
 } from "../models/student-enrollment.dto";
 import { StudentEnrollment } from "../models/student-enrollment.entity";
-import { AcademicYear } from "../models/academic-year.entity";
+import { Student } from "../models/student.entity";
 import { Term } from "../models/term.entity";
-import { Stream } from "../models/stream.entity";
 
 @Injectable()
 export class StudentEnrollmentService {

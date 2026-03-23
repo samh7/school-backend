@@ -6,13 +6,13 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
-import { School } from "../models/school.entity";
 import {
 	AcademicYearDto,
 	CreateAcademicYearDto,
 	UpdateAcademicYearDto,
 } from "../models/academic-year.dto";
 import { AcademicYear } from "../models/academic-year.entity";
+import { School } from "../models/school.entity";
 
 @Injectable()
 export class AcademicYearService {

@@ -48,6 +48,14 @@ export class StreamService {
 				"subjectTeachers.staff",
 				"subjectTeachers.gradeSubject",
 				"subjectTeachers.gradeSubject.subject",
+				"gradeLevel",
+				"classTeachers",
+				"classTeachers.staff",
+				"classTeachers.academicYear",
+				"subjectTeachers",
+				"subjectTeachers.staff",
+				"subjectTeachers.gradeSubject",
+				"subjectTeachers.gradeSubject.subject",
 			],
 		});
 		if (!stream) throw new NotFoundException(`Stream ${id} not found`);

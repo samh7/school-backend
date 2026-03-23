@@ -46,9 +46,7 @@ export class UserAccountService {
 		account.lastLogin = new Date();
 		await this.userAccountRepo.save(account);
 
-		return plainToInstance(UserAccountDto, account, {
-			excludeExtraneousValues: true,
-		});
+		return account;
 	}
 
 	async _updatePassword(userId: string, newPasswordHash: string) {

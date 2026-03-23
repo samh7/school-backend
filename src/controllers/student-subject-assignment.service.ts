@@ -5,14 +5,14 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Student } from "../models/student.entity";
+import { GradeSubject } from "../models/grade-subject.entity";
 import { StudentEnrollment } from "../models/student-enrollment.entity";
 import {
 	AssignSubjectDto,
 	BulkAssignSubjectsDto,
 } from "../models/student-subject-assignment.dto";
 import { StudentSubjectAssignment } from "../models/student-subject-assignment.entity";
-import { GradeSubject } from "../models/grade-subject.entity";
+import { Student } from "../models/student.entity";
 
 @Injectable()
 export class StudentSubjectAssignmentService {
