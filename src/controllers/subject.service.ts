@@ -4,9 +4,14 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { School } from "../models/school.entity";
-import { CreateSubjectDto, UpdateSubjectDto } from "../models/subject.dto";
+import {
+	CreateSubjectDto,
+	SubjectDto,
+	UpdateSubjectDto,
+} from "../models/subject.dto";
 import { Subject } from "../models/subject.entity";
 
 @Injectable()
@@ -18,30 +23,29 @@ export class SubjectService {
 		private readonly schoolRepo: Repository<School>,
 	) {}
 
-	async findAll(schoolId: string): Promise<Subject[]> {
-		return this.subjectRepo.find({
-			where: { school: { id: schoolId } },
-			order: { name: "ASC" },
-		});
+	async findAll(schoolId: string): Promise<SubjectDto[]> {
+		return plainToInstance(
+			SubjectDto,
+			await this.subjectRepo.find({
+				where: { school: { id: schoolId } },
+				order: { name: "ASC" },
+			}),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	// async findByLevel(schoolId: string, levelType: string): Promise<Subject[]> {
-	// 	return this.subjectRepo.find({
-	// 		where: { School: { Id: schoolId }, LevelType: levelType },
-	// 		order: { Name: 'ASC' },
-	// 	});
-	// }
-
-	async findOne(id: string): Promise<Subject> {
+	async findOne(id: string): Promise<SubjectDto> {
 		const subject = await this.subjectRepo.findOne({
-			where: { id: id },
+			where: { id },
 			relations: ["school", "gradeSubjects", "gradeSubjects.gradeLevel"],
 		});
 		if (!subject) throw new NotFoundException(`Subject ${id} not found`);
-		return subject;
+		return plainToInstance(SubjectDto, subject, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async create(dto: CreateSubjectDto): Promise<Subject> {
+	async create(dto: CreateSubjectDto): Promise<SubjectDto> {
 		const school = await this.schoolRepo.findOne({
 			where: { id: dto.schoolId },
 		});
@@ -55,17 +59,26 @@ export class SubjectService {
 			throw new ConflictException(`Subject code "${dto.code}" already exists`);
 
 		const subject = this.subjectRepo.create({ ...dto, school: school });
-		return this.subjectRepo.save(subject);
+		return plainToInstance(SubjectDto, await this.subjectRepo.save(subject), {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async update(id: string, dto: UpdateSubjectDto): Promise<Subject> {
-		const subject = await this.findOne(id);
+	async update(id: string, dto: UpdateSubjectDto): Promise<SubjectDto> {
+		const subject = await this.subjectRepo.findOne({
+			where: { id },
+			relations: ["school", "gradeSubjects", "gradeSubjects.gradeLevel"],
+		});
+		if (!subject) throw new NotFoundException(`Subject ${id} not found`);
 		Object.assign(subject, dto);
-		return this.subjectRepo.save(subject);
+		return plainToInstance(SubjectDto, await this.subjectRepo.save(subject), {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async remove(id: string): Promise<void> {
-		const subject = await this.findOne(id);
+		const subject = await this.subjectRepo.findOne({ where: { id } });
+		if (!subject) throw new NotFoundException(`Subject ${id} not found`);
 		await this.subjectRepo.remove(subject);
 	}
 }

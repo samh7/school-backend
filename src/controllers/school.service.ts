@@ -4,8 +4,13 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
-import { CreateSchoolDto, UpdateSchoolDto } from "../models/school.dto";
+import {
+	CreateSchoolDto,
+	SchoolDto,
+	UpdateSchoolDto,
+} from "../models/school.dto";
 import { School } from "../models/school.entity";
 
 @Injectable()
@@ -15,22 +20,26 @@ export class SchoolService {
 		private readonly schoolRepo: Repository<School>,
 	) {}
 
-	async findAll(): Promise<School[]> {
-		return this.schoolRepo.find({
-			order: { name: "ASC" },
-		});
+	async findAll(): Promise<SchoolDto[]> {
+		return plainToInstance(
+			SchoolDto,
+			await this.schoolRepo.find({ order: { name: "ASC" } }),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async findOne(id: string): Promise<School> {
+	async findOne(id: string): Promise<SchoolDto> {
 		const school = await this.schoolRepo.findOne({
-			where: { id: id },
+			where: { id },
 			relations: ["academicYears", "gradeLevels", "subjects"],
 		});
 		if (!school) throw new NotFoundException(`School ${id} not found`);
-		return school;
+		return plainToInstance(SchoolDto, school, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async create(dto: CreateSchoolDto): Promise<School> {
+	async create(dto: CreateSchoolDto): Promise<SchoolDto> {
 		if (dto.knecCode) {
 			const existing = await this.schoolRepo.findOne({
 				where: { knecCode: dto.knecCode },
@@ -41,17 +50,26 @@ export class SchoolService {
 				);
 		}
 		const school = this.schoolRepo.create(dto);
-		return this.schoolRepo.save(school);
+		return plainToInstance(SchoolDto, await this.schoolRepo.save(school), {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async update(id: string, dto: UpdateSchoolDto): Promise<School> {
-		const school = await this.findOne(id);
+	async update(id: string, dto: UpdateSchoolDto): Promise<SchoolDto> {
+		const school = await this.schoolRepo.findOne({
+			where: { id },
+			relations: ["academicYears", "gradeLevels", "subjects"],
+		});
+		if (!school) throw new NotFoundException(`School ${id} not found`);
 		Object.assign(school, dto);
-		return this.schoolRepo.save(school);
+		return plainToInstance(SchoolDto, await this.schoolRepo.save(school), {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async remove(id: string): Promise<void> {
-		const school = await this.findOne(id);
+		const school = await this.schoolRepo.findOne({ where: { id } });
+		if (!school) throw new NotFoundException(`School ${id} not found`);
 		await this.schoolRepo.remove(school);
 	}
 }

@@ -4,9 +4,14 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { GradeLevel } from "../models/grade-level.entity";
-import { CreateStreamDto, UpdateStreamDto } from "../models/stream.dto";
+import {
+	CreateStreamDto,
+	StreamDto,
+	UpdateStreamDto,
+} from "../models/stream.dto";
 import { Stream } from "../models/stream.entity";
 import { StudentEnrollment } from "../models/student-enrollment.entity";
 
@@ -19,17 +24,21 @@ export class StreamService {
 		private readonly gradeLevelRepo: Repository<GradeLevel>,
 	) {}
 
-	async findAll(gradeLevelId: string): Promise<Stream[]> {
-		return this.streamRepo.find({
-			where: { gradeLevel: { id: gradeLevelId } },
-			relations: ["gradeLevel"],
-			order: { name: "ASC" },
-		});
+	async findAll(gradeLevelId: string): Promise<StreamDto[]> {
+		return plainToInstance(
+			StreamDto,
+			await this.streamRepo.find({
+				where: { gradeLevel: { id: gradeLevelId } },
+				relations: ["gradeLevel"],
+				order: { name: "ASC" },
+			}),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async findOne(id: string): Promise<Stream> {
+	async findOne(id: string): Promise<StreamDto> {
 		const stream = await this.streamRepo.findOne({
-			where: { id: id },
+			where: { id },
 			relations: [
 				"gradeLevel",
 				"classTeachers",
@@ -42,7 +51,9 @@ export class StreamService {
 			],
 		});
 		if (!stream) throw new NotFoundException(`Stream ${id} not found`);
-		return stream;
+		return plainToInstance(StreamDto, stream, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async countEnrollments(streamId: string, termId: string): Promise<number> {
@@ -51,7 +62,7 @@ export class StreamService {
 		});
 	}
 
-	async create(dto: CreateStreamDto): Promise<Stream> {
+	async create(dto: CreateStreamDto): Promise<StreamDto> {
 		const gradeLevel = await this.gradeLevelRepo.findOne({
 			where: { id: dto.gradeLevelId },
 		});
@@ -71,17 +82,26 @@ export class StreamService {
 			capacity: dto.capacity,
 			gradeLevel: gradeLevel,
 		});
-		return this.streamRepo.save(stream);
+		return plainToInstance(StreamDto, await this.streamRepo.save(stream), {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async update(id: string, dto: UpdateStreamDto): Promise<Stream> {
-		const stream = await this.findOne(id);
+	async update(id: string, dto: UpdateStreamDto): Promise<StreamDto> {
+		const stream = await this.streamRepo.findOne({
+			where: { id },
+			relations: ["gradeLevel"],
+		});
+		if (!stream) throw new NotFoundException(`Stream ${id} not found`);
 		Object.assign(stream, dto);
-		return this.streamRepo.save(stream);
+		return plainToInstance(StreamDto, await this.streamRepo.save(stream), {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async remove(id: string): Promise<void> {
-		const stream = await this.findOne(id);
+		const stream = await this.streamRepo.findOne({ where: { id } });
+		if (!stream) throw new NotFoundException(`Stream ${id} not found`);
 		await this.streamRepo.remove(stream);
 	}
 }

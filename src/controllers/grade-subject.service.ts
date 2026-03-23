@@ -4,14 +4,17 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { GradeLevel } from "../models/grade-level.entity";
 import { Subject } from "../models/subject.entity";
 import {
 	CreateGradeSubjectDto,
+	GradeSubjectDto,
 	UpdateGradeSubjectDto,
 } from "../models/grade-subject.dto";
 import { GradeSubject } from "../models/grade-subject.entity";
+
 @Injectable()
 export class GradeSubjectService {
 	constructor(
@@ -23,23 +26,35 @@ export class GradeSubjectService {
 		private readonly subjectRepo: Repository<Subject>,
 	) {}
 
-	async findAll(gradeLevelId: string): Promise<GradeSubject[]> {
-		return this.gradeSubjectRepo.find({
-			where: { gradeLevel: { id: gradeLevelId } },
-			relations: ["subject", "gradeLevel"],
-		});
+	async findAll(gradeLevelId: string): Promise<GradeSubjectDto[]> {
+		return plainToInstance(
+			GradeSubjectDto,
+			await this.gradeSubjectRepo.find({
+				where: { gradeLevel: { id: gradeLevelId } },
+				relations: ["subject", "gradeLevel"],
+			}),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async findOne(id: string): Promise<GradeSubject> {
+	async findOne(id: string): Promise<GradeSubjectDto> {
 		const gs = await this.gradeSubjectRepo.findOne({
-			where: { id: id },
-			relations: ["gradeLevel", "subject", "subjectTeachers", "subjectTeachers.staff", "subjectTeachers.stream"],
+			where: { id },
+			relations: [
+				"gradeLevel",
+				"subject",
+				"subjectTeachers",
+				"subjectTeachers.staff",
+				"subjectTeachers.stream",
+			],
 		});
 		if (!gs) throw new NotFoundException(`Grade subject ${id} not found`);
-		return gs;
+		return plainToInstance(GradeSubjectDto, gs, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async create(dto: CreateGradeSubjectDto): Promise<GradeSubject> {
+	async create(dto: CreateGradeSubjectDto): Promise<GradeSubjectDto> {
 		const gradeLevel = await this.gradeLevelRepo.findOne({
 			where: { id: dto.gradeLevelId },
 		});
@@ -69,17 +84,39 @@ export class GradeSubjectService {
 			gradeLevel: gradeLevel,
 			subject: subject,
 		});
-		return this.gradeSubjectRepo.save(gs);
+		return plainToInstance(
+			GradeSubjectDto,
+			await this.gradeSubjectRepo.save(gs),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async update(id: string, dto: UpdateGradeSubjectDto): Promise<GradeSubject> {
-		const gs = await this.findOne(id);
+	async update(
+		id: string,
+		dto: UpdateGradeSubjectDto,
+	): Promise<GradeSubjectDto> {
+		const gs = await this.gradeSubjectRepo.findOne({
+			where: { id },
+			relations: [
+				"gradeLevel",
+				"subject",
+				"subjectTeachers",
+				"subjectTeachers.staff",
+				"subjectTeachers.stream",
+			],
+		});
+		if (!gs) throw new NotFoundException(`Grade subject ${id} not found`);
 		Object.assign(gs, dto);
-		return this.gradeSubjectRepo.save(gs);
+		return plainToInstance(
+			GradeSubjectDto,
+			await this.gradeSubjectRepo.save(gs),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
 	async remove(id: string): Promise<void> {
-		const gs = await this.findOne(id);
+		const gs = await this.gradeSubjectRepo.findOne({ where: { id } });
+		if (!gs) throw new NotFoundException(`Grade subject ${id} not found`);
 		await this.gradeSubjectRepo.remove(gs);
 	}
 }

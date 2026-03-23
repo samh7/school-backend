@@ -4,9 +4,11 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { School } from "../models/school.entity";
 import {
+	AcademicYearDto,
 	CreateAcademicYearDto,
 	UpdateAcademicYearDto,
 } from "../models/academic-year.dto";
@@ -21,24 +23,29 @@ export class AcademicYearService {
 		private readonly schoolRepo: Repository<School>,
 	) {}
 
-	async findAll(schoolId: string): Promise<AcademicYear[]> {
-		return this.academicYearRepo.find({
+	async findAll(schoolId: string): Promise<AcademicYearDto[]> {
+		const years = await this.academicYearRepo.find({
 			where: { school: { id: schoolId } },
 			relations: ["terms"],
 			order: { startDate: "DESC" },
 		});
+		return plainToInstance(AcademicYearDto, years, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async findOne(id: string): Promise<AcademicYear> {
+	async findOne(id: string): Promise<AcademicYearDto> {
 		const year = await this.academicYearRepo.findOne({
-			where: { id: id },
+			where: { id },
 			relations: ["school", "terms"],
 		});
 		if (!year) throw new NotFoundException(`Academic year ${id} not found`);
-		return year;
+		return plainToInstance(AcademicYearDto, year, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async findCurrent(schoolId: string): Promise<AcademicYear> {
+	async findCurrent(schoolId: string): Promise<AcademicYearDto> {
 		const year = await this.academicYearRepo.findOne({
 			where: { school: { id: schoolId }, isCurrent: true },
 			relations: ["terms"],
@@ -47,10 +54,12 @@ export class AcademicYearService {
 			throw new NotFoundException(
 				`No current academic year found for school ${schoolId}`,
 			);
-		return year;
+		return plainToInstance(AcademicYearDto, year, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async create(dto: CreateAcademicYearDto): Promise<AcademicYear> {
+	async create(dto: CreateAcademicYearDto): Promise<AcademicYearDto> {
 		const school = await this.schoolRepo.findOne({
 			where: { id: dto.schoolId },
 		});
@@ -74,25 +83,49 @@ export class AcademicYearService {
 			isCurrent: dto.isCurrent ?? false,
 			school: school,
 		});
-		return this.academicYearRepo.save(year);
+		return plainToInstance(
+			AcademicYearDto,
+			await this.academicYearRepo.save(year),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async update(id: string, dto: UpdateAcademicYearDto): Promise<AcademicYear> {
-		const year = await this.findOne(id);
+	async update(
+		id: string,
+		dto: UpdateAcademicYearDto,
+	): Promise<AcademicYearDto> {
+		const year = await this.academicYearRepo.findOne({
+			where: { id },
+			relations: ["school", "terms"],
+		});
+		if (!year) throw new NotFoundException(`Academic year ${id} not found`);
 		if (dto.isCurrent) await this.clearCurrent(year.school.id);
 		Object.assign(year, dto);
-		return this.academicYearRepo.save(year);
+		return plainToInstance(
+			AcademicYearDto,
+			await this.academicYearRepo.save(year),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async setCurrent(id: string): Promise<AcademicYear> {
-		const year = await this.findOne(id);
+	async setCurrent(id: string): Promise<AcademicYearDto> {
+		const year = await this.academicYearRepo.findOne({
+			where: { id },
+			relations: ["school", "terms"],
+		});
+		if (!year) throw new NotFoundException(`Academic year ${id} not found`);
 		await this.clearCurrent(year.school.id);
 		year.isCurrent = true;
-		return this.academicYearRepo.save(year);
+		return plainToInstance(
+			AcademicYearDto,
+			await this.academicYearRepo.save(year),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
 	async remove(id: string): Promise<void> {
-		const year = await this.findOne(id);
+		const year = await this.academicYearRepo.findOne({ where: { id } });
+		if (!year) throw new NotFoundException(`Academic year ${id} not found`);
 		if (year.isCurrent)
 			throw new ConflictException("Cannot delete the current academic year");
 		await this.academicYearRepo.remove(year);

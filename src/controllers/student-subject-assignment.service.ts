@@ -34,7 +34,12 @@ export class StudentSubjectAssignmentService {
 	): Promise<StudentSubjectAssignment[]> {
 		return this.assignmentRepo.find({
 			where: { enrollment: { id: enrollmentId } },
-			relations: ["gradeSubject", "gradeSubject.subject", "gradeSubject.subjectTeachers", "gradeSubject.subjectTeachers.staff"],
+			relations: [
+				"gradeSubject",
+				"gradeSubject.subject",
+				"gradeSubject.subjectTeachers",
+				"gradeSubject.subjectTeachers.staff",
+			],
 		});
 	}
 
@@ -43,7 +48,13 @@ export class StudentSubjectAssignmentService {
 	async findByStudent(studentId: string): Promise<StudentSubjectAssignment[]> {
 		return this.assignmentRepo.find({
 			where: { student: { id: studentId } },
-			relations: ["enrollment", "enrollment.term", "enrollment.academicYear", "gradeSubject", "gradeSubject.subject"],
+			relations: [
+				"enrollment",
+				"enrollment.term",
+				"enrollment.academicYear",
+				"gradeSubject",
+				"gradeSubject.subject",
+			],
 		});
 	}
 

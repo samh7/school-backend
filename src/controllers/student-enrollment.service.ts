@@ -4,11 +4,13 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { Student } from "../models/student.entity";
 import {
 	BulkRolloverDto,
 	CreateEnrollmentDto,
+	EnrollmentDto,
 	UpdateEnrollmentDto,
 } from "../models/student-enrollment.dto";
 import { StudentEnrollment } from "../models/student-enrollment.entity";
@@ -31,30 +33,38 @@ export class StudentEnrollmentService {
 		private readonly termRepo: Repository<Term>,
 	) {}
 
-	async findByStudent(studentId: string): Promise<StudentEnrollment[]> {
-		return this.enrollmentRepo.find({
-			where: { student: { id: studentId } },
-			relations: ["stream", "stream.gradeLevel", "academicYear", "term"],
-			order: { enrollmentDate: "DESC" },
-		});
+	async findByStudent(studentId: string): Promise<EnrollmentDto[]> {
+		return plainToInstance(
+			EnrollmentDto,
+			await this.enrollmentRepo.find({
+				where: { student: { id: studentId } },
+				relations: ["stream", "stream.gradeLevel", "academicYear", "term"],
+				order: { enrollmentDate: "DESC" },
+			}),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
 	async findByStream(
 		streamId: string,
 		termId: string,
-	): Promise<StudentEnrollment[]> {
-		return this.enrollmentRepo.find({
-			where: {
-				stream: { id: streamId },
-				term: { id: termId },
-				status: "active",
-			},
-			relations: ["student"],
-			order: { student: { lastName: "ASC" } },
-		});
+	): Promise<EnrollmentDto[]> {
+		return plainToInstance(
+			EnrollmentDto,
+			await this.enrollmentRepo.find({
+				where: {
+					stream: { id: streamId },
+					term: { id: termId },
+					status: "active",
+				},
+				relations: ["student"],
+				order: { student: { lastName: "ASC" } },
+			}),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async findCurrent(studentId: string): Promise<StudentEnrollment> {
+	async findCurrent(studentId: string): Promise<EnrollmentDto> {
 		const enrollment = await this.enrollmentRepo.findOne({
 			where: { student: { id: studentId }, status: "active" },
 			relations: ["stream", "stream.gradeLevel", "academicYear", "term"],
@@ -63,19 +73,29 @@ export class StudentEnrollmentService {
 			throw new NotFoundException(
 				`No active enrollment found for student ${studentId}`,
 			);
-		return enrollment;
+		return plainToInstance(EnrollmentDto, enrollment, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async findOne(id: string): Promise<StudentEnrollment> {
+	async findOne(id: string): Promise<EnrollmentDto> {
 		const enrollment = await this.enrollmentRepo.findOne({
-			where: { id: id },
-			relations: ["student", "stream", "stream.gradeLevel", "academicYear", "term"],
+			where: { id },
+			relations: [
+				"student",
+				"stream",
+				"stream.gradeLevel",
+				"academicYear",
+				"term",
+			],
 		});
 		if (!enrollment) throw new NotFoundException(`Enrollment ${id} not found`);
-		return enrollment;
+		return plainToInstance(EnrollmentDto, enrollment, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async enroll(dto: CreateEnrollmentDto): Promise<StudentEnrollment> {
+	async enroll(dto: CreateEnrollmentDto): Promise<EnrollmentDto> {
 		const student = await this.studentRepo.findOne({
 			where: { id: dto.studentId },
 		});
@@ -108,21 +128,36 @@ export class StudentEnrollmentService {
 		const enrollment = this.enrollmentRepo.create({
 			enrollmentDate: dto.enrollmentDate,
 			status: "active",
-			student: student,
-			stream: stream,
-			academicYear: academicYear,
-			term: term,
+			student,
+			stream,
+			academicYear,
+			term,
 		});
-		return this.enrollmentRepo.save(enrollment);
+		return plainToInstance(
+			EnrollmentDto,
+			await this.enrollmentRepo.save(enrollment),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async update(
-		id: string,
-		dto: UpdateEnrollmentDto,
-	): Promise<StudentEnrollment> {
-		const enrollment = await this.findOne(id);
+	async update(id: string, dto: UpdateEnrollmentDto): Promise<EnrollmentDto> {
+		const enrollment = await this.enrollmentRepo.findOne({
+			where: { id },
+			relations: [
+				"student",
+				"stream",
+				"stream.gradeLevel",
+				"academicYear",
+				"term",
+			],
+		});
+		if (!enrollment) throw new NotFoundException(`Enrollment ${id} not found`);
 		Object.assign(enrollment, dto);
-		return this.enrollmentRepo.save(enrollment);
+		return plainToInstance(
+			EnrollmentDto,
+			await this.enrollmentRepo.save(enrollment),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
 	async bulkRollover(
@@ -148,7 +183,6 @@ export class StudentEnrollmentService {
 		let skipped = 0;
 
 		for (const prev of previous) {
-			// Skip if already enrolled in the target term
 			const alreadyEnrolled = await this.enrollmentRepo.findOne({
 				where: { student: { id: prev.student.id }, term: { id: dto.toTermId } },
 			});

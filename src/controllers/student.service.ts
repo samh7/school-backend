@@ -4,9 +4,14 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
 import { School } from "../models/school.entity";
-import { CreateStudentDto, UpdateStudentDto } from "../models/student.dto";
+import {
+	CreateStudentDto,
+	StudentDto,
+	UpdateStudentDto,
+} from "../models/student.dto";
 import { Student } from "../models/student.entity";
 
 @Injectable()
@@ -18,36 +23,51 @@ export class StudentService {
 		private readonly schoolRepo: Repository<School>,
 	) {}
 
-	async findAll(schoolId: string): Promise<Student[]> {
-		return this.studentRepo.find({
-			where: { school: { id: schoolId } },
-			order: { lastName: "ASC", firstName: "ASC" },
-		});
+	async findAll(schoolId: string): Promise<StudentDto[]> {
+		return plainToInstance(
+			StudentDto,
+			await this.studentRepo.find({
+				where: { school: { id: schoolId } },
+				order: { lastName: "ASC", firstName: "ASC" },
+			}),
+			{ excludeExtraneousValues: true },
+		);
 	}
 
-	async findOne(id: string): Promise<Student> {
+	async findOne(id: string): Promise<StudentDto> {
 		const student = await this.studentRepo.findOne({
-			where: { id: id },
-			relations: ["school", "enrollments", "enrollments.stream", "enrollments.stream.gradeLevel", "enrollments.academicYear", "enrollments.term"],
+			where: { id },
+			relations: [
+				"school",
+				"enrollments",
+				"enrollments.stream",
+				"enrollments.stream.gradeLevel",
+				"enrollments.academicYear",
+				"enrollments.term",
+			],
 		});
 		if (!student) throw new NotFoundException(`Student ${id} not found`);
-		return student;
+		return plainToInstance(StudentDto, student, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async findByAdmissionNumber(admissionNumber: string): Promise<Student> {
+	async findByAdmissionNumber(admissionNumber: string): Promise<StudentDto> {
 		const student = await this.studentRepo.findOne({
-			where: { admissionNumber: admissionNumber },
+			where: { admissionNumber },
 			relations: ["school"],
 		});
 		if (!student)
 			throw new NotFoundException(
 				`Admission number ${admissionNumber} not found`,
 			);
-		return student;
+		return plainToInstance(StudentDto, student, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async findByStream(streamId: string, termId: string): Promise<Student[]> {
-		return this.studentRepo
+	async findByStream(streamId: string, termId: string): Promise<StudentDto[]> {
+		const students = await this.studentRepo
 			.createQueryBuilder("student")
 			.innerJoin("student.Enrollments", "enrollment")
 			.where("enrollment.Stream.Id = :streamId", { streamId })
@@ -55,9 +75,13 @@ export class StudentService {
 			.andWhere("enrollment.Status = :status", { status: "active" })
 			.orderBy("student.LastName", "ASC")
 			.getMany();
+
+		return plainToInstance(StudentDto, students, {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async create(dto: CreateStudentDto): Promise<Student> {
+	async create(dto: CreateStudentDto): Promise<StudentDto> {
 		const school = await this.schoolRepo.findOne({
 			where: { id: dto.schoolId },
 		});
@@ -73,18 +97,33 @@ export class StudentService {
 			);
 
 		const student = this.studentRepo.create({ school: school, ...dto });
-		return this.studentRepo.save(student);
+		return plainToInstance(StudentDto, await this.studentRepo.save(student), {
+			excludeExtraneousValues: true,
+		});
 	}
 
-	async update(id: string, dto: UpdateStudentDto): Promise<Student> {
-		const student = await this.findOne(id);
+	async update(id: string, dto: UpdateStudentDto): Promise<StudentDto> {
+		const student = await this.studentRepo.findOne({
+			where: { id },
+			relations: [
+				"school",
+				"enrollments",
+				"enrollments.stream",
+				"enrollments.stream.gradeLevel",
+				"enrollments.academicYear",
+				"enrollments.term",
+			],
+		});
+		if (!student) throw new NotFoundException(`Student ${id} not found`);
 		Object.assign(student, dto);
-		return this.studentRepo.save(student);
+		return plainToInstance(StudentDto, await this.studentRepo.save(student), {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async remove(id: string): Promise<void> {
-		// Soft delete — NEMIS records must be retained
-		const student = await this.findOne(id);
+		const student = await this.studentRepo.findOne({ where: { id } });
+		if (!student) throw new NotFoundException(`Student ${id} not found`);
 		student.status = "inactive";
 		await this.studentRepo.save(student);
 	}

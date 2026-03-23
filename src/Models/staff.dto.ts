@@ -46,6 +46,12 @@ export class CreateStaffWithoutSchoolDto extends OmitType(CreateStaffDto, [
 export class UpdateStaffDto extends PartialType(CreateStaffDto) {}
 
 // teachers
+export class CreateStaffResponseDto extends StaffDto {
+	@IsString()
+	@Expose()
+	TempPassword: string;
+}
+
 export class AssignClassTeacherDto {
 	@IsString()
 	staffId: string;

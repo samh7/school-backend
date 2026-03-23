@@ -11,9 +11,7 @@
           "introspectComments": true,
           "classValidatorShim": true,
           "dtoFileNameSuffix": [
-            ".dto.ts",
-            "Dto.ts"
-          ]
+            ".dto.ts"          ]
         }
       }
     ]
