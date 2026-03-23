@@ -7,9 +7,9 @@ import * as express from "express";
 import { writeFileSync } from "fs";
 import helmet from "helmet";
 import hpp from "hpp";
-import { AppModule } from "./AppModule";
-import { GlobalExceptionFilter } from "./Common/GlobalExceptionFilter";
-import { ResponseInterceptor } from "./Common/ResponseInterceptor";
+import { AppModule } from "./app-module";
+import { GlobalExceptionFilter } from "./common/global-exception.filter";
+import { ResponseInterceptor } from "./common/response.interceptor";
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
