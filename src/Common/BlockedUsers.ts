@@ -17,7 +17,7 @@ export class BlockedUserGuard implements CanActivate {
 		const user = ctx.switchToHttp().getRequest().user as UserAccountDto;
 		if (!user) return true;
 
-		const blocked = await this.redis.get(`blocked-user:${user.Id}`);
+		const blocked = await this.redis.get(`blocked-user:${user.id}`);
 		if (blocked)
 			throw new ForbiddenException("Your account has been suspended");
 

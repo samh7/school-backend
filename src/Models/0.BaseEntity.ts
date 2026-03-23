@@ -7,14 +7,14 @@ import {
 
 export abstract class MyBaseEntity {
 	@PrimaryGeneratedColumn()
-	Id: string;
+	id: string;
 
 	@CreateDateColumn()
-	CreatedAt: Date;
+	createdAt: Date;
 
 	@UpdateDateColumn()
-	UpdateAt: Date | null;
+	updateAt: Date | null;
 
 	@DeleteDateColumn()
-	DeletedAt: Date | null;
+	deletedAt: Date | null;
 }

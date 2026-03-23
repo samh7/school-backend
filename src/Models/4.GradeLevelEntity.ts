@@ -7,25 +7,25 @@ import { GradeSubject } from "./8.GradeSubjectEntity";
 @Entity("grade_levels")
 export class GradeLevel extends MyBaseEntity {
 	@Column()
-	SchoolId: string;
+	schoolId: string;
 
 	@Column()
-	Name: string;
+	name: string;
 
 	@Column()
-	CbcLevel: string;
+	cbcLevel: string;
 
 	@Column()
-	SortOrder: number;
+	sortOrder: number;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.GradeLevels, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "SchoolId" })
-	School: School;
+	@ManyToOne(() => School, (s) => s.gradeLevels, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "schoolId" })
+	school: School;
 
-	@OneToMany(() => Stream, (s) => s.GradeLevel)
-	Streams: Stream[];
+	@OneToMany(() => Stream, (s) => s.gradeLevel)
+	streams: Stream[];
 
-	@OneToMany(() => GradeSubject, (gs) => gs.GradeLevel)
-	GradeSubjects: GradeSubject[];
+	@OneToMany(() => GradeSubject, (gs) => gs.gradeLevel)
+	gradeSubjects: GradeSubject[];
 }

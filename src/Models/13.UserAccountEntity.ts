@@ -7,25 +7,25 @@ import { RoleEnum } from "./Types/RoleEnum";
 @Entity("user_accounts")
 export class UserAccount extends MyBaseEntity {
 	@Column({ nullable: true })
-	StaffId: string;
+	staffId: string;
 
 	@Column()
-	Email: string;
+	email: string;
 
 	@Exclude()
 	@Column()
-	PasswordHash: string;
+	passwordHash: string;
 
 	@Column({ type: "text", enum: RoleEnum })
-	Role: RoleEnum;
+	role: RoleEnum;
 
 	@Column({ default: true })
-	IsActive: boolean;
+	isActive: boolean;
 
 	@Column({ nullable: true })
-	LastLogin: Date;
+	lastLogin: Date;
 
-	@OneToOne(() => Staff, (s) => s.UserAccount, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "StaffId" })
-	Staff: Staff;
+	@OneToOne(() => Staff, (s) => s.userAccount, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "staffId" })
+	staff: Staff;
 }

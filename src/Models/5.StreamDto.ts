@@ -6,16 +6,16 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class StreamDto extends BaseDto {
 	@Expose()
 	@IsString()
-	GradeLevelId: string;
+	gradeLevelId: string;
 
 	@Expose()
 	@IsString()
-	Name: string; // e.g. "North"
+	name: string; // e.g. "North"
 
 	@Expose()
 	@IsNumber()
 	@IsOptional()
-	Capacity?: number;
+	capacity?: number;
 }
 
 export class CreateStreamDto extends OmitType(StreamDto, BASE_DTO_KEYS) {}

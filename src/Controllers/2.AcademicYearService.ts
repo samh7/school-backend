@@ -23,15 +23,15 @@ export class AcademicYearService {
 
 	async findAll(schoolId: string): Promise<AcademicYear[]> {
 		return this.academicYearRepo.find({
-			where: { School: { Id: schoolId } },
+			where: { school: { id: schoolId } },
 			relations: ["Terms"],
-			order: { StartDate: "DESC" },
+			order: { startDate: "DESC" },
 		});
 	}
 
 	async findOne(id: string): Promise<AcademicYear> {
 		const year = await this.academicYearRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: ["School", "Terms"],
 		});
 		if (!year) throw new NotFoundException(`Academic year ${id} not found`);
@@ -40,7 +40,7 @@ export class AcademicYearService {
 
 	async findCurrent(schoolId: string): Promise<AcademicYear> {
 		const year = await this.academicYearRepo.findOne({
-			where: { School: { Id: schoolId }, IsCurrent: true },
+			where: { school: { id: schoolId }, isCurrent: true },
 			relations: ["Terms"],
 		});
 		if (!year)
@@ -52,56 +52,56 @@ export class AcademicYearService {
 
 	async create(dto: CreateAcademicYearDto): Promise<AcademicYear> {
 		const school = await this.schoolRepo.findOne({
-			where: { Id: dto.SchoolId },
+			where: { id: dto.schoolId },
 		});
 		if (!school)
-			throw new NotFoundException(`School ${dto.SchoolId} not found`);
+			throw new NotFoundException(`School ${dto.schoolId} not found`);
 
 		const duplicate = await this.academicYearRepo.findOne({
-			where: { School: { Id: dto.SchoolId }, Label: dto.Label },
+			where: { school: { id: dto.schoolId }, label: dto.label },
 		});
 		if (duplicate)
 			throw new ConflictException(
-				`Academic year "${dto.Label}" already exists`,
+				`Academic year "${dto.label}" already exists`,
 			);
 
-		if (dto.IsCurrent) await this.clearCurrent(dto.SchoolId);
+		if (dto.isCurrent) await this.clearCurrent(dto.schoolId);
 
 		const year = this.academicYearRepo.create({
-			Label: dto.Label,
-			StartDate: dto.StartDate,
-			EndDate: dto.EndDate,
-			IsCurrent: dto.IsCurrent ?? false,
-			School: school,
+			label: dto.label,
+			startDate: dto.startDate,
+			endDate: dto.endDate,
+			isCurrent: dto.isCurrent ?? false,
+			school: school,
 		});
 		return this.academicYearRepo.save(year);
 	}
 
 	async update(id: string, dto: UpdateAcademicYearDto): Promise<AcademicYear> {
 		const year = await this.findOne(id);
-		if (dto.IsCurrent) await this.clearCurrent(year.School.Id);
+		if (dto.isCurrent) await this.clearCurrent(year.school.id);
 		Object.assign(year, dto);
 		return this.academicYearRepo.save(year);
 	}
 
 	async setCurrent(id: string): Promise<AcademicYear> {
 		const year = await this.findOne(id);
-		await this.clearCurrent(year.School.Id);
-		year.IsCurrent = true;
+		await this.clearCurrent(year.school.id);
+		year.isCurrent = true;
 		return this.academicYearRepo.save(year);
 	}
 
 	async remove(id: string): Promise<void> {
 		const year = await this.findOne(id);
-		if (year.IsCurrent)
+		if (year.isCurrent)
 			throw new ConflictException("Cannot delete the current academic year");
 		await this.academicYearRepo.remove(year);
 	}
 
 	private async clearCurrent(schoolId: string): Promise<void> {
 		await this.academicYearRepo.update(
-			{ School: { Id: schoolId }, IsCurrent: true },
-			{ IsCurrent: false },
+			{ school: { id: schoolId }, isCurrent: true },
+			{ isCurrent: false },
 		);
 	}
 }

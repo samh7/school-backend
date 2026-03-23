@@ -43,11 +43,11 @@ export class SchoolController {
 	async createWithSchoolAdminAccount(
 		@Body() createWithSchoolAdminAccountDto: CreateWithSchoolAdminAccountDto,
 	) {
-		const { CreateSchoolDto, CreateStaffDto } = createWithSchoolAdminAccountDto;
-		const school = await this.schoolService.create(CreateSchoolDto);
+		const { createSchoolDto, createStaffDto } = createWithSchoolAdminAccountDto;
+		const school = await this.schoolService.create(createSchoolDto);
 		const staff = await this.staffService.create({
-			...CreateStaffDto,
-			SchoolId: school.Id,
+			...createStaffDto,
+			schoolId: school.id,
 		});
 		return {
 			school,

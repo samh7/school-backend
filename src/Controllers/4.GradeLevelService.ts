@@ -23,15 +23,15 @@ export class GradeLevelService {
 
 	async findAll(schoolId: string): Promise<GradeLevel[]> {
 		return this.gradeLevelRepo.find({
-			where: { School: { Id: schoolId } },
+			where: { school: { id: schoolId } },
 			relations: ["Streams", "GradeSubjects", "GradeSubjects.Subject"],
-			order: { SortOrder: "ASC" },
+			order: { sortOrder: "ASC" },
 		});
 	}
 
 	async findOne(id: string): Promise<GradeLevel> {
 		const gradeLevel = await this.gradeLevelRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: [
 				"School",
 				"Streams",
@@ -45,22 +45,22 @@ export class GradeLevelService {
 
 	async create(dto: CreateGradeLevelDto): Promise<GradeLevel> {
 		const school = await this.schoolRepo.findOne({
-			where: { Id: dto.SchoolId },
+			where: { id: dto.schoolId },
 		});
 		if (!school)
-			throw new NotFoundException(`School ${dto.SchoolId} not found`);
+			throw new NotFoundException(`School ${dto.schoolId} not found`);
 
 		const duplicate = await this.gradeLevelRepo.findOne({
-			where: { School: { Id: dto.SchoolId }, Name: dto.Name },
+			where: { school: { id: dto.schoolId }, name: dto.name },
 		});
 		if (duplicate)
-			throw new ConflictException(`Grade level "${dto.Name}" already exists`);
+			throw new ConflictException(`Grade level "${dto.name}" already exists`);
 
 		const gradeLevel = this.gradeLevelRepo.create({
-			Name: dto.Name,
-			CbcLevel: dto.CbcLevel,
-			SortOrder: dto.SortOrder,
-			School: school,
+			name: dto.name,
+			cbcLevel: dto.cbcLevel,
+			sortOrder: dto.sortOrder,
+			school: school,
 		});
 		return this.gradeLevelRepo.save(gradeLevel);
 	}

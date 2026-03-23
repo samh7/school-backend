@@ -6,16 +6,16 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class GradeSubjectDto extends BaseDto {
 	@IsString()
 	@Expose()
-	GradeLevelId: string;
+	gradeLevelId: string;
 	@IsString()
 	@Expose()
-	SubjectId: string;
+	subjectId: string;
 	@IsBoolean()
 	@Expose()
-	IsExaminable: boolean;
+	isExaminable: boolean;
 	@IsNumber()
 	@Expose()
-	PeriodsPerWeek: number;
+	periodsPerWeek: number;
 }
 
 export class CreateGradeSubjectDto extends OmitType(

@@ -6,23 +6,23 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class AcademicYearDto extends BaseDto {
 	@IsString()
 	@Expose()
-	SchoolId: string;
+	schoolId: string;
 
 	@IsString()
 	@Expose()
-	Label: string;
+	label: string;
 
 	@IsDateString()
 	@Expose()
-	StartDate: Date;
+	startDate: Date;
 
 	@IsDateString()
 	@Expose()
-	EndDate: Date;
+	endDate: Date;
 
 	@IsBoolean()
 	@Expose()
-	IsCurrent?: boolean;
+	isCurrent?: boolean;
 }
 
 export class CreateAcademicYearDto extends OmitType(

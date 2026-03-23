@@ -8,34 +8,34 @@ import { GradeSubject } from "./8.GradeSubjectEntity";
 @Entity("subject_teachers")
 export class SubjectTeacher extends MyBaseEntity {
 	@Column()
-	StaffId: string;
+	staffId: string;
 
 	@Column()
-	GradeSubjectId: string;
+	gradeSubjectId: string;
 
 	@Column()
-	StreamId: string;
+	streamId: string;
 	@Column()
-	AcademicYearId: string;
+	academicYearId: string;
 
 	// Relations
-	@ManyToOne(() => Staff, (s) => s.SubjectTeacherAssignments, {
+	@ManyToOne(() => Staff, (s) => s.subjectTeacherAssignments, {
 		onDelete: "CASCADE",
 	})
-	@JoinColumn({ name: "StaffId" })
-	Staff: Staff;
+	@JoinColumn({ name: "staffId" })
+	staff: Staff;
 
-	@ManyToOne(() => GradeSubject, (gs) => gs.SubjectTeachers, {
+	@ManyToOne(() => GradeSubject, (gs) => gs.subjectTeachers, {
 		onDelete: "CASCADE",
 	})
-	@JoinColumn({ name: "GradeSubjectId" })
-	GradeSubject: GradeSubject;
+	@JoinColumn({ name: "gradeSubjectId" })
+	gradeSubject: GradeSubject;
 
-	@ManyToOne(() => Stream, (s) => s.SubjectTeachers, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "StreamId" })
-	Stream: Stream;
+	@ManyToOne(() => Stream, (s) => s.subjectTeachers, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "streamId" })
+	stream: Stream;
 
 	@ManyToOne(() => AcademicYear, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "AcademicYearId" })
-	AcademicYear: AcademicYear;
+	@JoinColumn({ name: "academicYearId" })
+	academicYear: AcademicYear;
 }

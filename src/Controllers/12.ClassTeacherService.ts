@@ -12,15 +12,15 @@ export class ClassTeacherService {
 
 	async findAll(schoolId: string): Promise<ClassTeacher[]> {
 		return this.classTeacherRepo.find({
-			where: { AcademicYear: { School: { Id: schoolId } } },
+			where: { academicYear: { school: { id: schoolId } } },
 			relations: ["Staff", "Stream", "AcademicYear"],
-			order: { CreatedAt: "DESC" },
+			order: { createdAt: "DESC" },
 		});
 	}
 
 	async findOne(id: string): Promise<ClassTeacher> {
 		const teacher = await this.classTeacherRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: ["Staff", "Stream", "AcademicYear"],
 		});
 		if (!teacher) throw new NotFoundException(`Class teacher ${id} not found`);
@@ -29,9 +29,9 @@ export class ClassTeacherService {
 
 	async findByStream(streamId: string): Promise<ClassTeacher[]> {
 		return this.classTeacherRepo.find({
-			where: { Stream: { Id: streamId } },
+			where: { stream: { id: streamId } },
 			relations: ["Staff", "Stream", "AcademicYear"],
-			order: { CreatedAt: "DESC" },
+			order: { createdAt: "DESC" },
 		});
 	}
 }

@@ -7,46 +7,46 @@ import { StudentSubjectAssignment } from "./14.StudentSubjectAssignmentEntity";
 @Entity("students")
 export class Student extends MyBaseEntity {
 	@Column()
-	SchoolId: string;
+	schoolId: string;
 
 	@Column()
-	AdmissionNumber: string;
+	admissionNumber: string;
 
 	@Column()
-	FirstName: string;
+	firstName: string;
 
 	@Column()
-	MiddleName: string;
+	middleName: string;
 
 	@Column()
-	LastName: string;
+	lastName: string;
 
 	@Column()
-	DateOfBirth: Date;
+	dateOfBirth: Date;
 
 	@Column()
-	Gender: string;
+	gender: string;
 
 	@Column()
-	NemisId: string;
+	nemisId: string;
 
 	@Column({ nullable: true })
-	PhotoUrl: string;
+	photoUrl: string;
 
 	@Column()
-	AdmissionDate: Date;
+	admissionDate: Date;
 
 	@Column()
-	Status: string;
+	status: string;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.Students, { onDelete: "RESTRICT" })
-	@JoinColumn({ name: "SchoolId" })
-	School: School;
+	@ManyToOne(() => School, (s) => s.students, { onDelete: "RESTRICT" })
+	@JoinColumn({ name: "schoolId" })
+	school: School;
 
-	@OneToMany(() => StudentEnrollment, (e) => e.Student)
-	Enrollments: StudentEnrollment[];
+	@OneToMany(() => StudentEnrollment, (e) => e.student)
+	enrollments: StudentEnrollment[];
 
-	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.Student)
-	SubjectAssignments: StudentSubjectAssignment[];
+	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.student)
+	subjectAssignments: StudentSubjectAssignment[];
 }

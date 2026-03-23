@@ -7,28 +7,28 @@ import { Term } from "./3.TermEntity";
 @Entity("academic_years")
 export class AcademicYear extends MyBaseEntity {
 	@Column()
-	SchoolId: string;
+	schoolId: string;
 
 	@Column()
-	Label: string;
+	label: string;
 
 	@Column()
-	StartDate: Date;
+	startDate: Date;
 
 	@Column({ nullable: true })
-	EndDate: Date;
+	endDate: Date;
 
 	@Column({ default: true })
-	IsCurrent: boolean;
+	isCurrent: boolean;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.AcademicYears, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "SchoolId" })
-	School: School;
+	@ManyToOne(() => School, (s) => s.academicYears, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "schoolId" })
+	school: School;
 
-	@OneToMany(() => Term, (t) => t.AcademicYear)
-	Terms: Term[];
+	@OneToMany(() => Term, (t) => t.academicYear)
+	terms: Term[];
 
-	@OneToMany(() => StudentEnrollment, (e) => e.AcademicYear)
-	Enrollments: StudentEnrollment[];
+	@OneToMany(() => StudentEnrollment, (e) => e.academicYear)
+	enrollments: StudentEnrollment[];
 }

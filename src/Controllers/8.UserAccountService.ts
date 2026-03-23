@@ -30,20 +30,20 @@ export class UserAccountService {
 	// AUTH FACING METHODS
 	async _login(loginDto: LoginDto) {
 		const account = await this.userAccountRepo.findOne({
-			where: { Email: loginDto.Email },
+			where: { email: loginDto.email },
 		});
 
 		if (!account) throw new UnauthorizedException("User Not Authneticated");
 
 		const compareHashes = await bcrypt.compare(
-			loginDto.Password,
-			account.PasswordHash,
+			loginDto.password,
+			account.passwordHash,
 		);
 
 		if (!compareHashes)
 			throw new UnauthorizedException("User Not Authneticated");
 
-		account.LastLogin = new Date();
+		account.lastLogin = new Date();
 		await this.userAccountRepo.save(account);
 
 		return plainToInstance(UserAccountDto, account, {
@@ -53,25 +53,25 @@ export class UserAccountService {
 
 	async _updatePassword(userId: string, newPasswordHash: string) {
 		await this.userAccountRepo.update(
-			{ Id: userId },
-			{ PasswordHash: newPasswordHash },
+			{ id: userId },
+			{ passwordHash: newPasswordHash },
 		);
 	}
 
 	// REGULAR METHODS
 	async createSystemAdmin(dto: CreateSystemAdminDto): Promise<UserAccountDto> {
-		if (dto.Role !== RoleEnum.SYSTEM_ADMIN)
+		if (dto.role !== RoleEnum.SYSTEM_ADMIN)
 			throw new ConflictException(
 				"Only system admins can be created with this endpoint",
 			);
 		const existing = await this.userAccountRepo.findOne({
-			where: { Email: dto.Email },
+			where: { email: dto.email },
 		});
 		if (existing)
-			throw new ConflictException(`Email ${dto.Email} is already registered`);
+			throw new ConflictException(`Email ${dto.email} is already registered`);
 		const userAccount = this.userAccountRepo.create({
 			...dto,
-			PasswordHash: await bcrypt.hash(dto.Password, 10),
+			passwordHash: await bcrypt.hash(dto.password, 10),
 		});
 		const account = await this.userAccountRepo.save(userAccount);
 		return plainToInstance(UserAccountDto, account, {
@@ -83,18 +83,18 @@ export class UserAccountService {
 		staffId: string,
 		role: RoleEnum,
 	): Promise<UserAccountDto> {
-		const staff = await this.staffRepo.findOneBy({ Id: staffId });
+		const staff = await this.staffRepo.findOneBy({ id: staffId });
 		if (!staff) throw new NotFoundException(`Staff ${staffId} not found`);
-		if (staff.UserAccount)
+		if (staff.userAccount)
 			throw new ConflictException(
 				`Staff ${staffId} already has a user account`,
 			);
 		const userAccount = this.userAccountRepo.create({
-			Email: staff.Email,
-			PasswordHash: await bcrypt.hash(staffId, 10),
-			Role: role,
+			email: staff.email,
+			passwordHash: await bcrypt.hash(staffId, 10),
+			role: role,
 		});
-		staff.UserAccount = userAccount;
+		staff.userAccount = userAccount;
 		await this.staffRepo.save(staff);
 		return plainToInstance(UserAccountDto, userAccount, {
 			excludeExtraneousValues: true,
@@ -103,7 +103,7 @@ export class UserAccountService {
 
 	async findOne(id: string): Promise<UserAccountDto> {
 		const account = await this.userAccountRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: ["Staff"],
 		});
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
@@ -114,7 +114,7 @@ export class UserAccountService {
 
 	async findByEmail(email: string): Promise<UserAccountDto> {
 		const account = await this.userAccountRepo.findOne({
-			where: { Email: email },
+			where: { email: email },
 			relations: ["Staff", "Staff.School"],
 		});
 		if (!account) throw new NotFoundException(`No account found for ${email}`);
@@ -124,15 +124,15 @@ export class UserAccountService {
 	}
 
 	async changePassword(id: string, dto: ChangePasswordDto): Promise<void> {
-		const account = await this.userAccountRepo.findOneBy({ Id: id });
+		const account = await this.userAccountRepo.findOneBy({ id: id });
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
 		const valid = await bcrypt.compare(
-			dto.CurrentPassword,
-			account.PasswordHash,
+			dto.currentPassword,
+			account.passwordHash,
 		);
 		if (!valid) throw new ConflictException("Current password is incorrect");
 
-		account.PasswordHash = await bcrypt.hash(dto.NewPassword, 10);
+		account.passwordHash = await bcrypt.hash(dto.newPassword, 10);
 		await this.userAccountRepo.save(account);
 	}
 
@@ -140,23 +140,23 @@ export class UserAccountService {
 		dto: ResetPasswordDto,
 	): Promise<{ TempPassword: string }> {
 		const staff = await this.staffRepo.findOne({
-			where: { Id: dto.StaffId },
+			where: { id: dto.staffId },
 			relations: ["UserAccount"],
 		});
-		if (!staff) throw new NotFoundException(`Staff ${dto.StaffId} not found`);
-		if (!staff.UserAccount)
-			throw new NotFoundException(`Staff ${dto.StaffId} has no user account`);
+		if (!staff) throw new NotFoundException(`Staff ${dto.staffId} not found`);
+		if (!staff.userAccount)
+			throw new NotFoundException(`Staff ${dto.staffId} has no user account`);
 
-		const tempPassword = `${staff.FirstName.toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`;
-		staff.UserAccount.PasswordHash = await bcrypt.hash(tempPassword, 10);
-		await this.userAccountRepo.save(staff.UserAccount);
+		const tempPassword = `${staff.firstName.toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`;
+		staff.userAccount.passwordHash = await bcrypt.hash(tempPassword, 10);
+		await this.userAccountRepo.save(staff.userAccount);
 
 		return { TempPassword: tempPassword };
 	}
 
 	async toggleActive(id: string): Promise<UserAccount> {
 		const account = await this.findOne(id);
-		account.IsActive = !account.IsActive;
+		account.isActive = !account.isActive;
 		return this.userAccountRepo.save(account);
 	}
 }

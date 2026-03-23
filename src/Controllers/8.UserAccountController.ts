@@ -26,8 +26,8 @@ export class UserAccountController {
 	@Post("create/for-staff")
 	createForStaff(@Body() createFroStaffDto: CreateFroStaffDto) {
 		return this.userAccountService.CreateForStaff(
-			createFroStaffDto.StaffId,
-			createFroStaffDto.Role,
+			createFroStaffDto.staffId,
+			createFroStaffDto.role,
 		);
 	}
 

@@ -6,25 +6,25 @@ import { GradeSubject } from "./8.GradeSubjectEntity";
 @Entity("subjects")
 export class Subject extends MyBaseEntity {
 	@Column()
-	SchoolId: string;
+	schoolId: string;
 
 	@Column()
-	Name: string;
+	name: string;
 
 	@Column()
-	Code: string;
+	code: string;
 
 	@Column()
-	CbcLearningArea: string;
+	cbcLearningArea: string;
 
 	@Column()
-	LearningType: string;
+	learningType: string;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.Subjects, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "SchoolId" })
-	School: School;
+	@ManyToOne(() => School, (s) => s.subjects, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "schoolId" })
+	school: School;
 
-	@OneToMany(() => GradeSubject, (gs) => gs.Subject)
-	GradeSubjects: GradeSubject[];
+	@OneToMany(() => GradeSubject, (gs) => gs.subject)
+	gradeSubjects: GradeSubject[];
 }

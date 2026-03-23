@@ -8,25 +8,25 @@ import { SubjectTeacher } from "./9.SubjectTeacherEntity";
 @Entity("streams")
 export class Stream extends MyBaseEntity {
 	@Column()
-	GradeLevelId: string;
+	gradeLevelId: string;
 
 	@Column()
-	Name: string;
+	name: string;
 
 	@Column()
-	Capacity: number;
+	capacity: number;
 
 	// Relations
-	@ManyToOne(() => GradeLevel, (gl) => gl.Streams, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "GradeLevelId" })
-	GradeLevel: GradeLevel;
+	@ManyToOne(() => GradeLevel, (gl) => gl.streams, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "gradeLevelId" })
+	gradeLevel: GradeLevel;
 
-	@OneToMany(() => StudentEnrollment, (e) => e.Stream)
-	Enrollments: StudentEnrollment[];
+	@OneToMany(() => StudentEnrollment, (e) => e.stream)
+	enrollments: StudentEnrollment[];
 
-	@OneToMany(() => ClassTeacher, (ct) => ct.Stream)
-	ClassTeachers: ClassTeacher[];
+	@OneToMany(() => ClassTeacher, (ct) => ct.stream)
+	classTeachers: ClassTeacher[];
 
-	@OneToMany(() => SubjectTeacher, (st) => st.Stream)
-	SubjectTeachers: SubjectTeacher[];
+	@OneToMany(() => SubjectTeacher, (st) => st.stream)
+	subjectTeachers: SubjectTeacher[];
 }

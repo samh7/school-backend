@@ -21,15 +21,15 @@ export class StreamService {
 
 	async findAll(gradeLevelId: string): Promise<Stream[]> {
 		return this.streamRepo.find({
-			where: { GradeLevel: { Id: gradeLevelId } },
+			where: { gradeLevel: { id: gradeLevelId } },
 			relations: ["GradeLevel"],
-			order: { Name: "ASC" },
+			order: { name: "ASC" },
 		});
 	}
 
 	async findOne(id: string): Promise<Stream> {
 		const stream = await this.streamRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: [
 				"GradeLevel",
 				"ClassTeachers",
@@ -47,29 +47,29 @@ export class StreamService {
 
 	async countEnrollments(streamId: string, termId: string): Promise<number> {
 		return this.streamRepo.manager.count(StudentEnrollment, {
-			where: { Stream: { Id: streamId }, Term: { Id: termId } },
+			where: { stream: { id: streamId }, term: { id: termId } },
 		});
 	}
 
 	async create(dto: CreateStreamDto): Promise<Stream> {
 		const gradeLevel = await this.gradeLevelRepo.findOne({
-			where: { Id: dto.GradeLevelId },
+			where: { id: dto.gradeLevelId },
 		});
 		if (!gradeLevel)
-			throw new NotFoundException(`Grade level ${dto.GradeLevelId} not found`);
+			throw new NotFoundException(`Grade level ${dto.gradeLevelId} not found`);
 
 		const duplicate = await this.streamRepo.findOne({
-			where: { GradeLevel: { Id: dto.GradeLevelId }, Name: dto.Name },
+			where: { gradeLevel: { id: dto.gradeLevelId }, name: dto.name },
 		});
 		if (duplicate)
 			throw new ConflictException(
-				`Stream "${dto.Name}" already exists in this grade level`,
+				`Stream "${dto.name}" already exists in this grade level`,
 			);
 
 		const stream = this.streamRepo.create({
-			Name: dto.Name,
-			Capacity: dto.Capacity,
-			GradeLevel: gradeLevel,
+			name: dto.name,
+			capacity: dto.capacity,
+			gradeLevel: gradeLevel,
 		});
 		return this.streamRepo.save(stream);
 	}

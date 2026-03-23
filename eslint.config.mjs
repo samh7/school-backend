@@ -31,6 +31,11 @@ export default tseslint.config(
       "@typescript-eslint/await-thenable": "error",
       '@typescript-eslint/no-floating-promises': 'error',
       "prettier/prettier": ["error", { endOfLine: "auto", useTabs: true, singleQuote: false,tabWidth: 2, bracketSpacing: true }],
+      "@typescript-eslint/no-unused-vars": ["error", {
+        varsIgnorePattern: "^_",
+        argsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+    }]
     }
   }
 );

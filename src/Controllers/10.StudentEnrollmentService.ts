@@ -33,9 +33,9 @@ export class StudentEnrollmentService {
 
 	async findByStudent(studentId: string): Promise<StudentEnrollment[]> {
 		return this.enrollmentRepo.find({
-			where: { Student: { Id: studentId } },
+			where: { student: { id: studentId } },
 			relations: ["Stream", "Stream.GradeLevel", "AcademicYear", "Term"],
-			order: { EnrollmentDate: "DESC" },
+			order: { enrollmentDate: "DESC" },
 		});
 	}
 
@@ -45,18 +45,18 @@ export class StudentEnrollmentService {
 	): Promise<StudentEnrollment[]> {
 		return this.enrollmentRepo.find({
 			where: {
-				Stream: { Id: streamId },
-				Term: { Id: termId },
-				Status: "active",
+				stream: { id: streamId },
+				term: { id: termId },
+				status: "active",
 			},
 			relations: ["Student"],
-			order: { Student: { LastName: "ASC" } },
+			order: { student: { lastName: "ASC" } },
 		});
 	}
 
 	async findCurrent(studentId: string): Promise<StudentEnrollment> {
 		const enrollment = await this.enrollmentRepo.findOne({
-			where: { Student: { Id: studentId }, Status: "active" },
+			where: { student: { id: studentId }, status: "active" },
 			relations: ["Stream", "Stream.GradeLevel", "AcademicYear", "Term"],
 		});
 		if (!enrollment)
@@ -68,7 +68,7 @@ export class StudentEnrollmentService {
 
 	async findOne(id: string): Promise<StudentEnrollment> {
 		const enrollment = await this.enrollmentRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: [
 				"Student",
 				"Stream",
@@ -83,41 +83,41 @@ export class StudentEnrollmentService {
 
 	async enroll(dto: CreateEnrollmentDto): Promise<StudentEnrollment> {
 		const student = await this.studentRepo.findOne({
-			where: { Id: dto.StudentId },
+			where: { id: dto.studentId },
 		});
 		if (!student)
-			throw new NotFoundException(`Student ${dto.StudentId} not found`);
+			throw new NotFoundException(`Student ${dto.studentId} not found`);
 
 		const stream = await this.streamRepo.findOne({
-			where: { Id: dto.StreamId },
+			where: { id: dto.streamId },
 		});
 		if (!stream)
-			throw new NotFoundException(`Stream ${dto.StreamId} not found`);
+			throw new NotFoundException(`Stream ${dto.streamId} not found`);
 
 		const academicYear = await this.academicYearRepo.findOne({
-			where: { Id: dto.AcademicYearId },
+			where: { id: dto.academicYearId },
 		});
 		if (!academicYear)
 			throw new NotFoundException(
-				`Academic year ${dto.AcademicYearId} not found`,
+				`Academic year ${dto.academicYearId} not found`,
 			);
 
-		const term = await this.termRepo.findOne({ where: { Id: dto.TermId } });
-		if (!term) throw new NotFoundException(`Term ${dto.TermId} not found`);
+		const term = await this.termRepo.findOne({ where: { id: dto.termId } });
+		if (!term) throw new NotFoundException(`Term ${dto.termId} not found`);
 
 		const duplicate = await this.enrollmentRepo.findOne({
-			where: { Student: { Id: dto.StudentId }, Term: { Id: dto.TermId } },
+			where: { student: { id: dto.studentId }, term: { id: dto.termId } },
 		});
 		if (duplicate)
 			throw new ConflictException(`Student is already enrolled for this term`);
 
 		const enrollment = this.enrollmentRepo.create({
-			EnrollmentDate: dto.EnrollmentDate,
-			Status: "active",
-			Student: student,
-			Stream: stream,
-			AcademicYear: academicYear,
-			Term: term,
+			enrollmentDate: dto.enrollmentDate,
+			status: "active",
+			student: student,
+			stream: stream,
+			academicYear: academicYear,
+			term: term,
 		});
 		return this.enrollmentRepo.save(enrollment);
 	}
@@ -134,19 +134,19 @@ export class StudentEnrollmentService {
 	async bulkRollover(
 		dto: BulkRolloverDto,
 	): Promise<{ Enrolled: number; Skipped: number }> {
-		const toTerm = await this.termRepo.findOne({ where: { Id: dto.ToTermId } });
-		if (!toTerm) throw new NotFoundException(`Term ${dto.ToTermId} not found`);
+		const toTerm = await this.termRepo.findOne({ where: { id: dto.toTermId } });
+		if (!toTerm) throw new NotFoundException(`Term ${dto.toTermId} not found`);
 
 		const toAcademicYear = await this.academicYearRepo.findOne({
-			where: { Id: dto.AcademicYearId },
+			where: { id: dto.academicYearId },
 		});
 		if (!toAcademicYear)
 			throw new NotFoundException(
-				`Academic year ${dto.AcademicYearId} not found`,
+				`Academic year ${dto.academicYearId} not found`,
 			);
 
 		const previous = await this.enrollmentRepo.find({
-			where: { Term: { Id: dto.FromTermId }, Status: "completed" },
+			where: { term: { id: dto.fromTermId }, status: "completed" },
 			relations: ["Student", "Stream"],
 		});
 
@@ -156,7 +156,7 @@ export class StudentEnrollmentService {
 		for (const prev of previous) {
 			// Skip if already enrolled in the target term
 			const alreadyEnrolled = await this.enrollmentRepo.findOne({
-				where: { Student: { Id: prev.Student.Id }, Term: { Id: dto.ToTermId } },
+				where: { student: { id: prev.student.id }, term: { id: dto.toTermId } },
 			});
 			if (alreadyEnrolled) {
 				skipped++;
@@ -164,12 +164,12 @@ export class StudentEnrollmentService {
 			}
 
 			const newEnrollment = this.enrollmentRepo.create({
-				EnrollmentDate: new Date(),
-				Status: "active",
-				Student: prev.Student,
-				Stream: prev.Stream,
-				AcademicYear: toAcademicYear,
-				Term: toTerm,
+				enrollmentDate: new Date(),
+				status: "active",
+				student: prev.student,
+				stream: prev.stream,
+				academicYear: toAcademicYear,
+				term: toTerm,
 			});
 			await this.enrollmentRepo.save(newEnrollment);
 			enrolled++;
@@ -180,8 +180,8 @@ export class StudentEnrollmentService {
 
 	async completeTermEnrollments(termId: string): Promise<{ Updated: number }> {
 		const result = await this.enrollmentRepo.update(
-			{ Term: { Id: termId }, Status: "active" },
-			{ Status: "completed" },
+			{ term: { id: termId }, status: "active" },
+			{ status: "completed" },
 		);
 		return { Updated: result.affected ?? 0 };
 	}

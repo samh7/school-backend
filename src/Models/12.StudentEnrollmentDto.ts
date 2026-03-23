@@ -6,23 +6,23 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class EnrollmentDto extends BaseDto {
 	@IsString()
 	@Expose()
-	StudentId: string;
+	studentId: string;
 	@IsString()
 	@Expose()
-	StreamId: string;
+	streamId: string;
 	@IsString()
 	@Expose()
-	AcademicYearId: string;
+	academicYearId: string;
 	@IsString()
 	@Expose()
-	TermId: string;
+	termId: string;
 	@IsDateString()
 	@Expose()
-	EnrollmentDate: Date;
+	enrollmentDate: Date;
 
 	@Expose()
 	@IsString()
-	Status: string;
+	status: string;
 }
 
 export class CreateEnrollmentDto extends OmitType(
@@ -33,7 +33,7 @@ export class UpdateEnrollmentDto {
 	@IsString()
 	@IsOptional()
 	@Expose()
-	Status?: string; // active | completed | transferred_out | transferred_in
+	status?: string; // active | completed | transferred_out | transferred_in
 }
 
 export class BulkRolloverDto {
@@ -41,11 +41,11 @@ export class BulkRolloverDto {
 	// Stream assignments remain the same — promotion is handled separately
 	@IsString()
 	@Expose()
-	FromTermId: string;
+	fromTermId: string;
 	@IsString()
 	@Expose()
-	ToTermId: string;
+	toTermId: string;
 	@IsString()
 	@Expose()
-	AcademicYearId: string;
+	academicYearId: string;
 }

@@ -7,26 +7,26 @@ import { Staff } from "./7.StaffEntity";
 @Entity("class_teachers")
 export class ClassTeacher extends MyBaseEntity {
 	@Column()
-	StaffId: string;
+	staffId: string;
 
 	@Column()
-	StreamId: string;
+	streamId: string;
 
 	@Column()
-	AcademicYearId: string;
+	academicYearId: string;
 
 	// Relations
-	@ManyToOne(() => Staff, (s) => s.ClassTeacherAssignments, {
+	@ManyToOne(() => Staff, (s) => s.classTeacherAssignments, {
 		onDelete: "CASCADE",
 	})
-	@JoinColumn({ name: "StaffId" })
-	Staff: Staff;
+	@JoinColumn({ name: "staffId" })
+	staff: Staff;
 
-	@ManyToOne(() => Stream, (s) => s.ClassTeachers, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "StreamId" })
-	Stream: Stream;
+	@ManyToOne(() => Stream, (s) => s.classTeachers, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "streamId" })
+	stream: Stream;
 
 	@ManyToOne(() => AcademicYear, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "AcademicYearId" })
-	AcademicYear: AcademicYear;
+	@JoinColumn({ name: "academicYearId" })
+	academicYear: AcademicYear;
 }

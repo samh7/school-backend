@@ -8,43 +8,43 @@ import { SchoolTypeEnum } from "./Types/SchoolType";
 export class SchoolDto extends BaseDto {
 	@IsString()
 	@Expose()
-	Name: string;
+	name: string;
 
 	@IsString()
 	@Expose()
-	KnecCode: string;
+	knecCode: string;
 
 	@IsString()
 	@Expose()
-	Motto: string;
+	motto: string;
 
 	@IsString()
 	@Expose()
-	County: string;
+	county: string;
 
 	@IsString()
 	@Expose()
-	SubCounty: string;
+	subCounty: string;
 
 	@IsString()
 	@Expose()
-	Address: string;
+	address: string;
 
 	@IsString()
 	@Expose()
-	Phone: string;
+	phone: string;
 
 	@IsString()
 	@Expose()
-	Email: string;
+	email: string;
 
 	@IsString()
 	@Expose()
-	LogoUrl: string;
+	logoUrl: string;
 
 	@IsEnum(SchoolTypeEnum)
 	@Expose()
-	SchoolType: SchoolTypeEnum;
+	schoolType: SchoolTypeEnum;
 }
 
 export class CreateSchoolDto extends OmitType(SchoolDto, BASE_DTO_KEYS) {}
@@ -54,10 +54,10 @@ export class CreateWithSchoolAdminAccountDto {
 	@ValidateNested()
 	@Type(() => CreateSchoolDto)
 	@Expose()
-	CreateSchoolDto: CreateSchoolDto;
+	createSchoolDto!: CreateSchoolDto;
 
 	@ValidateNested()
 	@Type(() => CreateStaffWithoutSchoolDto)
 	@Expose()
-	CreateStaffDto: CreateStaffWithoutSchoolDto;
+	createStaffDto!: CreateStaffWithoutSchoolDto;
 }

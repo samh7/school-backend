@@ -6,27 +6,27 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class SubjectDto extends BaseDto {
 	@IsString()
 	@Expose()
-	SchoolId: string;
+	schoolId: string;
 
 	@IsString()
 	@Expose()
-	Name: string;
+	name: string;
 
 	@IsString()
 	@Expose()
-	Code: string;
+	code: string;
 
 	@IsString()
 	@Expose()
-	CbcLearningArea: string;
+	cbcLearningArea: string;
 
 	@IsString()
 	@Expose()
-	LevelType: string; // pre-primary | lower-primary | upper-primary | junior-secondary
+	levelType: string; // pre-primary | lower-primary | upper-primary | junior-secondary
 
 	@IsString()
 	@Expose()
-	LearningType: string;
+	learningType: string;
 }
 
 export class CreateSubjectDto extends OmitType(SubjectDto, BASE_DTO_KEYS) {}

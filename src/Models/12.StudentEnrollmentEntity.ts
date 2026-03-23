@@ -9,42 +9,42 @@ import { Stream } from "./5.StreamEntity";
 @Entity("student_enrollmments")
 export class StudentEnrollment extends MyBaseEntity {
 	@Column()
-	StudentId: string;
+	studentId: string;
 
 	@Column()
-	StreamId: string;
+	streamId: string;
 
 	@Column()
-	AcademicYearId: string;
+	academicYearId: string;
 
 	@Column()
-	TermId: string;
+	termId: string;
 
 	@Column()
-	EnrollmentDate: Date;
+	enrollmentDate: Date;
 
 	@Column()
-	Status: string;
+	status: string;
 
 	// Relations
-	@ManyToOne(() => Student, (s) => s.Enrollments, { onDelete: "RESTRICT" })
-	@JoinColumn({ name: "StudentId" })
-	Student: Student;
+	@ManyToOne(() => Student, (s) => s.enrollments, { onDelete: "RESTRICT" })
+	@JoinColumn({ name: "studentId" })
+	student: Student;
 
-	@ManyToOne(() => Stream, (s) => s.Enrollments, { onDelete: "RESTRICT" })
-	@JoinColumn({ name: "StreamId" })
-	Stream: Stream;
+	@ManyToOne(() => Stream, (s) => s.enrollments, { onDelete: "RESTRICT" })
+	@JoinColumn({ name: "streamId" })
+	stream: Stream;
 
-	@ManyToOne(() => AcademicYear, (ay) => ay.Enrollments, {
+	@ManyToOne(() => AcademicYear, (ay) => ay.enrollments, {
 		onDelete: "RESTRICT",
 	})
-	@JoinColumn({ name: "AcademicYearId" })
-	AcademicYear: AcademicYear;
+	@JoinColumn({ name: "academicYearId" })
+	academicYear: AcademicYear;
 
-	@ManyToOne(() => Term, (t) => t.Enrollments, { onDelete: "RESTRICT" })
-	@JoinColumn({ name: "TermId" })
-	Term: Term;
+	@ManyToOne(() => Term, (t) => t.enrollments, { onDelete: "RESTRICT" })
+	@JoinColumn({ name: "termId" })
+	term: Term;
 
-	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.Enrollment)
-	SubjectAssignments: StudentSubjectAssignment[];
+	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.enrollment)
+	subjectAssignments: StudentSubjectAssignment[];
 }

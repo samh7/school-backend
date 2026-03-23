@@ -8,31 +8,31 @@ import { SubjectTeacher } from "./9.SubjectTeacherEntity";
 @Entity("grade_subjects")
 export class GradeSubject extends MyBaseEntity {
 	@Column()
-	GradeLevelId: string;
+	gradeLevelId: string;
 
 	@Column()
-	SubjectId: string;
+	subjectId: string;
 
 	@Column({ default: true })
-	IsExaminable: boolean;
+	isExaminable: boolean;
 
 	@Column()
-	PeriodsPerWeek: number;
+	periodsPerWeek: number;
 
 	// Relations
-	@ManyToOne(() => GradeLevel, (gl) => gl.GradeSubjects, {
+	@ManyToOne(() => GradeLevel, (gl) => gl.gradeSubjects, {
 		onDelete: "CASCADE",
 	})
-	@JoinColumn({ name: "GradeLevelId" })
-	GradeLevel: GradeLevel;
+	@JoinColumn({ name: "gradeLevelId" })
+	gradeLevel: GradeLevel;
 
-	@ManyToOne(() => Subject, (s) => s.GradeSubjects, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "SubjectId" })
-	Subject: Subject;
+	@ManyToOne(() => Subject, (s) => s.gradeSubjects, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "subjectId" })
+	subject: Subject;
 
-	@OneToMany(() => SubjectTeacher, (st) => st.GradeSubject)
-	SubjectTeachers: SubjectTeacher[];
+	@OneToMany(() => SubjectTeacher, (st) => st.gradeSubject)
+	subjectTeachers: SubjectTeacher[];
 
-	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.GradeSubject)
-	StudentAssignments: StudentSubjectAssignment[];
+	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.gradeSubject)
+	studentAssignments: StudentSubjectAssignment[];
 }

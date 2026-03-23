@@ -4,24 +4,24 @@ import { IsEmpty } from "class-validator";
 export class BaseDto {
 	@Expose()
 	@IsEmpty()
-	Id: string;
+	id: string;
 
 	@Expose()
 	@IsEmpty()
-	CreatedAt: Date;
+	createdAt: Date;
 
 	@Expose()
 	@IsEmpty()
-	UpdatedAt: Date | null;
+	updatedAt: Date | null;
 
 	@Expose()
 	@IsEmpty()
-	DeletedAt: Date | null;
+	deletedAt: Date | null;
 }
 
 export const BASE_DTO_KEYS = [
-	"Id",
-	"CreatedAt",
-	"UpdatedAt",
-	"DeletedAt",
+	"id",
+	"createdAt",
+	"updatedAt",
+	"deletedAt",
 ] as const;

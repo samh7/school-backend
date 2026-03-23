@@ -25,14 +25,14 @@ export class GradeSubjectService {
 
 	async findAll(gradeLevelId: string): Promise<GradeSubject[]> {
 		return this.gradeSubjectRepo.find({
-			where: { GradeLevel: { Id: gradeLevelId } },
+			where: { gradeLevel: { id: gradeLevelId } },
 			relations: ["Subject", "GradeLevel"],
 		});
 	}
 
 	async findOne(id: string): Promise<GradeSubject> {
 		const gs = await this.gradeSubjectRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: [
 				"GradeLevel",
 				"Subject",
@@ -47,21 +47,21 @@ export class GradeSubjectService {
 
 	async create(dto: CreateGradeSubjectDto): Promise<GradeSubject> {
 		const gradeLevel = await this.gradeLevelRepo.findOne({
-			where: { Id: dto.GradeLevelId },
+			where: { id: dto.gradeLevelId },
 		});
 		if (!gradeLevel)
-			throw new NotFoundException(`Grade level ${dto.GradeLevelId} not found`);
+			throw new NotFoundException(`Grade level ${dto.gradeLevelId} not found`);
 
 		const subject = await this.subjectRepo.findOne({
-			where: { Id: dto.SubjectId },
+			where: { id: dto.subjectId },
 		});
 		if (!subject)
-			throw new NotFoundException(`Subject ${dto.SubjectId} not found`);
+			throw new NotFoundException(`Subject ${dto.subjectId} not found`);
 
 		const existing = await this.gradeSubjectRepo.findOne({
 			where: {
-				GradeLevel: { Id: dto.GradeLevelId },
-				Subject: { Id: dto.SubjectId },
+				gradeLevel: { id: dto.gradeLevelId },
+				subject: { id: dto.subjectId },
 			},
 		});
 		if (existing)
@@ -70,10 +70,10 @@ export class GradeSubjectService {
 			);
 
 		const gs = this.gradeSubjectRepo.create({
-			IsExaminable: dto.IsExaminable,
-			PeriodsPerWeek: dto.PeriodsPerWeek,
-			GradeLevel: gradeLevel,
-			Subject: subject,
+			isExaminable: dto.isExaminable,
+			periodsPerWeek: dto.periodsPerWeek,
+			gradeLevel: gradeLevel,
+			subject: subject,
 		});
 		return this.gradeSubjectRepo.save(gs);
 	}

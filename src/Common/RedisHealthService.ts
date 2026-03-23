@@ -10,7 +10,7 @@ export class RedisHealthService implements OnModuleInit {
 		try {
 			await this.redis.ping();
 			console.log("Redis connected");
-		} catch (error) {
+		} catch (_error) {
 			console.error("Redis connection failed");
 			process.exit(1); // crash immediately
 		}

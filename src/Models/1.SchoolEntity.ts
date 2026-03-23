@@ -10,52 +10,52 @@ import { SchoolTypeEnum } from "./Types/SchoolType";
 @Entity("schools")
 export class School extends MyBaseEntity {
 	@Column()
-	Name: string;
+	name: string;
 
 	@Column()
-	KnecCode: string;
+	knecCode: string;
 
 	@Column()
-	Motto: string;
+	motto: string;
 
 	@Column()
-	County: string;
+	county: string;
 
 	@Column()
-	SubCounty: string;
+	subCounty: string;
 
 	@Column()
-	Address: string;
+	address: string;
 
 	@Column()
-	Phone: string;
+	phone: string;
 
 	@Column()
-	Email: string;
+	email: string;
 
 	@Column()
-	LogoUrl: string;
+	logoUrl: string;
 
 	@Column({
 		type: "text",
 		enum: SchoolTypeEnum,
 		default: SchoolTypeEnum.JUNIOR,
 	})
-	SchoolType: SchoolTypeEnum;
+	schoolType: SchoolTypeEnum;
 
 	// Relations
-	@OneToMany(() => AcademicYear, (ay) => ay.School)
-	AcademicYears: AcademicYear[];
+	@OneToMany(() => AcademicYear, (ay) => ay.school)
+	academicYears: AcademicYear[];
 
-	@OneToMany(() => GradeLevel, (gl) => gl.School)
-	GradeLevels: GradeLevel[];
+	@OneToMany(() => GradeLevel, (gl) => gl.school)
+	gradeLevels: GradeLevel[];
 
-	@OneToMany(() => Subject, (s) => s.School)
-	Subjects: Subject[];
+	@OneToMany(() => Subject, (s) => s.school)
+	subjects: Subject[];
 
-	@OneToMany(() => Staff, (st) => st.School)
-	Staff: Staff[];
+	@OneToMany(() => Staff, (st) => st.school)
+	staff: Staff[];
 
-	@OneToMany(() => Student, (s) => s.School)
-	Students: Student[];
+	@OneToMany(() => Student, (s) => s.school)
+	students: Student[];
 }

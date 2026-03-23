@@ -6,19 +6,19 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class GradeLevelDto extends BaseDto {
 	@Expose()
 	@IsString()
-	SchoolId: string;
+	schoolId: string;
 
 	@Expose()
 	@IsString()
-	Name: string; // e.g. "Grade 4"
+	name: string; // e.g. "Grade 4"
 
 	@Expose()
 	@IsString()
-	CbcLevel: string; // pre-primary | lower-primary | upper-primary | junior-secondary
+	cbcLevel: string; // pre-primary | lower-primary | upper-primary | junior-secondary
 
 	@Expose()
 	@IsNumber()
-	SortOrder: number;
+	sortOrder: number;
 }
 
 export class CreateGradeLevelDto extends OmitType(

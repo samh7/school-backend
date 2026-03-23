@@ -17,13 +17,13 @@ export class SchoolService {
 
 	async findAll(): Promise<School[]> {
 		return this.schoolRepo.find({
-			order: { Name: "ASC" },
+			order: { name: "ASC" },
 		});
 	}
 
 	async findOne(id: string): Promise<School> {
 		const school = await this.schoolRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: ["AcademicYears", "GradeLevels", "Subjects"],
 		});
 		if (!school) throw new NotFoundException(`School ${id} not found`);
@@ -31,13 +31,13 @@ export class SchoolService {
 	}
 
 	async create(dto: CreateSchoolDto): Promise<School> {
-		if (dto.KnecCode) {
+		if (dto.knecCode) {
 			const existing = await this.schoolRepo.findOne({
-				where: { KnecCode: dto.KnecCode },
+				where: { knecCode: dto.knecCode },
 			});
 			if (existing)
 				throw new ConflictException(
-					`KNEC code ${dto.KnecCode} is already registered`,
+					`KNEC code ${dto.knecCode} is already registered`,
 				);
 		}
 		const school = this.schoolRepo.create(dto);

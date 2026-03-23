@@ -17,10 +17,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Request } from "express";
 import Redis from "ioredis";
 import { ThrottlerStorageRedisService } from "nestjs-throttler-storage-redis";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { AuthModule } from "./Auth/AuthModule";
 import { BlockedIpMiddleware } from "./Common/BlockedIpMiddleware";
 import { BlockedUserGuard } from "./Common/BlockedUsers";
-import { CamelNamingStrategy } from "./Common/camelNamingStrategy";
 import { GeoBlockMiddleware } from "./Common/GeoBlocking";
 import { HoneypotMiddleware } from "./Common/HoneyPot";
 import { EnvironmentVariables } from "./Config/EnvTypes";
@@ -54,7 +54,7 @@ interface AuthenticatedRequest extends Request {
 				database: config.getOrThrow("DATABASE_URL"),
 				entities: [__dirname + "/**/*Entity.{ts,js}"],
 				synchronize: config.getOrThrow("NODE_ENV") !== "production",
-				namingStrategy: new CamelNamingStrategy(),
+				namingStrategy: new SnakeNamingStrategy(),
 			}),
 			inject: [ConfigService],
 		}),

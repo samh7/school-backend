@@ -15,40 +15,40 @@ import { SubjectTeacher } from "./9.SubjectTeacherEntity";
 @Entity("staff")
 export class Staff extends MyBaseEntity {
 	@Column()
-	SchoolId: string;
+	schoolId: string;
 
 	@Column()
-	TscNumber: string;
+	tscNumber: string;
 
 	@Column()
-	FirstName: string;
+	firstName: string;
 
 	@Column()
-	LastName: string;
+	lastName: string;
 
 	@Column()
-	Email: string;
+	email: string;
 
 	@Column()
-	JoinDate: Date;
+	joinDate: Date;
 
 	@Column()
-	Status: string;
+	status: string;
 
 	@Column()
-	Role: string;
+	role: string;
 
 	// Relations
-	@ManyToOne(() => School, (s) => s.Staff, { onDelete: "CASCADE" })
-	@JoinColumn({ name: "SchoolId" })
-	School: School;
+	@ManyToOne(() => School, (s) => s.staff, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "schoolId" })
+	school: School;
 
-	@OneToMany(() => ClassTeacher, (ct) => ct.Staff)
-	ClassTeacherAssignments: ClassTeacher[];
+	@OneToMany(() => ClassTeacher, (ct) => ct.staff)
+	classTeacherAssignments: ClassTeacher[];
 
-	@OneToMany(() => SubjectTeacher, (st) => st.Staff)
-	SubjectTeacherAssignments: SubjectTeacher[];
+	@OneToMany(() => SubjectTeacher, (st) => st.staff)
+	subjectTeacherAssignments: SubjectTeacher[];
 
-	@OneToOne(() => UserAccount, (u) => u.Staff)
-	UserAccount: UserAccount;
+	@OneToOne(() => UserAccount, (u) => u.staff)
+	userAccount: UserAccount;
 }

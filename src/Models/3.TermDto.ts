@@ -6,24 +6,24 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class TermDto extends BaseDto {
 	@IsString()
 	@Expose()
-	AcademicYearId: string;
+	academicYearId: string;
 
 	@IsNumber()
 	@Expose()
-	TermNumber: number; // 1 | 2 | 3
+	termNumber: number; // 1 | 2 | 3
 
 	@IsString()
 	@Expose()
-	StartDate: Date;
+	startDate: Date;
 
 	@IsString()
 	@Expose()
-	EndDate: Date;
+	endDate: Date;
 
 	@IsOptional()
 	@IsBoolean()
 	@Expose()
-	IsCurrent?: boolean;
+	isCurrent?: boolean;
 }
 
 export class CreateTermDto extends OmitType(TermDto, BASE_DTO_KEYS) {}

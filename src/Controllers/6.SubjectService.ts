@@ -20,8 +20,8 @@ export class SubjectService {
 
 	async findAll(schoolId: string): Promise<Subject[]> {
 		return this.subjectRepo.find({
-			where: { School: { Id: schoolId } },
-			order: { Name: "ASC" },
+			where: { school: { id: schoolId } },
+			order: { name: "ASC" },
 		});
 	}
 
@@ -34,7 +34,7 @@ export class SubjectService {
 
 	async findOne(id: string): Promise<Subject> {
 		const subject = await this.subjectRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: ["School", "GradeSubjects", "GradeSubjects.GradeLevel"],
 		});
 		if (!subject) throw new NotFoundException(`Subject ${id} not found`);
@@ -43,18 +43,18 @@ export class SubjectService {
 
 	async create(dto: CreateSubjectDto): Promise<Subject> {
 		const school = await this.schoolRepo.findOne({
-			where: { Id: dto.SchoolId },
+			where: { id: dto.schoolId },
 		});
 		if (!school)
-			throw new NotFoundException(`School ${dto.SchoolId} not found`);
+			throw new NotFoundException(`School ${dto.schoolId} not found`);
 
 		const duplicate = await this.subjectRepo.findOne({
-			where: { School: { Id: dto.SchoolId }, Code: dto.Code },
+			where: { school: { id: dto.schoolId }, code: dto.code },
 		});
 		if (duplicate)
-			throw new ConflictException(`Subject code "${dto.Code}" already exists`);
+			throw new ConflictException(`Subject code "${dto.code}" already exists`);
 
-		const subject = this.subjectRepo.create({ ...dto, School: school });
+		const subject = this.subjectRepo.create({ ...dto, school: school });
 		return this.subjectRepo.save(subject);
 	}
 

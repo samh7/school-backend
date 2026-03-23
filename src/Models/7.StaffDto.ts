@@ -7,40 +7,40 @@ import { RoleEnum } from "./Types/RoleEnum";
 export class StaffDto extends BaseDto {
 	@IsString()
 	@Expose()
-	SchoolId: string;
+	schoolId: string;
 	@IsString()
 	@Expose()
-	FirstName: string;
+	firstName: string;
 	@IsString()
 	@Expose()
-	LastName: string;
+	lastName: string;
 	@IsString()
 	@Expose()
-	Email: string;
+	email: string;
 	@IsString()
 	@IsOptional()
 	@Expose()
-	Phone?: string;
+	phone?: string;
 	@IsEnum(RoleEnum)
 	@Expose()
-	Role: RoleEnum;
+	role: RoleEnum;
 	@IsString()
 	@IsOptional() //STAFFrOL // teacher | principal | bursar | hod | admin
 	@Expose()
-	TscNumber?: string;
+	tscNumber?: string;
 
 	@IsDateString()
 	@Expose()
-	JoinDate: Date;
+	joinDate: Date;
 
 	@IsString()
 	@Expose()
-	Status: string;
+	status: string;
 }
 
 export class CreateStaffDto extends OmitType(StaffDto, BASE_DTO_KEYS) {}
 export class CreateStaffWithoutSchoolDto extends OmitType(CreateStaffDto, [
-	"SchoolId",
+	"schoolId",
 ] as const) {}
 
 export class UpdateStaffDto extends PartialType(CreateStaffDto) {}
@@ -48,20 +48,20 @@ export class UpdateStaffDto extends PartialType(CreateStaffDto) {}
 // teachers
 export class AssignClassTeacherDto {
 	@IsString()
-	StaffId: string;
+	staffId: string;
 	@IsString()
-	StreamId: string;
+	streamId: string;
 	@IsString()
-	AcademicYearId: string;
+	academicYearId: string;
 }
 
 export class AssignSubjectTeacherDto {
 	@IsString()
-	StaffId: string;
+	staffId: string;
 	@IsString()
-	GradeSubjectId: string;
+	gradeSubjectId: string;
 	@IsString()
-	StreamId: string;
+	streamId: string;
 	@IsString()
-	AcademicYearId: string;
+	academicYearId: string;
 }

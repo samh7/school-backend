@@ -6,38 +6,38 @@ import { BASE_DTO_KEYS, BaseDto } from "./0.BaseDto";
 export class StudentDto extends BaseDto {
 	@IsString()
 	@Expose()
-	SchoolId: string;
+	schoolId: string;
 	@IsString()
 	@Expose()
-	AdmissionNumber: string;
+	admissionNumber: string;
 	@IsString()
 	@Expose()
-	FirstName: string;
+	firstName: string;
 	@IsString()
 	@Expose()
-	MiddleName: string;
+	middleName: string;
 	@IsString()
 	@Expose()
-	LastName: string;
+	lastName: string;
 	@IsDateString()
 	@IsOptional()
 	@Expose()
-	DateOfBirth?: Date;
+	dateOfBirth?: Date;
 	@IsString()
 	@IsOptional()
 	@Expose()
-	Gender?: string; // male | female
+	gender?: string; // male | female
 	@IsString()
 	@IsOptional()
 	@Expose()
-	NemisId?: string;
+	nemisId?: string;
 	@IsDateString()
 	@Expose()
-	AdmissionDate: Date;
+	admissionDate: Date;
 
 	@IsString()
 	@Expose()
-	Status: string;
+	status: string;
 }
 
 export class CreateStudentDto extends OmitType(StudentDto, BASE_DTO_KEYS) {}

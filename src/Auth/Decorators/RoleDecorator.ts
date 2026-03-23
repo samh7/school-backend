@@ -50,11 +50,11 @@ export class RolesGuard implements CanActivate {
 			throw new ForbiddenException("No authenticated user found on request");
 		}
 
-		if (user.Role === RoleEnum.SYSTEM_ADMIN) return true;
+		if (user.role === RoleEnum.SYSTEM_ADMIN) return true;
 
-		if (!requiredRoles.includes(user.Role as RoleEnum)) {
+		if (!requiredRoles.includes(user.role as RoleEnum)) {
 			throw new ForbiddenException(
-				`Access denied — required: ${requiredRoles.join(" | ")}, your role: ${user.Role}`,
+				`Access denied — required: ${requiredRoles.join(" | ")}, your role: ${user.role}`,
 			);
 		}
 

@@ -13,74 +13,74 @@ import { RoleEnum } from "./Types/RoleEnum";
 
 export class ChangePasswordDto {
 	@IsString()
-	CurrentPassword: string;
+	currentPassword: string;
 	@IsString()
-	NewPassword: string;
+	newPassword: string;
 }
 
 export class ResetPasswordDto {
 	@IsString()
-	StaffId: string;
+	staffId: string;
 }
 
 export class CreateSystemAdminDto {
 	@IsString()
-	Email: string;
+	email: string;
 
 	@IsString()
-	Password: string;
+	password: string;
 
 	@IsEnum(RoleEnum)
-	Role: RoleEnum;
+	role: RoleEnum;
 }
 
 export class LoginDto {
 	@IsString()
-	Email: string;
+	email: string;
 	@IsString()
-	Password: string;
+	password: string;
 }
 
 export class CreateFroStaffDto {
 	@Expose()
 	@IsEnum(RoleEnum)
-	Role: RoleEnum;
+	role: RoleEnum;
 	@IsString()
 	@Expose()
-	StaffId: string;
+	staffId: string;
 }
 
 export class UserAccountDto {
 	@IsString()
 	@Expose()
-	Id: string;
+	id: string;
 	@IsString()
 	@Expose()
-	Email: string;
+	email: string;
 	@IsEnum(RoleEnum)
 	@Expose()
-	Role: RoleEnum;
+	role: RoleEnum;
 	@IsBoolean()
-	IsActive: boolean;
+	isActive: boolean;
 	@Expose()
 	@IsDateString()
-	LastLogin: Date;
+	lastLogin: Date;
 
 	@Expose()
 	@IsOptional()
 	@ValidateNested()
 	@Type(() => CreateStaffDto)
-	Staff?: CreateStaffDto;
+	staff?: CreateStaffDto;
 
 	@Expose()
 	@IsString()
 	@IsOptional()
-	StaffId?: string;
+	staffId?: string;
 
 	@Expose()
 	@IsString()
 	@IsOptional()
-	SchoolId?: string;
+	schoolId?: string;
 }
 
 export class JwtPayloadDto {

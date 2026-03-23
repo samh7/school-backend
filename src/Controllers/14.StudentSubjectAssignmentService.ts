@@ -33,7 +33,7 @@ export class StudentSubjectAssignmentService {
 		enrollmentId: string,
 	): Promise<StudentSubjectAssignment[]> {
 		return this.assignmentRepo.find({
-			where: { Enrollment: { Id: enrollmentId } },
+			where: { enrollment: { id: enrollmentId } },
 			relations: [
 				"GradeSubject",
 				"GradeSubject.Subject",
@@ -47,7 +47,7 @@ export class StudentSubjectAssignmentService {
 
 	async findByStudent(studentId: string): Promise<StudentSubjectAssignment[]> {
 		return this.assignmentRepo.find({
-			where: { Student: { Id: studentId } },
+			where: { student: { id: studentId } },
 			relations: [
 				"Enrollment",
 				"Enrollment.Term",
@@ -62,38 +62,38 @@ export class StudentSubjectAssignmentService {
 
 	async assign(dto: AssignSubjectDto): Promise<StudentSubjectAssignment> {
 		const enrollment = await this.enrollmentRepo.findOne({
-			where: { Id: dto.EnrollmentId },
+			where: { id: dto.enrollmentId },
 			relations: ["Stream", "Stream.GradeLevel"],
 		});
 		if (!enrollment)
-			throw new NotFoundException(`Enrollment ${dto.EnrollmentId} not found`);
+			throw new NotFoundException(`Enrollment ${dto.enrollmentId} not found`);
 
 		const student = await this.studentRepo.findOne({
-			where: { Id: dto.StudentId },
+			where: { id: dto.studentId },
 		});
 		if (!student)
-			throw new NotFoundException(`Student ${dto.StudentId} not found`);
+			throw new NotFoundException(`Student ${dto.studentId} not found`);
 
 		const gradeSubject = await this.gradeSubjectRepo.findOne({
-			where: { Id: dto.GradeSubjectId },
+			where: { id: dto.gradeSubjectId },
 			relations: ["GradeLevel", "Subject"],
 		});
 		if (!gradeSubject)
 			throw new NotFoundException(
-				`Grade subject ${dto.GradeSubjectId} not found`,
+				`Grade subject ${dto.gradeSubjectId} not found`,
 			);
 
 		// Ensure the grade subject belongs to the same grade level as the enrollment stream
-		if (gradeSubject.GradeLevel.Id !== enrollment.Stream.GradeLevel.Id) {
+		if (gradeSubject.gradeLevel.id !== enrollment.stream.gradeLevel.id) {
 			throw new ConflictException(
-				`Grade subject "${gradeSubject.Subject.Name}" does not belong to the grade level of this enrollment`,
+				`Grade subject "${gradeSubject.subject.name}" does not belong to the grade level of this enrollment`,
 			);
 		}
 
 		const existing = await this.assignmentRepo.findOne({
 			where: {
-				Enrollment: { Id: dto.EnrollmentId },
-				GradeSubject: { Id: dto.GradeSubjectId },
+				enrollment: { id: dto.enrollmentId },
+				gradeSubject: { id: dto.gradeSubjectId },
 			},
 		});
 		if (existing)
@@ -102,10 +102,10 @@ export class StudentSubjectAssignmentService {
 			);
 
 		const assignment = this.assignmentRepo.create({
-			IsOptional: dto.IsOptional ?? false,
-			Enrollment: enrollment,
-			Student: student,
-			GradeSubject: gradeSubject,
+			isOptional: dto.isOptional ?? false,
+			enrollment: enrollment,
+			student: student,
+			gradeSubject: gradeSubject,
 		});
 		return this.assignmentRepo.save(assignment);
 	}
@@ -117,25 +117,25 @@ export class StudentSubjectAssignmentService {
 		dto: BulkAssignSubjectsDto,
 	): Promise<{ Assigned: number; Skipped: number }> {
 		const enrollment = await this.enrollmentRepo.findOne({
-			where: { Id: dto.EnrollmentId },
+			where: { id: dto.enrollmentId },
 			relations: ["Stream", "Stream.GradeLevel"],
 		});
 		if (!enrollment)
-			throw new NotFoundException(`Enrollment ${dto.EnrollmentId} not found`);
+			throw new NotFoundException(`Enrollment ${dto.enrollmentId} not found`);
 
 		const student = await this.studentRepo.findOne({
-			where: { Id: dto.StudentId },
+			where: { id: dto.studentId },
 		});
 		if (!student)
-			throw new NotFoundException(`Student ${dto.StudentId} not found`);
+			throw new NotFoundException(`Student ${dto.studentId} not found`);
 
 		// Fetch all grade subjects for this grade level
 		const gradeSubjects = await this.gradeSubjectRepo.find({
-			where: { GradeLevel: { Id: dto.GradeLevelId } },
+			where: { gradeLevel: { id: dto.gradeLevelId } },
 			relations: ["Subject"],
 		});
 
-		const optionalIds = new Set(dto.OptionalGradeSubjectIds ?? []);
+		const optionalIds = new Set(dto.optionalGradeSubjectIds ?? []);
 
 		let assigned = 0;
 		let skipped = 0;
@@ -143,8 +143,8 @@ export class StudentSubjectAssignmentService {
 		for (const gs of gradeSubjects) {
 			const existing = await this.assignmentRepo.findOne({
 				where: {
-					Enrollment: { Id: dto.EnrollmentId },
-					GradeSubject: { Id: gs.Id },
+					enrollment: { id: dto.enrollmentId },
+					gradeSubject: { id: gs.id },
 				},
 			});
 
@@ -154,10 +154,10 @@ export class StudentSubjectAssignmentService {
 			}
 
 			const assignment = this.assignmentRepo.create({
-				IsOptional: optionalIds.has(gs.Id),
-				Enrollment: enrollment,
-				Student: student,
-				GradeSubject: gs,
+				isOptional: optionalIds.has(gs.id),
+				enrollment: enrollment,
+				student: student,
+				gradeSubject: gs,
 			});
 			await this.assignmentRepo.save(assignment);
 			assigned++;
@@ -170,12 +170,12 @@ export class StudentSubjectAssignmentService {
 
 	async remove(id: string): Promise<void> {
 		const assignment = await this.assignmentRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: ["GradeSubject"],
 		});
 		if (!assignment)
 			throw new NotFoundException(`Subject assignment ${id} not found`);
-		if (!assignment.IsOptional) {
+		if (!assignment.isOptional) {
 			throw new ConflictException(
 				`Cannot remove a mandatory subject assignment`,
 			);

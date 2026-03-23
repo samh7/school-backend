@@ -5,7 +5,7 @@ import * as geoip from "geoip-lite";
 @Injectable()
 export class GeoBlockMiddleware implements NestMiddleware {
 	private readonly logger = new Logger("GeoBlock");
-	private readonly ALLOWED = new Set(["TZ"]);
+	private readonly aLLOWED = new Set(["TZ"]);
 
 	use(req: Request, res: Response, next: NextFunction): void {
 		if (process.env.NODE_ENV === "development") {
@@ -23,7 +23,7 @@ export class GeoBlockMiddleware implements NestMiddleware {
 		console.log("IP", ip);
 		console.log("geo", geo);
 
-		if (!geo || !this.ALLOWED.has(geo.country)) {
+		if (!geo || !this.aLLOWED.has(geo.country)) {
 			this.logger.warn({
 				type: "GeoBlocked",
 				ip,

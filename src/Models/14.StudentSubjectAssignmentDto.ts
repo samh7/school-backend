@@ -4,20 +4,20 @@ import { IsArray, IsBoolean, IsOptional, IsString } from "class-validator";
 export class AssignSubjectDto {
 	@Expose()
 	@IsString()
-	EnrollmentId: string;
+	enrollmentId: string;
 
 	@Expose()
 	@IsString()
-	StudentId: string;
+	studentId: string;
 
 	@Expose()
 	@IsString()
-	GradeSubjectId: string;
+	gradeSubjectId: string;
 
 	@Expose()
 	@IsBoolean()
 	@IsOptional()
-	IsOptional?: boolean;
+	isOptional?: boolean;
 }
 
 export class BulkAssignSubjectsDto {
@@ -26,19 +26,19 @@ export class BulkAssignSubjectsDto {
 
 	@Expose()
 	@IsString()
-	EnrollmentId: string;
+	enrollmentId: string;
 
 	@Expose()
 	@IsString()
-	StudentId: string;
+	studentId: string;
 
 	@Expose()
 	@IsString()
-	GradeLevelId: string;
+	gradeLevelId: string;
 
 	@Expose()
 	@IsOptional()
 	@IsArray()
 	@IsString({ each: true })
-	OptionalGradeSubjectIds?: string[];
+	optionalGradeSubjectIds?: string[];
 }

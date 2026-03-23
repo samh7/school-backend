@@ -6,26 +6,26 @@ import { GradeSubject } from "./8.GradeSubjectEntity";
 
 @Entity("student-subject-assignments")
 export class StudentSubjectAssignment extends MyBaseEntity {
-	@Column({ name: "IsOptional", default: false })
-	IsOptional: boolean;
+	@Column({ name: "isOptional", default: false })
+	isOptional: boolean;
 
 	// Relations
 
-	@ManyToOne(() => StudentEnrollment, (e) => e.SubjectAssignments, {
+	@ManyToOne(() => StudentEnrollment, (e) => e.subjectAssignments, {
 		onDelete: "RESTRICT",
 	})
-	@JoinColumn({ name: "EnrollmentId" })
-	Enrollment: StudentEnrollment;
+	@JoinColumn({ name: "enrollmentId" })
+	enrollment: StudentEnrollment;
 
-	@ManyToOne(() => Student, (s) => s.SubjectAssignments, {
+	@ManyToOne(() => Student, (s) => s.subjectAssignments, {
 		onDelete: "RESTRICT",
 	})
-	@JoinColumn({ name: "StudentId" })
-	Student: Student;
+	@JoinColumn({ name: "studentId" })
+	student: Student;
 
-	@ManyToOne(() => GradeSubject, (gs) => gs.StudentAssignments, {
+	@ManyToOne(() => GradeSubject, (gs) => gs.studentAssignments, {
 		onDelete: "RESTRICT",
 	})
-	@JoinColumn({ name: "GradeSubjectId" })
-	GradeSubject: GradeSubject;
+	@JoinColumn({ name: "gradeSubjectId" })
+	gradeSubject: GradeSubject;
 }

@@ -20,14 +20,14 @@ export class StudentService {
 
 	async findAll(schoolId: string): Promise<Student[]> {
 		return this.studentRepo.find({
-			where: { School: { Id: schoolId } },
-			order: { LastName: "ASC", FirstName: "ASC" },
+			where: { school: { id: schoolId } },
+			order: { lastName: "ASC", firstName: "ASC" },
 		});
 	}
 
 	async findOne(id: string): Promise<Student> {
 		const student = await this.studentRepo.findOne({
-			where: { Id: id },
+			where: { id: id },
 			relations: [
 				"School",
 				"Enrollments",
@@ -43,7 +43,7 @@ export class StudentService {
 
 	async findByAdmissionNumber(admissionNumber: string): Promise<Student> {
 		const student = await this.studentRepo.findOne({
-			where: { AdmissionNumber: admissionNumber },
+			where: { admissionNumber: admissionNumber },
 			relations: ["School"],
 		});
 		if (!student)
@@ -66,20 +66,20 @@ export class StudentService {
 
 	async create(dto: CreateStudentDto): Promise<Student> {
 		const school = await this.schoolRepo.findOne({
-			where: { Id: dto.SchoolId },
+			where: { id: dto.schoolId },
 		});
 		if (!school)
-			throw new NotFoundException(`School ${dto.SchoolId} not found`);
+			throw new NotFoundException(`School ${dto.schoolId} not found`);
 
 		const duplicate = await this.studentRepo.findOne({
-			where: { AdmissionNumber: dto.AdmissionNumber },
+			where: { admissionNumber: dto.admissionNumber },
 		});
 		if (duplicate)
 			throw new ConflictException(
-				`Admission number ${dto.AdmissionNumber} already exists`,
+				`Admission number ${dto.admissionNumber} already exists`,
 			);
 
-		const student = this.studentRepo.create({ School: school, ...dto });
+		const student = this.studentRepo.create({ school: school, ...dto });
 		return this.studentRepo.save(student);
 	}
 
@@ -92,7 +92,7 @@ export class StudentService {
 	async remove(id: string): Promise<void> {
 		// Soft delete — NEMIS records must be retained
 		const student = await this.findOne(id);
-		student.Status = "inactive";
+		student.status = "inactive";
 		await this.studentRepo.save(student);
 	}
 }

@@ -23,20 +23,20 @@ export class AuthService {
 	async login(loginDto: LoginDto) {
 		const account = await this.userAccountService._login(loginDto);
 		const generation = await this.tokenBlocklistService.getGeneration(
-			account.Id,
+			account.id,
 		);
 		const payload: JwtPayloadDto = {
 			user: {
-				Email: account.Email,
-				Id: account.Id,
-				Role: account.Role,
-				StaffId: account.StaffId,
-				IsActive: account.IsActive,
-				LastLogin: account.LastLogin,
-				SchoolId: account.Staff?.SchoolId,
+				email: account.email,
+				id: account.id,
+				role: account.role,
+				staffId: account.staffId,
+				isActive: account.isActive,
+				lastLogin: account.lastLogin,
+				schoolId: account.staff?.schoolId,
 			},
 			jti: uuidv4(),
-			sub: account.Id,
+			sub: account.id,
 			generation,
 		};
 
@@ -74,16 +74,16 @@ export class AuthService {
 		dto: ChangePasswordDto,
 	): Promise<{ message: string }> {
 		const isMatch = await this.userAccountService._login({
-			Email: user.Email,
-			Password: dto.CurrentPassword,
+			email: user.email,
+			password: dto.currentPassword,
 		});
 
 		if (!isMatch)
 			throw new UnauthorizedException("Current password is incorrect");
 
-		const newHash = await bcrypt.hash(dto.NewPassword, 12);
+		const newHash = await bcrypt.hash(dto.newPassword, 12);
 
-		await this.userAccountService._updatePassword(user.Id, newHash);
+		await this.userAccountService._updatePassword(user.id, newHash);
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const decoded = this.jwtService.decode(token);
@@ -93,7 +93,7 @@ export class AuthService {
 		if (ttl > 0) await this.tokenBlocklistService.block(decoded.jti, ttl);
 
 		// 6. Invalidate ALL other tokens for this user (increment generation)
-		await this.tokenBlocklistService.blockAllForUser(user.Id);
+		await this.tokenBlocklistService.blockAllForUser(user.id);
 
 		return { message: "Password changed successfully. Please log in again." };
 	}
@@ -102,7 +102,7 @@ export class AuthService {
 			throw new UnauthorizedException("UserAccount not found");
 		}
 		console.log("userAccount.user.Id", userAccount);
-		const account = await this.userAccountService.findOne(userAccount.Id);
+		const account = await this.userAccountService.findOne(userAccount.id);
 		if (!account) {
 			throw new UnauthorizedException("UserAccount not found");
 		}

@@ -28,13 +28,13 @@ export class AuthController {
 	) {}
 
 	@Post("register")
-	register(@Body() CreateSystemAdminDto: CreateSystemAdminDto) {
-		return this.userAccountService.createSystemAdmin(CreateSystemAdminDto);
+	register(@Body() createSystemAdminDto: CreateSystemAdminDto) {
+		return this.userAccountService.createSystemAdmin(createSystemAdminDto);
 	}
 
 	@Post("login")
-	login(@Body() LoginDto: LoginDto) {
-		return this.authService.login(LoginDto);
+	login(@Body() loginDto: LoginDto) {
+		return this.authService.login(loginDto);
 	}
 
 	@UseGuards(JwtAuthGuard)
