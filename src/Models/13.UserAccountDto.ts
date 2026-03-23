@@ -3,6 +3,7 @@ import {
 	IsBoolean,
 	IsDateString,
 	IsEnum,
+	IsNumber,
 	IsOptional,
 	IsString,
 	ValidateNested,
@@ -80,4 +81,23 @@ export class UserAccountDto {
 	@IsString()
 	@IsOptional()
 	SchoolId?: string;
+}
+
+export class JwtPayloadDto {
+	@Expose()
+	@ValidateNested()
+	@Type(() => UserAccountDto)
+	user: UserAccountDto;
+
+	@IsString()
+	@Expose()
+	jti: string;
+
+	@IsString()
+	@Expose()
+	sub: string;
+
+	@IsNumber()
+	@Expose()
+	generation: number;
 }

@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { TokenBlocklistService } from "../Common/TokenBlocklistService";
 import { EnvironmentVariables } from "../Config/EnvTypes";
 import { UserAccountModule } from "../Controllers/8.UserAccountModule";
 import { UserAccountService } from "../Controllers/8.UserAccountService";
@@ -34,7 +35,12 @@ import { JwtStrategy } from "./JwtStrategy";
 		}),
 	],
 	controllers: [AuthController],
-	providers: [AuthService, JwtStrategy, UserAccountService],
+	providers: [
+		AuthService,
+		JwtStrategy,
+		UserAccountService,
+		TokenBlocklistService,
+	],
 	exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

@@ -2,14 +2,16 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
+import { TokenBlocklistService } from "../Common/TokenBlocklistService";
 import { EnvironmentVariables } from "../Config/EnvTypes";
-import { UserAccountDto } from "../Models/13.UserAccountDto";
+import { JwtPayloadDto } from "../Models/13.UserAccountDto";
 import { AuthService } from "./AuthService";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 	constructor(
 		private readonly authService: AuthService,
+		private readonly tokenBlocklist: TokenBlocklistService,
 		readonly configService: ConfigService<EnvironmentVariables>,
 	) {
 		const jwtSecret = configService.getOrThrow<string>(
@@ -22,14 +24,21 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 		});
 	}
 
-	async validate(payload: UserAccountDto) {
-		const user = payload;
+	async validate(payload: JwtPayloadDto): Promise<JwtPayloadDto> {
+		// 1. Check if this specific token has been blocklisted (logout)
+		const blocked = await this.tokenBlocklist.isBlocked(payload.jti);
+		if (blocked) throw new UnauthorizedException("Token has been invalidated");
 
-		const account = await this.authService._status(user);
-
-		if (!account) {
-			throw new UnauthorizedException("User not found.");
+		// 2. Check generation (password change — invalidates all sessions)
+		const currentGen = await this.tokenBlocklist.getGeneration(payload.sub);
+		if (payload.generation < currentGen) {
+			throw new UnauthorizedException("Token has been invalidated");
 		}
-		return user;
+
+		// 3. Check user still exists and is active
+		const account = await this.authService._status(payload.user);
+		if (!account) throw new UnauthorizedException("User not found.");
+
+		return payload;
 	}
 }

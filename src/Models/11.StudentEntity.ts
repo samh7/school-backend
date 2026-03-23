@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { MyBaseEntity } from "./0.BaseEntity";
 import { School } from "./1.SchoolEntity";
 import { StudentEnrollment } from "./12.StudentEnrollmentEntity";
+import { StudentSubjectAssignment } from "./14.StudentSubjectAssignmentEntity";
 
 @Entity("students")
 export class Student extends MyBaseEntity {
@@ -45,4 +46,7 @@ export class Student extends MyBaseEntity {
 
 	@OneToMany(() => StudentEnrollment, (e) => e.Student)
 	Enrollments: StudentEnrollment[];
+
+	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.Student)
+	SubjectAssignments: StudentSubjectAssignment[];
 }

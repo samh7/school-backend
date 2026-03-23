@@ -51,6 +51,13 @@ export class UserAccountService {
 		});
 	}
 
+	async _updatePassword(userId: string, newPasswordHash: string) {
+		await this.userAccountRepo.update(
+			{ Id: userId },
+			{ PasswordHash: newPasswordHash },
+		);
+	}
+
 	// REGULAR METHODS
 	async createSystemAdmin(dto: CreateSystemAdminDto): Promise<UserAccountDto> {
 		if (dto.Role !== RoleEnum.SYSTEM_ADMIN)

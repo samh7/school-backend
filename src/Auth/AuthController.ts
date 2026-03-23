@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	Headers,
+	Post,
+	Put,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { UserAccountService } from "../Controllers/8.UserAccountService";
 import {
+	ChangePasswordDto,
 	CreateSystemAdminDto,
 	LoginDto,
 	UserAccountDto,
@@ -10,6 +19,7 @@ import { AuthService } from "./AuthService";
 import { CurrentUserAccount } from "./Decorators/CurrentUserAccountDecorator";
 import { JwtAuthGuard } from "./JwtGuard";
 
+@ApiBearerAuth()
 @Controller("auth")
 export class AuthController {
 	constructor(
@@ -27,29 +37,30 @@ export class AuthController {
 		return this.authService.login(LoginDto);
 	}
 
-	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard)
 	@Get("me")
 	getMe(@CurrentUserAccount() userAccount: UserAccountDto) {
 		return userAccount;
 	}
 
-	// @ApiBearerAuth()
-	// @UseGuards(JwtAuthGuard)
-	// @Get('verify-email/:code')
-	// verifyEmail(@Param('code') code: string) {
-	// }
+	@Post("logout")
+	@UseGuards(JwtAuthGuard)
+	logout(
+		@CurrentUserAccount() user: UserAccountDto,
+		@Headers("authorization") auth: string,
+	) {
+		const token = auth.replace("Bearer ", "");
+		return this.authService.logout(user, token);
+	}
 
-	// @ApiBearerAuth()
-	// @UseGuards(JwtAuthGuard)
-	// @Get("reset-password-token/:email")
-	// getResetPasswordToken(@Param("email") email: string) {
-	// }
-
-	// @ApiBearerAuth()
-	// @UseGuards(JwtAuthGuard)
-	// @Post("reset-password")
-	// resetPasswordToken(@Body() changePasswordDto: ChangePasswordDto) {
-
-	// }
+	@Put("change-password")
+	@UseGuards(JwtAuthGuard)
+	changePassword(
+		@CurrentUserAccount() user: UserAccountDto,
+		@Headers("authorization") auth: string,
+		@Body() dto: ChangePasswordDto,
+	) {
+		const token = auth.replace("Bearer ", "");
+		return this.authService.changePassword(user, token, dto);
+	}
 }

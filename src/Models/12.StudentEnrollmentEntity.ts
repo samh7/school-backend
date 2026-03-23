@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { MyBaseEntity } from "./0.BaseEntity";
 import { Student } from "./11.StudentEntity";
+import { StudentSubjectAssignment } from "./14.StudentSubjectAssignmentEntity";
 import { AcademicYear } from "./2.AcademicYearEntity";
 import { Term } from "./3.TermEntity";
 import { Stream } from "./5.StreamEntity";
@@ -43,4 +44,7 @@ export class StudentEnrollment extends MyBaseEntity {
 	@ManyToOne(() => Term, (t) => t.Enrollments, { onDelete: "RESTRICT" })
 	@JoinColumn({ name: "TermId" })
 	Term: Term;
+
+	@OneToMany(() => StudentSubjectAssignment, (ssa) => ssa.Enrollment)
+	SubjectAssignments: StudentSubjectAssignment[];
 }
