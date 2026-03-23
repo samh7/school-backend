@@ -8,7 +8,7 @@ import { Response } from "express";
 import { map, Observable } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
-const EXCLUDED_FIELDS = new Set(["PasswordHash", "TempPassword", "DeletedAt"]);
+const EXCLUDED_FIELDS = new Set(["passwordHash", "tempPassword", "deletedAt"]);
 
 interface SuccessResponse<T> {
 	success: true;

@@ -132,11 +132,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 	private sanitizeBody(body: Record<string, unknown>): Record<string, unknown> {
 		if (!body) return {};
 		const SENSITIVE = new Set([
-			"Password",
-			"PasswordHash",
-			"TempPassword",
-			"CurrentPassword",
-			"NewPassword",
+			"password",
+			"passwordHash",
+			"tempPassword",
+			"currentPassword",
+			"newPassword",
 		]);
 		return Object.fromEntries(
 			Object.entries(body).filter(([key]) => !SENSITIVE.has(key)),
