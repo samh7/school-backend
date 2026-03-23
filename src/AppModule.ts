@@ -7,7 +7,12 @@ import {
 } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
-import { minutes, seconds, ThrottlerModule } from "@nestjs/throttler";
+import {
+	minutes,
+	seconds,
+	ThrottlerGuard,
+	ThrottlerModule,
+} from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Request } from "express";
 import Redis from "ioredis";
@@ -125,6 +130,10 @@ interface AuthenticatedRequest extends Request {
 		{
 			provide: APP_GUARD,
 			useClass: BlockedUserGuard,
+		},
+		{
+			provide: AppModule,
+			useClass: ThrottlerGuard,
 		},
 	],
 })

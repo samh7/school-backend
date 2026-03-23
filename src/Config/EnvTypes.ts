@@ -8,4 +8,5 @@ export interface EnvironmentVariables {
 	REDIS_PORT: number;
 	REDIS_PASSWORD: string;
 	REDIS_DB: number;
+	FRONTEND_URL: string;
 }
