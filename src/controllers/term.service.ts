@@ -28,7 +28,7 @@ export class TermService {
 	async findOne(id: string): Promise<Term> {
 		const term = await this.termRepo.findOne({
 			where: { id: id },
-			relations: ["AcademicYear"],
+			relations: ["academicYear"],
 		});
 		if (!term) throw new NotFoundException(`Term ${id} not found`);
 		return term;
@@ -37,7 +37,7 @@ export class TermService {
 	async findCurrent(schoolId: string): Promise<Term> {
 		const term = await this.termRepo.findOne({
 			where: { isCurrent: true, academicYear: { schoolId } },
-			relations: ["AcademicYear", "AcademicYear.School"],
+			relations: ["academicYear", "academicYear.school"],
 		});
 		if (!term) throw new NotFoundException("No current term is set");
 		return term;

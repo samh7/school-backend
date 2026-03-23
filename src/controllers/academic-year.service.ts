@@ -24,7 +24,7 @@ export class AcademicYearService {
 	async findAll(schoolId: string): Promise<AcademicYear[]> {
 		return this.academicYearRepo.find({
 			where: { school: { id: schoolId } },
-			relations: ["Terms"],
+			relations: ["terms"],
 			order: { startDate: "DESC" },
 		});
 	}
@@ -32,7 +32,7 @@ export class AcademicYearService {
 	async findOne(id: string): Promise<AcademicYear> {
 		const year = await this.academicYearRepo.findOne({
 			where: { id: id },
-			relations: ["School", "Terms"],
+			relations: ["school", "terms"],
 		});
 		if (!year) throw new NotFoundException(`Academic year ${id} not found`);
 		return year;
@@ -41,7 +41,7 @@ export class AcademicYearService {
 	async findCurrent(schoolId: string): Promise<AcademicYear> {
 		const year = await this.academicYearRepo.findOne({
 			where: { school: { id: schoolId }, isCurrent: true },
-			relations: ["Terms"],
+			relations: ["terms"],
 		});
 		if (!year)
 			throw new NotFoundException(

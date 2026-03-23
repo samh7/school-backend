@@ -34,12 +34,7 @@ export class StudentSubjectAssignmentService {
 	): Promise<StudentSubjectAssignment[]> {
 		return this.assignmentRepo.find({
 			where: { enrollment: { id: enrollmentId } },
-			relations: [
-				"GradeSubject",
-				"GradeSubject.Subject",
-				"GradeSubject.SubjectTeachers",
-				"GradeSubject.SubjectTeachers.Staff",
-			],
+			relations: ["gradeSubject", "gradeSubject.subject", "gradeSubject.subjectTeachers", "gradeSubject.subjectTeachers.staff"],
 		});
 	}
 
@@ -48,13 +43,7 @@ export class StudentSubjectAssignmentService {
 	async findByStudent(studentId: string): Promise<StudentSubjectAssignment[]> {
 		return this.assignmentRepo.find({
 			where: { student: { id: studentId } },
-			relations: [
-				"Enrollment",
-				"Enrollment.Term",
-				"Enrollment.AcademicYear",
-				"GradeSubject",
-				"GradeSubject.Subject",
-			],
+			relations: ["enrollment", "enrollment.term", "enrollment.academicYear", "gradeSubject", "gradeSubject.subject"],
 		});
 	}
 
@@ -63,7 +52,7 @@ export class StudentSubjectAssignmentService {
 	async assign(dto: AssignSubjectDto): Promise<StudentSubjectAssignment> {
 		const enrollment = await this.enrollmentRepo.findOne({
 			where: { id: dto.enrollmentId },
-			relations: ["Stream", "Stream.GradeLevel"],
+			relations: ["stream", "stream.gradeLevel"],
 		});
 		if (!enrollment)
 			throw new NotFoundException(`Enrollment ${dto.enrollmentId} not found`);
@@ -76,7 +65,7 @@ export class StudentSubjectAssignmentService {
 
 		const gradeSubject = await this.gradeSubjectRepo.findOne({
 			where: { id: dto.gradeSubjectId },
-			relations: ["GradeLevel", "Subject"],
+			relations: ["gradeLevel", "subject"],
 		});
 		if (!gradeSubject)
 			throw new NotFoundException(
@@ -118,7 +107,7 @@ export class StudentSubjectAssignmentService {
 	): Promise<{ Assigned: number; Skipped: number }> {
 		const enrollment = await this.enrollmentRepo.findOne({
 			where: { id: dto.enrollmentId },
-			relations: ["Stream", "Stream.GradeLevel"],
+			relations: ["stream", "stream.gradeLevel"],
 		});
 		if (!enrollment)
 			throw new NotFoundException(`Enrollment ${dto.enrollmentId} not found`);
@@ -132,7 +121,7 @@ export class StudentSubjectAssignmentService {
 		// Fetch all grade subjects for this grade level
 		const gradeSubjects = await this.gradeSubjectRepo.find({
 			where: { gradeLevel: { id: dto.gradeLevelId } },
-			relations: ["Subject"],
+			relations: ["subject"],
 		});
 
 		const optionalIds = new Set(dto.optionalGradeSubjectIds ?? []);
@@ -171,7 +160,7 @@ export class StudentSubjectAssignmentService {
 	async remove(id: string): Promise<void> {
 		const assignment = await this.assignmentRepo.findOne({
 			where: { id: id },
-			relations: ["GradeSubject"],
+			relations: ["gradeSubject"],
 		});
 		if (!assignment)
 			throw new NotFoundException(`Subject assignment ${id} not found`);

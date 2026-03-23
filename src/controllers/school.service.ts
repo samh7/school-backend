@@ -24,7 +24,7 @@ export class SchoolService {
 	async findOne(id: string): Promise<School> {
 		const school = await this.schoolRepo.findOne({
 			where: { id: id },
-			relations: ["AcademicYears", "GradeLevels", "Subjects"],
+			relations: ["academicYears", "gradeLevels", "subjects"],
 		});
 		if (!school) throw new NotFoundException(`School ${id} not found`);
 		return school;

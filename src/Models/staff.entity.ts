@@ -7,10 +7,10 @@ import {
 	OneToOne,
 } from "typeorm";
 import { MyBaseEntity } from "./base.entity";
-import { School } from "./school.entity";
 import { ClassTeacher } from "./class-teacher.entity";
-import { UserAccount } from "./user-account.entity";
+import { School } from "./school.entity";
 import { SubjectTeacher } from "./subject-teacher.entity";
+import { UserAccount } from "./user-account.entity";
 
 @Entity("staff")
 export class Staff extends MyBaseEntity {

@@ -45,7 +45,7 @@ export class StaffService {
 	async findAll(schoolId: string): Promise<Staff[]> {
 		return this.staffRepo.find({
 			where: { school: { id: schoolId } },
-			relations: ["UserAccount"],
+			relations: ["userAccount"],
 			order: { lastName: "ASC" },
 		});
 	}
@@ -53,19 +53,7 @@ export class StaffService {
 	async findOne(id: string): Promise<Staff> {
 		const staff = await this.staffRepo.findOne({
 			where: { id: id },
-			relations: [
-				"School",
-				"UserAccount",
-				"ClassTeacherAssignments",
-				"ClassTeacherAssignments.Stream",
-				"ClassTeacherAssignments.Stream.GradeLevel",
-				"ClassTeacherAssignments.AcademicYear",
-				"SubjectTeacherAssignments",
-				"SubjectTeacherAssignments.GradeSubject",
-				"SubjectTeacherAssignments.GradeSubject.Subject",
-				"SubjectTeacherAssignments.Stream",
-				"SubjectTeacherAssignments.AcademicYear",
-			],
+			relations: ["school", "userAccount", "classTeacherAssignments", "classTeacherAssignments.stream", "classTeacherAssignments.stream.gradeLevel", "classTeacherAssignments.academicYear", "subjectTeacherAssignments", "subjectTeacherAssignments.gradeSubject", "subjectTeacherAssignments.gradeSubject.subject", "subjectTeacherAssignments.stream", "subjectTeacherAssignments.academicYear"],
 		});
 		if (!staff) throw new NotFoundException(`Staff ${id} not found`);
 		return staff;
@@ -154,7 +142,7 @@ export class StaffService {
 				stream: { id: dto.streamId },
 				academicYear: { id: dto.academicYearId },
 			},
-			relations: ["Staff"],
+			relations: ["staff"],
 		});
 		if (existing) {
 			throw new ConflictException(
@@ -189,7 +177,7 @@ export class StaffService {
 
 		const gradeSubject = await this.gradeSubjectRepo.findOne({
 			where: { id: dto.gradeSubjectId },
-			relations: ["Subject", "GradeLevel"],
+			relations: ["subject", "gradeLevel"],
 		});
 		if (!gradeSubject)
 			throw new NotFoundException(

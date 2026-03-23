@@ -26,20 +26,14 @@ export class GradeSubjectService {
 	async findAll(gradeLevelId: string): Promise<GradeSubject[]> {
 		return this.gradeSubjectRepo.find({
 			where: { gradeLevel: { id: gradeLevelId } },
-			relations: ["Subject", "GradeLevel"],
+			relations: ["subject", "gradeLevel"],
 		});
 	}
 
 	async findOne(id: string): Promise<GradeSubject> {
 		const gs = await this.gradeSubjectRepo.findOne({
 			where: { id: id },
-			relations: [
-				"GradeLevel",
-				"Subject",
-				"SubjectTeachers",
-				"SubjectTeachers.Staff",
-				"SubjectTeachers.Stream",
-			],
+			relations: ["gradeLevel", "subject", "subjectTeachers", "subjectTeachers.staff", "subjectTeachers.stream"],
 		});
 		if (!gs) throw new NotFoundException(`Grade subject ${id} not found`);
 		return gs;

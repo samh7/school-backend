@@ -8,6 +8,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
+import { Staff } from "../models/staff.entity";
+import { RoleEnum } from "../models/types/role-enum";
 import {
 	ChangePasswordDto,
 	CreateSystemAdminDto,
@@ -16,8 +18,6 @@ import {
 	UserAccountDto,
 } from "../models/user-account.dto";
 import { UserAccount } from "../models/user-account.entity";
-import { Staff } from "../models/staff.entity";
-import { RoleEnum } from "../models/types/role-enum";
 @Injectable()
 export class UserAccountService {
 	constructor(
@@ -104,7 +104,7 @@ export class UserAccountService {
 	async findOne(id: string): Promise<UserAccountDto> {
 		const account = await this.userAccountRepo.findOne({
 			where: { id: id },
-			relations: ["Staff"],
+			relations: ["staff"],
 		});
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
 		return plainToInstance(UserAccountDto, account, {
@@ -115,7 +115,7 @@ export class UserAccountService {
 	async findByEmail(email: string): Promise<UserAccountDto> {
 		const account = await this.userAccountRepo.findOne({
 			where: { email: email },
-			relations: ["Staff", "Staff.School"],
+			relations: ["staff", "staff.school"],
 		});
 		if (!account) throw new NotFoundException(`No account found for ${email}`);
 		return plainToInstance(UserAccountDto, account, {
@@ -141,7 +141,7 @@ export class UserAccountService {
 	): Promise<{ TempPassword: string }> {
 		const staff = await this.staffRepo.findOne({
 			where: { id: dto.staffId },
-			relations: ["UserAccount"],
+			relations: ["userAccount"],
 		});
 		if (!staff) throw new NotFoundException(`Staff ${dto.staffId} not found`);
 		if (!staff.userAccount)
