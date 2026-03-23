@@ -24,7 +24,7 @@ export class GradeLevelService {
 	async findAll(schoolId: string): Promise<GradeLevel[]> {
 		return this.gradeLevelRepo.find({
 			where: { school: { id: schoolId } },
-			relations: ["Streams", "GradeSubjects", "GradeSubjects.Subject"],
+			relations: ["streams", "gradeSubjects", "gradeSubjects.subject"],
 			order: { sortOrder: "ASC" },
 		});
 	}
@@ -32,12 +32,7 @@ export class GradeLevelService {
 	async findOne(id: string): Promise<GradeLevel> {
 		const gradeLevel = await this.gradeLevelRepo.findOne({
 			where: { id: id },
-			relations: [
-				"School",
-				"Streams",
-				"GradeSubjects",
-				"GradeSubjects.Subject",
-			],
+			relations: ["school", "streams", "gradeSubjects", "gradeSubjects.subject"],
 		});
 		if (!gradeLevel) throw new NotFoundException(`Grade level ${id} not found`);
 		return gradeLevel;

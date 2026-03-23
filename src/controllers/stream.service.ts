@@ -5,10 +5,10 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { StudentEnrollment } from "../models/student-enrollment.entity";
 import { GradeLevel } from "../models/grade-level.entity";
 import { CreateStreamDto, UpdateStreamDto } from "../models/stream.dto";
 import { Stream } from "../models/stream.entity";
+import { StudentEnrollment } from "../models/student-enrollment.entity";
 
 @Injectable()
 export class StreamService {
@@ -22,7 +22,7 @@ export class StreamService {
 	async findAll(gradeLevelId: string): Promise<Stream[]> {
 		return this.streamRepo.find({
 			where: { gradeLevel: { id: gradeLevelId } },
-			relations: ["GradeLevel"],
+			relations: ["gradeLevel"],
 			order: { name: "ASC" },
 		});
 	}
@@ -31,14 +31,14 @@ export class StreamService {
 		const stream = await this.streamRepo.findOne({
 			where: { id: id },
 			relations: [
-				"GradeLevel",
-				"ClassTeachers",
-				"ClassTeachers.Staff",
-				"ClassTeachers.AcademicYear",
-				"SubjectTeachers",
-				"SubjectTeachers.Staff",
-				"SubjectTeachers.GradeSubject",
-				"SubjectTeachers.GradeSubject.Subject",
+				"gradeLevel",
+				"classTeachers",
+				"classTeachers.staff",
+				"classTeachers.academicYear",
+				"subjectTeachers",
+				"subjectTeachers.staff",
+				"subjectTeachers.gradeSubject",
+				"subjectTeachers.gradeSubject.subject",
 			],
 		});
 		if (!stream) throw new NotFoundException(`Stream ${id} not found`);

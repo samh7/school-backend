@@ -13,7 +13,7 @@ export class SubjectTeacherService {
 	async findAll(schoolId: string): Promise<SubjectTeacher[]> {
 		return this.subjectTeacherRepository.find({
 			where: { academicYear: { school: { id: schoolId } } },
-			relations: ["Staff", "GradeSubject", "AcademicYear"],
+			relations: ["staff", "gradeSubject", "academicYear"],
 			order: { createdAt: "DESC" },
 		});
 	}
@@ -21,7 +21,7 @@ export class SubjectTeacherService {
 	async findOne(id: string): Promise<SubjectTeacher> {
 		const teacher = await this.subjectTeacherRepository.findOne({
 			where: { id: id },
-			relations: ["Staff", "GradeSubject", "AcademicYear"],
+			relations: ["staff", "gradeSubject", "academicYear"],
 		});
 		if (!teacher) {
 			throw new Error("Subject teacher not found");
@@ -32,7 +32,7 @@ export class SubjectTeacherService {
 	async findByGradeSubject(gradeSubjectId: string): Promise<SubjectTeacher[]> {
 		return this.subjectTeacherRepository.find({
 			where: { gradeSubject: { id: gradeSubjectId } },
-			relations: ["Staff", "GradeSubject", "AcademicYear"],
+			relations: ["staff", "gradeSubject", "academicYear"],
 			order: { createdAt: "DESC" },
 		});
 	}

@@ -35,7 +35,7 @@ export class SubjectService {
 	async findOne(id: string): Promise<Subject> {
 		const subject = await this.subjectRepo.findOne({
 			where: { id: id },
-			relations: ["School", "GradeSubjects", "GradeSubjects.GradeLevel"],
+			relations: ["school", "gradeSubjects", "gradeSubjects.gradeLevel"],
 		});
 		if (!subject) throw new NotFoundException(`Subject ${id} not found`);
 		return subject;

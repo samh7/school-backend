@@ -34,7 +34,7 @@ export class StudentEnrollmentService {
 	async findByStudent(studentId: string): Promise<StudentEnrollment[]> {
 		return this.enrollmentRepo.find({
 			where: { student: { id: studentId } },
-			relations: ["Stream", "Stream.GradeLevel", "AcademicYear", "Term"],
+			relations: ["stream", "stream.gradeLevel", "academicYear", "term"],
 			order: { enrollmentDate: "DESC" },
 		});
 	}
@@ -49,7 +49,7 @@ export class StudentEnrollmentService {
 				term: { id: termId },
 				status: "active",
 			},
-			relations: ["Student"],
+			relations: ["student"],
 			order: { student: { lastName: "ASC" } },
 		});
 	}
@@ -57,7 +57,7 @@ export class StudentEnrollmentService {
 	async findCurrent(studentId: string): Promise<StudentEnrollment> {
 		const enrollment = await this.enrollmentRepo.findOne({
 			where: { student: { id: studentId }, status: "active" },
-			relations: ["Stream", "Stream.GradeLevel", "AcademicYear", "Term"],
+			relations: ["stream", "stream.gradeLevel", "academicYear", "term"],
 		});
 		if (!enrollment)
 			throw new NotFoundException(
@@ -69,13 +69,7 @@ export class StudentEnrollmentService {
 	async findOne(id: string): Promise<StudentEnrollment> {
 		const enrollment = await this.enrollmentRepo.findOne({
 			where: { id: id },
-			relations: [
-				"Student",
-				"Stream",
-				"Stream.GradeLevel",
-				"AcademicYear",
-				"Term",
-			],
+			relations: ["student", "stream", "stream.gradeLevel", "academicYear", "term"],
 		});
 		if (!enrollment) throw new NotFoundException(`Enrollment ${id} not found`);
 		return enrollment;
@@ -147,7 +141,7 @@ export class StudentEnrollmentService {
 
 		const previous = await this.enrollmentRepo.find({
 			where: { term: { id: dto.fromTermId }, status: "completed" },
-			relations: ["Student", "Stream"],
+			relations: ["student", "stream"],
 		});
 
 		let enrolled = 0;
