@@ -9,7 +9,7 @@ import {
 } from "../models/user-account.dto";
 import { UserAccountService } from "./user-account.service";
 
-@Roles(RoleEnum.SCHOOL_ADMIN)
+@Roles(RoleEnum.SCHOOL_ADMIN, RoleEnum.SYSTEM_ADMIN)
 @Controller("user-accounts")
 export class UserAccountController {
 	constructor(private readonly userAccountService: UserAccountService) {}

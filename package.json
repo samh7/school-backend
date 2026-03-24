@@ -2,9 +2,9 @@
   "name": "school-backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Sylvester Mwinzi",
+  "license": "AGPL-3.0-only",
   "private": true,
-  "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
