@@ -6,17 +6,12 @@ import {
 	Param,
 	Post,
 	Put,
-	UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../auth/decorators/role.decorator";
-import { JwtAuthGuard } from "../auth/jwt.guard";
 import { CreateStreamDto, UpdateStreamDto } from "../models/stream.dto";
 import { RoleEnum } from "../models/types/role-enum";
 import { StreamService } from "./stream.service";
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("streams")
 export class StreamController {

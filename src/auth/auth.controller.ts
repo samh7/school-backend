@@ -1,12 +1,4 @@
-import {
-	Body,
-	Controller,
-	Get,
-	Headers,
-	Post,
-	Put,
-	UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Get, Headers, Post, Put } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { UserAccountService } from "../controllers/user-account.service";
 import {
@@ -17,7 +9,7 @@ import {
 } from "../models/user-account.dto";
 import { AuthService } from "./auth.service";
 import { CurrentUserAccount } from "./decorators/current-user-account.decorator";
-import { JwtAuthGuard } from "./jwt.guard";
+import { IsPublic } from "./decorators/is-public.decorator";
 
 @ApiBearerAuth()
 @Controller("auth")
@@ -27,24 +19,24 @@ export class AuthController {
 		private readonly authService: AuthService,
 	) {}
 
+	@IsPublic()
 	@Post("register")
 	register(@Body() createSystemAdminDto: CreateSystemAdminDto) {
 		return this.userAccountService.createSystemAdmin(createSystemAdminDto);
 	}
 
+	@IsPublic()
 	@Post("login")
 	login(@Body() loginDto: LoginDto) {
 		return this.authService.login(loginDto);
 	}
 
-	@UseGuards(JwtAuthGuard)
 	@Get("me")
 	getMe(@CurrentUserAccount() userAccount: UserAccountDto) {
 		return userAccount;
 	}
 
 	@Post("logout")
-	@UseGuards(JwtAuthGuard)
 	logout(
 		@CurrentUserAccount() user: UserAccountDto,
 		@Headers("authorization") auth: string,
@@ -54,7 +46,6 @@ export class AuthController {
 	}
 
 	@Put("change-password")
-	@UseGuards(JwtAuthGuard)
 	changePassword(
 		@CurrentUserAccount() user: UserAccountDto,
 		@Headers("authorization") auth: string,

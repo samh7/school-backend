@@ -64,6 +64,7 @@ async function bootstrap() {
 			.setDescription("The API documentation for a School Backend Api App")
 			.setVersion("1.0")
 			.addBearerAuth()
+			.addSecurityRequirements("bearer")
 			.build();
 
 		const document = SwaggerModule.createDocument(app, config);

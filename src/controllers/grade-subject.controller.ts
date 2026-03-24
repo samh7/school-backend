@@ -6,11 +6,8 @@ import {
 	Param,
 	Post,
 	Put,
-	UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../auth/decorators/role.decorator";
-import { JwtAuthGuard } from "../auth/jwt.guard";
 import {
 	CreateGradeSubjectDto,
 	UpdateGradeSubjectDto,
@@ -18,8 +15,6 @@ import {
 import { RoleEnum } from "../models/types/role-enum";
 import { GradeSubjectService } from "./grade-subject.service";
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("grade-subjects")
 export class GradeSubjectController {

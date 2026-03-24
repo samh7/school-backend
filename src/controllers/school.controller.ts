@@ -6,11 +6,8 @@ import {
 	Param,
 	Post,
 	Put,
-	UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
 import { Roles } from "../auth/decorators/role.decorator";
-import { JwtAuthGuard } from "../auth/jwt.guard";
 import {
 	CreateWithSchoolAdminAccountDto,
 	UpdateSchoolDto,
@@ -21,8 +18,6 @@ import { StaffService } from "./staff.service";
 import { UserAccountService } from "./user-account.service";
 
 @Roles(RoleEnum.SYSTEM_ADMIN)
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller("schools")
 export class SchoolController {
 	constructor(

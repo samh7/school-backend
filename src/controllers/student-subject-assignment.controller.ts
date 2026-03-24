@@ -1,15 +1,5 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Post,
-	UseGuards,
-} from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { Roles } from "../auth/decorators/role.decorator";
-import { JwtAuthGuard } from "../auth/jwt.guard";
 import {
 	AssignSubjectDto,
 	BulkAssignSubjectsDto,
@@ -17,8 +7,6 @@ import {
 import { RoleEnum } from "../models/types/role-enum";
 import { StudentSubjectAssignmentService } from "./student-subject-assignment.service";
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("subject-assignments")
 export class StudentSubjectAssignmentController {

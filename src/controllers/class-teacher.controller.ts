@@ -1,12 +1,8 @@
-import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { Controller, Get, Param } from "@nestjs/common";
 import { Roles } from "../auth/decorators/role.decorator";
-import { JwtAuthGuard } from "../auth/jwt.guard";
 import { RoleEnum } from "../models/types/role-enum";
 import { ClassTeacherService } from "./class-teacher.service";
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("class-teachers")
 export class ClassTeacherController {

@@ -1,15 +1,5 @@
-import {
-	Body,
-	Controller,
-	Get,
-	Param,
-	Post,
-	Put,
-	UseGuards,
-} from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { Roles } from "../auth/decorators/role.decorator";
-import { JwtAuthGuard } from "../auth/jwt.guard";
 import {
 	BulkRolloverDto,
 	CreateEnrollmentDto,
@@ -18,8 +8,6 @@ import {
 import { RoleEnum } from "../models/types/role-enum";
 import { StudentEnrollmentService } from "./student-enrollment.service";
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Roles(RoleEnum.SCHOOL_ADMIN)
 @Controller("student-enrollments")
 export class StudentEnrollmentController {

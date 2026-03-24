@@ -19,6 +19,8 @@ import Redis from "ioredis";
 import { ThrottlerStorageRedisService } from "nestjs-throttler-storage-redis";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { AuthModule } from "./auth/auth.module";
+import { JwtAuthGuard } from "./auth/jwt.guard";
+import { RolesGuard } from "./auth/role.guard";
 import { BlockedIpMiddleware } from "./common/blocked-ip.middleware";
 import { BlockedUserGuard } from "./common/blocked-users";
 import { GeoBlockMiddleware } from "./common/geo-blocking";
@@ -128,7 +130,6 @@ interface AuthenticatedRequest extends Request {
 	],
 	controllers: [],
 	providers: [
-		// RedisHealthService,
 		{
 			provide: APP_GUARD,
 			useClass: BlockedUserGuard,
@@ -136,6 +137,14 @@ interface AuthenticatedRequest extends Request {
 		{
 			provide: AppModule,
 			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
 		},
 	],
 })
