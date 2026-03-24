@@ -214,6 +214,8 @@ The core entity-relationship diagram is available at [`erds/cbc_school_erd_core.
 
 Run `pnpm lint` before submitting. Prettier + ESLint configs are included.
 
+I recommend you use file nesting to group the files for a better de
+
 ---
 
 ## License
