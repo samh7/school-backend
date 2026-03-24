@@ -13,18 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: ESLint
-        run: npm run lint
+        run: pnpm lint
 
       - name: Prettier
-        run: npx prettier --check "src/**/*.ts"
+        run: pnpm exec prettier --check "src/**/*.ts"
 
 
   typecheck:
@@ -33,15 +37,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: tsc
-        run: npx tsc --noEmit
+        run: pnpm exec tsc --noEmit
 
 
   nestjs-doctor:
@@ -50,12 +58,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
       - name: nestjs-doctor
-        run: npx nestjs-doctor
+        run: pnpm exec nestjs-doctor
