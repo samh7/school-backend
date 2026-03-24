@@ -112,15 +112,19 @@ pnpm test:e2e
 ### Docker
 
 ```bash
-# Build the image
-docker build -t school-backend .
+# Build and start the app + Redis
+docker compose up --build
 
-# Run the container (maps localhost:3001 → container:3000)
-docker run -p 3001:3000 --env-file .env school-backend
+# Run in detached mode
+docker compose up --build -d
+
+# Stop
+docker compose down
 ```
 
-- API base: `http://localhost:3001`
+- API base: `http://localhost:3002`
 - Make sure your `.env` is populated before running — see [`.env.example`](.env.example) for all required variables
+- `REDIS_HOST` and `REDIS_PORT` are automatically set by Docker Compose to point to the internal Redis service
 
 ---
 

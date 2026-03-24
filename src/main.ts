@@ -81,8 +81,12 @@ async function bootstrap() {
 
 	await app.listen(process.env.PORT ?? 3000);
 	if (process.env.NODE_ENV === "development") {
-		console.log("App started on \x1b[36mhttp://localhost:3000\x1b[0m");
-		console.log("Swagger docs on \x1b[36mhttp://localhost:3000/swagger\x1b[0m");
+		console.log(
+			`App started on \x1b[36mhttp://localhost:${process.env.PORT}\x1b[0m`,
+		);
+		console.log(
+			`Swagger docs on \x1b[36mhttp://localhost:${process.env.PORT}/swagger\x1b[0m`,
+		);
 	}
 }
 void bootstrap();

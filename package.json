@@ -19,6 +19,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
+  "pnpm": {
+  "overrides": {
+    "lru-cache": "^11.0.0",
+    "glob": "^10.0.0"
+  }
+},
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.2.1",
     "@nestjs/common": "^11.0.1",
