@@ -9,7 +9,7 @@ export class UserAccount extends MyBaseEntity {
 	@Column({ nullable: true })
 	staffId: string;
 
-	@Column()
+	@Column({ unique: true })
 	email: string;
 
 	@Exclude()
