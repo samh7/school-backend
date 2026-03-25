@@ -100,4 +100,8 @@ export class JwtPayloadDto {
 	@IsNumber()
 	@Expose()
 	generation: number;
+
+	@IsNumber()
+	@Expose()
+	exp: number;
 }

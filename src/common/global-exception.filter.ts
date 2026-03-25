@@ -16,9 +16,9 @@ interface HttpExceptionResponse {
 	error?: string;
 }
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
 	user?: {
-		Id: string;
+		id: string;
 	};
 }
 
@@ -61,7 +61,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				message: exception.message,
 				path: request.url,
 				method: request.method,
-				userId: request.user?.Id ?? null,
+				userId: request.user?.id ?? null,
 				body: this.sanitizeBody(request.body as Record<string, unknown>),
 			});
 		}
@@ -89,7 +89,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				query: pg.query,
 				path: request.url,
 				method: request.method,
-				userId: request.user?.Id ?? null,
+				userId: request.user?.id ?? null,
 			});
 		} else if (exception instanceof EntityNotFoundError) {
 			status = HttpStatus.NOT_FOUND;
@@ -100,7 +100,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				type: "EntityNotFoundError",
 				path: request.url,
 				method: request.method,
-				userId: request.user?.Id ?? null,
+				userId: request.user?.id ?? null,
 			});
 		}
 
@@ -114,7 +114,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				stack: exception instanceof Error ? exception.stack : null,
 				path: request.url,
 				method: request.method,
-				userId: request.user?.Id ?? null,
+				userId: request.user?.id ?? null,
 				body: this.sanitizeBody(request.body as Record<string, unknown>),
 			});
 		}

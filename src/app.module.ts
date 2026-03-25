@@ -14,7 +14,6 @@ import {
 	ThrottlerModule,
 } from "@nestjs/throttler";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Request } from "express";
 import Redis from "ioredis";
 import { ThrottlerStorageRedisService } from "nestjs-throttler-storage-redis";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
@@ -24,6 +23,7 @@ import { RolesGuard } from "./auth/role.guard";
 import { BlockedIpMiddleware } from "./common/blocked-ip.middleware";
 import { BlockedUserGuard } from "./common/blocked-users";
 import { GeoBlockMiddleware } from "./common/geo-blocking";
+import { AuthenticatedRequest } from "./common/global-exception.filter";
 import { HoneypotMiddleware } from "./common/honey-pot";
 import { EnvironmentVariables } from "./config/env-types";
 import { AcademicYearModule } from "./controllers/academic-year.module";
@@ -41,11 +41,6 @@ import { SubjectModule } from "./controllers/subject.module";
 import { TermModule } from "./controllers/term.module";
 import { UserAccountModule } from "./controllers/user-account.module";
 
-interface AuthenticatedRequest extends Request {
-	user?: {
-		Id: string;
-	};
-}
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
@@ -109,7 +104,7 @@ interface AuthenticatedRequest extends Request {
 				errorMessage: "Wow! Slow Down.",
 				storage: new ThrottlerStorageRedisService(redis),
 				getTracker: (req: AuthenticatedRequest) => {
-					if (req.user?.Id) return `user:${req.user.Id}`;
+					if (req.user?.id) return `user:${req.user.id}`;
 
 					const forwarded = req.headers["x-forwarded-for"];
 					const clientIp =

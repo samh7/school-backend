@@ -25,7 +25,7 @@ export class AuthService {
 		const generation = await this.tokenBlocklistService.getGeneration(
 			account.id,
 		);
-		const payload: JwtPayloadDto = {
+		const payload: Omit<JwtPayloadDto, "exp"> = {
 			user: {
 				email: account.email,
 				id: account.id,
@@ -51,16 +51,12 @@ export class AuthService {
 		token: string,
 	): Promise<{ message: string }> {
 		// Decode to get jti and expiry
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		const decoded = this.jwtService.decode(token);
+		const decoded = this.jwtService.decode<JwtPayloadDto>(token);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (decoded?.jti) {
 			// TTL = remaining time until token naturally expires
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			const ttl = decoded.exp - Math.floor(Date.now() / 1000);
 			if (ttl > 0) {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				await this.tokenBlocklistService.block(decoded.jti, ttl);
 			}
 		}
@@ -85,11 +81,10 @@ export class AuthService {
 
 		await this.userAccountService._updatePassword(user.id, newHash);
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		const decoded = this.jwtService.decode(token);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		const decoded = this.jwtService.decode<JwtPayloadDto>(token);
+
 		const ttl = decoded.exp - Math.floor(Date.now() / 1000);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
 		if (ttl > 0) await this.tokenBlocklistService.block(decoded.jti, ttl);
 
 		// 6. Invalidate ALL other tokens for this user (increment generation)
