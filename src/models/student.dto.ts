@@ -1,6 +1,6 @@
 import { OmitType, PartialType } from "@nestjs/swagger";
-import { Expose, Transform } from "class-transformer";
-import { IsDateString, IsOptional, IsString } from "class-validator";
+import { Expose, Type } from "class-transformer";
+import { IsDate, IsOptional, IsString } from "class-validator";
 import { BASE_DTO_KEYS, BaseDto } from "./base.dto";
 
 export class StudentDto extends BaseDto {
@@ -19,10 +19,10 @@ export class StudentDto extends BaseDto {
 	@IsString()
 	@Expose()
 	lastName: string;
-	@IsDateString()
+	@IsDate()
 	@IsOptional()
 	@Expose()
-	@Transform(({ value }: { value: Date }) => value?.toISOString())
+	@Type(() => Date)
 	dateOfBirth?: Date;
 	@IsString()
 	@IsOptional()
@@ -32,9 +32,9 @@ export class StudentDto extends BaseDto {
 	@IsOptional()
 	@Expose()
 	nemisId?: string;
-	@IsDateString()
+	@IsDate()
 	@Expose()
-	@Transform(({ value }: { value: Date }) => value?.toISOString())
+	@Type(() => Date)
 	admissionDate: Date;
 
 	@IsString()

@@ -1,5 +1,5 @@
 import { OmitType, PartialType } from "@nestjs/swagger";
-import { Expose, Transform } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 import { BASE_DTO_KEYS, BaseDto } from "./base.dto";
 
@@ -14,12 +14,12 @@ export class TermDto extends BaseDto {
 
 	@IsString()
 	@Expose()
-	@Transform(({ value }: { value: Date }) => value?.toISOString())
+	@Type(() => Date)
 	startDate: Date;
 
 	@IsString()
 	@Expose()
-	@Transform(({ value }: { value: Date }) => value?.toISOString())
+	@Type(() => Date)
 	endDate: Date;
 
 	@IsOptional()

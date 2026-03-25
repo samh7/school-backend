@@ -1,7 +1,7 @@
-import { Expose, Transform, Type } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import {
 	IsBoolean,
-	IsDateString,
+	IsDate,
 	IsEnum,
 	IsNumber,
 	IsOptional,
@@ -63,8 +63,8 @@ export class UserAccountDto {
 	@IsBoolean()
 	isActive: boolean;
 	@Expose()
-	@IsDateString()
-	@Transform(({ value }: { value: Date }) => value?.toISOString())
+	@IsDate()
+	@Type(() => Date)
 	lastLogin: Date;
 
 	@Expose()
@@ -82,6 +82,12 @@ export class UserAccountDto {
 	@IsString()
 	@IsOptional()
 	schoolId?: string;
+
+	@Expose()
+	@IsString()
+	@IsOptional()
+	@Type(() => Date)
+	createdAt: Date;
 }
 
 export class JwtPayloadDto {

@@ -16,7 +16,6 @@ import {
 import { TypeOrmModule } from "@nestjs/typeorm";
 import Redis from "ioredis";
 import { ThrottlerStorageRedisService } from "nestjs-throttler-storage-redis";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { AuthModule } from "./auth/auth.module";
 import { JwtAuthGuard } from "./auth/jwt.guard";
 import { RolesGuard } from "./auth/role.guard";
@@ -51,7 +50,6 @@ import { UserAccountModule } from "./controllers/user-account.module";
 				database: config.getOrThrow("DATABASE_URL"),
 				entities: [__dirname + "/**/*Entity.{ts,js}"],
 				synchronize: config.getOrThrow("NODE_ENV") !== "production",
-				namingStrategy: new SnakeNamingStrategy(),
 			}),
 			inject: [ConfigService],
 		}),

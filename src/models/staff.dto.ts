@@ -1,6 +1,6 @@
 import { OmitType, PartialType } from "@nestjs/swagger";
-import { Expose, Transform } from "class-transformer";
-import { IsDateString, IsEnum, IsOptional, IsString } from "class-validator";
+import { Expose, Type } from "class-transformer";
+import { IsDate, IsEnum, IsOptional, IsString } from "class-validator";
 import { BASE_DTO_KEYS, BaseDto } from "./base.dto";
 import { RoleEnum } from "./types/role-enum";
 
@@ -29,9 +29,9 @@ export class StaffDto extends BaseDto {
 	@Expose()
 	tscNumber?: string;
 
-	@IsDateString()
+	@IsDate()
 	@Expose()
-	@Transform(({ value }: { value: Date }) => value?.toISOString())
+	@Type(() => Date)
 	joinDate: Date;
 
 	@IsString()

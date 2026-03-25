@@ -34,6 +34,7 @@ export class AuthService {
 				isActive: account.isActive,
 				lastLogin: account.lastLogin,
 				schoolId: account.staff?.schoolId,
+				createdAt: account.createdAt,
 			},
 			jti: uuidv4(),
 			sub: account.id,
@@ -103,5 +104,25 @@ export class AuthService {
 		}
 
 		return account;
+	}
+
+	async _verifyCreatedAtMatch(userAccount: UserAccountDto): Promise<boolean> {
+		console.log("user account: ", userAccount);
+		if (!userAccount?.id || !userAccount.createdAt) {
+			throw new UnauthorizedException("Missing account data or timestamp");
+		}
+
+		const account = await this.userAccountService.findOne(userAccount.id);
+
+		if (!account) {
+			throw new UnauthorizedException("UserAccount not found");
+		}
+
+		// Use .getTime() to compare the underlying unix timestamp in milliseconds
+		const dtoTime = new Date(userAccount.createdAt).getTime();
+		const dbTime = new Date(account.createdAt).getTime();
+
+		// This checks year, month, day, hour, minute, second, AND millisecond
+		return dtoTime === dbTime;
 	}
 }
