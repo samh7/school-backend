@@ -34,14 +34,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 		if (payload.generation < currentGen) {
 			throw new UnauthorizedException("Token has been invalidated");
 		}
-		if (
-			!payload.user ||
-			payload.user.email ||
-			payload.user.id ||
-			payload.generation ||
-			payload.sub ||
-			payload.jti
-		)
+		if (!payload || !payload.user)
 			throw new UnauthorizedException("User is not authenticated");
 		// 3. Check user still exists and is active
 		const account = await this.authService._status(payload.user);
