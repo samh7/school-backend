@@ -97,23 +97,7 @@ export class AuthService {
 		if (!userAccount) {
 			throw new UnauthorizedException("UserAccount not found");
 		}
-		console.log("userAccount.user.Id", userAccount);
 		const account = await this.userAccountService.findOne(userAccount.id);
-		if (!account) {
-			throw new UnauthorizedException("UserAccount not found");
-		}
-
-		return account;
-	}
-
-	async _verifyCreatedAtMatch(userAccount: UserAccountDto): Promise<boolean> {
-		console.log("user account: ", userAccount);
-		if (!userAccount?.id || !userAccount.createdAt) {
-			throw new UnauthorizedException("Missing account data or timestamp");
-		}
-
-		const account = await this.userAccountService.findOne(userAccount.id);
-
 		if (!account) {
 			throw new UnauthorizedException("UserAccount not found");
 		}
@@ -123,6 +107,9 @@ export class AuthService {
 		const dbTime = new Date(account.createdAt).getTime();
 
 		// This checks year, month, day, hour, minute, second, AND millisecond
-		return dtoTime === dbTime;
+		if (dtoTime !== dbTime)
+			throw new UnauthorizedException("Session expired log in again");
+
+		return account;
 	}
 }

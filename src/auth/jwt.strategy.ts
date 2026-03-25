@@ -41,12 +41,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 
 		if (!account) throw new UnauthorizedException("User not found.");
 
-		//4. Compare the creation dates for the users
-		const match = await this.authService._verifyCreatedAtMatch(payload.user);
-
-		if (!match)
-			throw new UnauthorizedException("Session expired, please log in again.");
-
 		return payload;
 	}
 }
