@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { TokenBlocklistService } from "../common/token-blocklist.service";
-import { EnvironmentVariables } from "../config/env-types";
+import { IEnvironmentVariables } from "../config/env-types";
 import { JwtPayloadDto } from "../models/user-account.dto";
 import { AuthService } from "./auth.service";
 
@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 	constructor(
 		private readonly authService: AuthService,
 		private readonly tokenBlocklist: TokenBlocklistService,
-		readonly configService: ConfigService<EnvironmentVariables>,
+		readonly configService: ConfigService<IEnvironmentVariables>,
 	) {
 		const jwtSecret = configService.getOrThrow<string>(
 			"JWT_ACCESS_TOKEN_SECRET",
@@ -38,6 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
 			throw new UnauthorizedException("User is not authenticated");
 		// 3. Check user still exists and is active
 		const account = await this.authService._status(payload.user);
+
 		if (!account) throw new UnauthorizedException("User not found.");
 
 		return payload;

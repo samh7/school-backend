@@ -20,9 +20,6 @@ export class GeoBlockMiddleware implements NestMiddleware {
 
 		const geo = geoip.lookup(ip);
 
-		console.log("IP", ip);
-		console.log("geo", geo);
-
 		if (!geo || !this.aLLOWED.has(geo.country)) {
 			this.logger.warn({
 				type: "GeoBlocked",

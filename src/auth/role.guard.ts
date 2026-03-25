@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { RoleEnum } from "../models/types/role-enum";
-import { UserAccountDto } from "../models/user-account.dto";
+import { JwtPayloadDto } from "../models/user-account.dto";
 
 export const ROLES_KEY = "roles";
 
@@ -26,9 +26,10 @@ export class RolesGuard implements CanActivate {
 
 		if (!requiredRoles || requiredRoles.length === 0) return true;
 
-		const user: UserAccountDto = ctx
+		const payload: JwtPayloadDto = ctx
 			.switchToHttp()
-			.getRequest<Request & { user: UserAccountDto }>().user;
+			.getRequest<Request & { user: JwtPayloadDto }>().user;
+		const user = payload.user;
 
 		if (!user) {
 			throw new ForbiddenException("No authenticated user found on request");

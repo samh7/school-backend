@@ -3,11 +3,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TokenBlocklistService } from "../common/token-blocklist.service";
-import { EnvironmentVariables } from "../config/env-types";
+import { IEnvironmentVariables } from "../config/env-types";
 import { UserAccountModule } from "../controllers/user-account.module";
 import { UserAccountService } from "../controllers/user-account.service";
-import { UserAccount } from "../models/user-account.entity";
 import { Staff } from "../models/staff.entity";
+import { UserAccount } from "../models/user-account.entity";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./jwt.strategy";
@@ -19,7 +19,7 @@ import { JwtStrategy } from "./jwt.strategy";
 		UserAccountModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
-			useFactory: (configService: ConfigService<EnvironmentVariables>) => {
+			useFactory: (configService: ConfigService<IEnvironmentVariables>) => {
 				const secret = configService.getOrThrow<string>(
 					"JWT_ACCESS_TOKEN_SECRET",
 				);
