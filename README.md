@@ -220,4 +220,4 @@ I recommend you use file nesting to group the files for a better de
 
 ## License
 
-This project is licensed under the [GNU Affero General Public License v3.0](LICENSE) — © 2026 Sylvester Mwinzi.
+This project is licensed under the [MIT License](LICENSE) — © 2026 Sylvester Mwinzi.
