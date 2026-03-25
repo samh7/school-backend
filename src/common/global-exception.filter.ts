@@ -10,19 +10,19 @@ import { Request, Response } from "express";
 import { EntityNotFoundError, QueryFailedError } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
-interface HttpExceptionResponse {
+interface IHttpExceptionResponse {
 	message: string | string[];
 	statusCode?: number;
 	error?: string;
 }
 
-export interface AuthenticatedRequest extends Request {
+export interface IAuthenticatedRequest extends Request {
 	user?: {
 		id: string;
 	};
 }
 
-interface PostgresQueryError extends QueryFailedError {
+interface IPostgresQueryError extends QueryFailedError {
 	code: string;
 	detail: string;
 	query: string;
@@ -34,7 +34,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
 	catch(exception: unknown, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
-		const request = ctx.getRequest<AuthenticatedRequest>();
+		const request = ctx.getRequest<IAuthenticatedRequest>();
 		const response = ctx.getResponse<Response>();
 		const requestId = (request.headers["x-request-id"] as string) ?? uuidv4();
 
@@ -47,7 +47,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			const res = exception.getResponse();
 
 			if (typeof res === "object" && res !== null && "message" in res) {
-				const typedRes = res as HttpExceptionResponse;
+				const typedRes = res as IHttpExceptionResponse;
 				message = Array.isArray(typedRes.message)
 					? typedRes.message[0]
 					: typedRes.message;
@@ -68,7 +68,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
 		// TypeORM errors
 		else if (exception instanceof QueryFailedError) {
-			const pg = exception as PostgresQueryError;
+			const pg = exception as IPostgresQueryError;
 
 			if (pg.code === "23505") {
 				status = HttpStatus.CONFLICT;

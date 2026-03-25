@@ -1,4 +1,4 @@
-export interface EnvironmentVariables {
+export interface IEnvironmentVariables {
 	DATABASE_URL: string;
 	NODE_ENV: "development" | "production" | "test";
 	PORT: number;

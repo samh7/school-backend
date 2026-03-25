@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const EXCLUDED_FIELDS = new Set(["passwordHash", "tempPassword", "deletedAt"]);
 
-interface SuccessResponse<T> {
+interface ISuccessResponse<T> {
 	success: true;
 	requestId: string;
 	statusCode: number;
@@ -21,12 +21,12 @@ interface SuccessResponse<T> {
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<
 	T,
-	SuccessResponse<T>
+	ISuccessResponse<T>
 > {
 	intercept(
 		ctx: ExecutionContext,
 		next: CallHandler<T>,
-	): Observable<SuccessResponse<T>> {
+	): Observable<ISuccessResponse<T>> {
 		const request = ctx.switchToHttp().getRequest<Request>();
 		const requestId =
 			(request.headers as unknown as Record<string, string>)["x-request-id"] ??

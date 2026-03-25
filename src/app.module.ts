@@ -23,9 +23,9 @@ import { RolesGuard } from "./auth/role.guard";
 import { BlockedIpMiddleware } from "./common/blocked-ip.middleware";
 import { BlockedUserGuard } from "./common/blocked-users";
 import { GeoBlockMiddleware } from "./common/geo-blocking";
-import { AuthenticatedRequest } from "./common/global-exception.filter";
+import { IAuthenticatedRequest } from "./common/global-exception.filter";
 import { HoneypotMiddleware } from "./common/honey-pot";
-import { EnvironmentVariables } from "./config/env-types";
+import { IEnvironmentVariables } from "./config/env-types";
 import { AcademicYearModule } from "./controllers/academic-year.module";
 import { ClassTeacherModule } from "./controllers/class-teacher.module";
 import { GradeLevelModule } from "./controllers/grade-level.module";
@@ -46,7 +46,7 @@ import { UserAccountModule } from "./controllers/user-account.module";
 		ConfigModule.forRoot({ isGlobal: true }),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
-			useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
+			useFactory: (config: ConfigService<IEnvironmentVariables, true>) => ({
 				type: "better-sqlite3",
 				database: config.getOrThrow("DATABASE_URL"),
 				entities: [__dirname + "/**/*Entity.{ts,js}"],
@@ -101,9 +101,9 @@ import { UserAccountModule } from "./controllers/user-account.module";
 					{ name: "medium", limit: 500, ttl: seconds(30) },
 					{ name: "long", limit: 2000, ttl: seconds(80) },
 				],
-				errorMessage: "Wow! Slow Down.",
+				errorMessage: "Too many requests. Try again later.",
 				storage: new ThrottlerStorageRedisService(redis),
-				getTracker: (req: AuthenticatedRequest) => {
+				getTracker: (req: IAuthenticatedRequest) => {
 					if (req.user?.id) return `user:${req.user.id}`;
 
 					const forwarded = req.headers["x-forwarded-for"];
