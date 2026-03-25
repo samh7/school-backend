@@ -1,4 +1,4 @@
-import { Expose, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import {
 	IsBoolean,
 	IsDateString,
@@ -64,6 +64,7 @@ export class UserAccountDto {
 	isActive: boolean;
 	@Expose()
 	@IsDateString()
+	@Transform(({ value }: { value: Date }) => value?.toISOString())
 	lastLogin: Date;
 
 	@Expose()

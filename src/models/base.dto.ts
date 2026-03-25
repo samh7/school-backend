@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import { IsEmpty } from "class-validator";
 
 export class BaseDto {
@@ -8,14 +8,17 @@ export class BaseDto {
 
 	@Expose()
 	@IsEmpty()
+	@Transform(({ value }: { value: Date }) => value?.toISOString())
 	createdAt: Date;
 
 	@Expose()
 	@IsEmpty()
+	@Transform(({ value }: { value: Date }) => value?.toISOString())
 	updatedAt: Date | null;
 
 	@Expose()
 	@IsEmpty()
+	@Transform(({ value }: { value: Date }) => value?.toISOString())
 	deletedAt: Date | null;
 }
 
