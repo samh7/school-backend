@@ -128,7 +128,7 @@ import { UserAccountModule } from "./controllers/user-account.module";
 			useClass: BlockedUserGuard,
 		},
 		{
-			provide: AppModule,
+			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
 		},
 		{
