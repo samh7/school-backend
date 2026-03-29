@@ -31,7 +31,7 @@ export class CreateSystemAdminDto {
 	password: string;
 
 	@IsEnum(RoleEnum)
-	role: RoleEnum;
+	role: RoleEnum = RoleEnum.SCHOOL_ADMIN;
 }
 
 export class LoginDto {
