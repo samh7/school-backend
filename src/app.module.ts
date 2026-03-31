@@ -125,15 +125,15 @@ import { UserAccountModule } from "./controllers/user-account.module";
 	providers: [
 		{
 			provide: APP_GUARD,
+			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
 			useClass: BlockedUserGuard,
 		},
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
-		},
-		{
-			provide: APP_GUARD,
-			useClass: JwtAuthGuard,
 		},
 		{
 			provide: APP_GUARD,
