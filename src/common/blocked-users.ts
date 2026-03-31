@@ -5,16 +5,34 @@ import {
 	ForbiddenException,
 	Injectable,
 } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Request } from "express";
 import Redis from "ioredis";
-import { UserAccountDto } from "../models/user-account.dto";
-
+import { JwtPayloadDto } from "../models/user-account.dto";
+export const SKIP_BLOCKED_USER_CHECK = "skipBlockedUserCheck";
 @Injectable()
 export class BlockedUserGuard implements CanActivate {
-	constructor(@InjectRedis() private readonly redis: Redis) {}
+	constructor(
+		@InjectRedis() private readonly redis: Redis,
+
+		private readonly reflector: Reflector,
+	) {}
 
 	async canActivate(ctx: ExecutionContext): Promise<boolean> {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		const user = ctx.switchToHttp().getRequest().user as UserAccountDto;
+		const skipCheck = this.reflector.getAllAndOverride<boolean>(
+			SKIP_BLOCKED_USER_CHECK,
+			[ctx.getHandler(), ctx.getClass()],
+		);
+
+		// 4. If the decorator is present, bypass the Redis check
+		if (skipCheck) {
+			return true;
+		}
+		const payload = ctx
+			.switchToHttp()
+			.getRequest<Request & { user: JwtPayloadDto }>().user;
+		const user = payload.user;
+		console.log("user =<>=", user);
 		if (!user) return true;
 
 		const blocked = await this.redis.get(`blocked-user:${user.id}`);

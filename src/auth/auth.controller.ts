@@ -10,6 +10,7 @@ import {
 import { AuthService } from "./auth.service";
 import { CurrentUserAccount } from "./decorators/current-user-account.decorator";
 import { IsPublic } from "./decorators/is-public.decorator";
+import { SkipBlockedUserCheck } from "./decorators/skip-blocked-user-check.decorator";
 
 @ApiBearerAuth()
 @Controller("auth")
@@ -20,12 +21,14 @@ export class AuthController {
 	) {}
 
 	@IsPublic()
+	@SkipBlockedUserCheck()
 	@Post("register")
 	register(@Body() createSystemAdminDto: CreateSystemAdminDto) {
 		return this.userAccountService.createSystemAdmin(createSystemAdminDto);
 	}
 
 	@IsPublic()
+	@SkipBlockedUserCheck()
 	@Post("login")
 	login(@Body() loginDto: LoginDto) {
 		return this.authService.login(loginDto);

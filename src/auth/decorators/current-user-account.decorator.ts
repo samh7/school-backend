@@ -4,8 +4,10 @@ import { JwtPayloadDto, UserAccountDto } from "../../models/user-account.dto";
 
 export const CurrentUserAccount = createParamDecorator(
 	(_data: unknown, ctx: ExecutionContext): UserAccountDto => {
-		const request: Request = ctx.switchToHttp().getRequest();
-		const payload = request.user as unknown as JwtPayloadDto;
-		return payload.user;
+		const payload = ctx
+			.switchToHttp()
+			.getRequest<Request & { user: JwtPayloadDto }>().user;
+		const user = payload.user;
+		return user;
 	},
 );
