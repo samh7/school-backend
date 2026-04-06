@@ -1,0 +1,14 @@
+# 'set -e' tells the script to exit immediately if any command returns a non-zero status.
+set -e
+
+# 1. Sync .env.example
+pnpm sync:env
+
+# skip this for now
+# 2. pnpm test
+
+# 3. Static Type Analysis
+pnpm exec tsc --noEmit
+
+# 4. Linting
+pnpm exec lint-staged

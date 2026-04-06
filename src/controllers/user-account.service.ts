@@ -1,3 +1,4 @@
+import { InjectRedis } from "@nestjs-modules/ioredis";
 import {
 	ConflictException,
 	Injectable,
@@ -5,9 +6,11 @@ import {
 	UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as bcrypt from "bcrypt";
 import { plainToInstance } from "class-transformer";
+import Redis from "ioredis";
 import { Repository } from "typeorm";
+import { comparePasswordHashes, hashPassword } from "../auth/utils/auth";
+import { USER_CACHE_KEY_PREFIX } from "../common/CONSTANTS";
 import { Staff } from "../models/staff.entity";
 import { RoleEnum } from "../models/types/role-enum";
 import {
@@ -25,6 +28,8 @@ export class UserAccountService {
 		private readonly userAccountRepo: Repository<UserAccount>,
 		@InjectRepository(Staff)
 		private readonly staffRepo: Repository<Staff>,
+
+		@InjectRedis() private readonly redis: Redis,
 	) {}
 
 	// AUTH FACING METHODS
@@ -35,7 +40,7 @@ export class UserAccountService {
 
 		if (!account) throw new UnauthorizedException("User Not Authneticated");
 
-		const compareHashes = await bcrypt.compare(
+		const compareHashes = await comparePasswordHashes(
 			loginDto.password,
 			account.passwordHash,
 		);
@@ -45,6 +50,9 @@ export class UserAccountService {
 
 		account.lastLogin = new Date();
 		await this.userAccountRepo.save(account);
+
+		// Invalidate so the next request gets the new lastLogin date
+		await this.invalidateUserCache(account.id);
 
 		return plainToInstance(UserAccountDto, account, {
 			excludeExtraneousValues: true,
@@ -56,6 +64,7 @@ export class UserAccountService {
 			{ id: userId },
 			{ passwordHash: newPasswordHash },
 		);
+		await this.invalidateUserCache(userId);
 	}
 
 	// REGULAR METHODS
@@ -71,7 +80,7 @@ export class UserAccountService {
 			throw new ConflictException(`Email ${dto.email} is already registered`);
 		const userAccount = this.userAccountRepo.create({
 			...dto,
-			passwordHash: await bcrypt.hash(dto.password, 10),
+			passwordHash: await hashPassword(dto.password),
 		});
 		const account = await this.userAccountRepo.save(userAccount);
 		return plainToInstance(UserAccountDto, account, {
@@ -91,7 +100,7 @@ export class UserAccountService {
 			);
 		const userAccount = this.userAccountRepo.create({
 			email: staff.email,
-			passwordHash: await bcrypt.hash(staffId, 10),
+			passwordHash: await hashPassword(staffId),
 			role: role,
 		});
 		staff.userAccount = userAccount;
@@ -126,14 +135,15 @@ export class UserAccountService {
 	async changePassword(id: string, dto: ChangePasswordDto): Promise<void> {
 		const account = await this.userAccountRepo.findOneBy({ id: id });
 		if (!account) throw new NotFoundException(`User account ${id} not found`);
-		const valid = await bcrypt.compare(
+		const valid = await comparePasswordHashes(
 			dto.currentPassword,
 			account.passwordHash,
 		);
 		if (!valid) throw new ConflictException("Current password is incorrect");
 
-		account.passwordHash = await bcrypt.hash(dto.newPassword, 10);
+		account.passwordHash = await hashPassword(dto.newPassword);
 		await this.userAccountRepo.save(account);
+		await this.invalidateUserCache(id);
 	}
 
 	async resetPassword(
@@ -148,9 +158,9 @@ export class UserAccountService {
 			throw new NotFoundException(`Staff ${dto.staffId} has no user account`);
 
 		const tempPassword = `${staff.firstName.toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`;
-		staff.userAccount.passwordHash = await bcrypt.hash(tempPassword, 10);
+		staff.userAccount.passwordHash = await hashPassword(tempPassword);
 		await this.userAccountRepo.save(staff.userAccount);
-
+		await this.invalidateUserCache(staff.userAccount.id);
 		return { TempPassword: tempPassword };
 	}
 
@@ -158,8 +168,14 @@ export class UserAccountService {
 		const account = await this.findOne(id);
 		account.isActive = !account.isActive;
 		const userAccount = await this.userAccountRepo.save(account);
+		await this.invalidateUserCache(userAccount.id);
 		return plainToInstance(UserAccountDto, userAccount, {
 			excludeExtraneousValues: true,
 		});
+	}
+
+	private async invalidateUserCache(userId: string) {
+		const cacheKey = `${USER_CACHE_KEY_PREFIX}:${userId}`;
+		await this.redis.del(cacheKey);
 	}
 }

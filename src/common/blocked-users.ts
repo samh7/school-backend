@@ -14,7 +14,6 @@ export const SKIP_BLOCKED_USER_CHECK = "skipBlockedUserCheck";
 export class BlockedUserGuard implements CanActivate {
 	constructor(
 		@InjectRedis() private readonly redis: Redis,
-
 		private readonly reflector: Reflector,
 	) {}
 
@@ -24,18 +23,18 @@ export class BlockedUserGuard implements CanActivate {
 			[ctx.getHandler(), ctx.getClass()],
 		);
 
-		// 4. If the decorator is present, bypass the Redis check
 		if (skipCheck) {
 			return true;
 		}
+
 		const payload = ctx
 			.switchToHttp()
 			.getRequest<Request & { user: JwtPayloadDto }>().user;
+
 		const user = payload.user;
-		console.log("user =<>=", user);
-		if (!user) return true;
 
 		const blocked = await this.redis.get(`blocked-user:${user.id}`);
+
 		if (blocked)
 			throw new ForbiddenException("Your account has been suspended");
 

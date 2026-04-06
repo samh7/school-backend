@@ -1,16 +1,16 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import * as bcrypt from "bcrypt";
 import { plainToInstance } from "class-transformer";
-import { v4 as uuidv4 } from "uuid";
 import { TokenBlocklistService } from "../common/token-blocklist.service";
 import { UserAccountService } from "../controllers/user-account.service";
 import {
 	ChangePasswordDto,
+	CreateSystemAdminDto,
 	JwtPayloadDto,
 	LoginDto,
 	UserAccountDto,
 } from "../models/user-account.dto";
+import { createPayload, hashPassword } from "./utils/auth";
 @Injectable()
 export class AuthService {
 	constructor(
@@ -25,21 +25,7 @@ export class AuthService {
 		const generation = await this.tokenBlocklistService.getGeneration(
 			account.id,
 		);
-		const payload: Omit<JwtPayloadDto, "exp"> = {
-			user: {
-				email: account.email,
-				id: account.id,
-				role: account.role,
-				staffId: account.staffId,
-				isActive: account.isActive,
-				lastLogin: account.lastLogin,
-				schoolId: account.staff?.schoolId,
-				createdAt: account.createdAt,
-			},
-			jti: uuidv4(),
-			sub: account.id,
-			generation,
-		};
+		const payload = createPayload(account, generation);
 
 		const accessToken = this.jwtService.sign(payload);
 
@@ -47,6 +33,9 @@ export class AuthService {
 		return { user, accessToken };
 	}
 
+	async createSystemAdmin(createSystemAdminDto: CreateSystemAdminDto) {
+		return this.userAccountService.createSystemAdmin(createSystemAdminDto);
+	}
 	async logout(
 		user: UserAccountDto,
 		token: string,
@@ -78,7 +67,7 @@ export class AuthService {
 		if (!isMatch)
 			throw new UnauthorizedException("Current password is incorrect");
 
-		const newHash = await bcrypt.hash(dto.newPassword, 12);
+		const newHash = await hashPassword(dto.newPassword);
 
 		await this.userAccountService._updatePassword(user.id, newHash);
 
@@ -94,22 +83,7 @@ export class AuthService {
 		return { message: "Password changed successfully. Please log in again." };
 	}
 	async _status(userAccount: UserAccountDto) {
-		if (!userAccount) {
-			throw new UnauthorizedException("UserAccount not found");
-		}
 		const account = await this.userAccountService.findOne(userAccount.id);
-		if (!account) {
-			throw new UnauthorizedException("UserAccount not found");
-		}
-
-		// Use .getTime() to compare the underlying unix timestamp in milliseconds
-		const dtoTime = new Date(userAccount.createdAt).getTime();
-		const dbTime = new Date(account.createdAt).getTime();
-
-		// This checks year, month, day, hour, minute, second, AND millisecond
-		if (dtoTime !== dbTime)
-			throw new UnauthorizedException("Session expired log in again");
-
 		return account;
 	}
 }

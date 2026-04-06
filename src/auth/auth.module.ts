@@ -3,9 +3,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { TokenBlocklistService } from "../common/token-blocklist.service";
-import { IEnvironmentVariables } from "../config/env-types";
+import { EnvVariables } from "../config/env-types";
 import { UserAccountModule } from "../controllers/user-account.module";
-import { UserAccountService } from "../controllers/user-account.service";
 import { Staff } from "../models/staff.entity";
 import { UserAccount } from "../models/user-account.entity";
 import { AuthController } from "./auth.controller";
@@ -19,15 +18,13 @@ import { JwtStrategy } from "./jwt.strategy";
 		UserAccountModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
-			useFactory: (configService: ConfigService<IEnvironmentVariables>) => {
-				const secret = configService.getOrThrow<string>(
-					"JWT_ACCESS_TOKEN_SECRET",
-				);
+			useFactory: (configService: ConfigService<EnvVariables, true>) => {
+				const secret = configService.get<string>("JWT_ACCESS_TOKEN_SECRET");
 				return {
 					global: true,
 					secret: secret,
 					signOptions: {
-						expiresIn: configService.getOrThrow("JWT_EXPIRES_IN"),
+						expiresIn: configService.get("JWT_EXPIRES_IN"),
 					},
 				};
 			},
@@ -35,12 +32,7 @@ import { JwtStrategy } from "./jwt.strategy";
 		}),
 	],
 	controllers: [AuthController],
-	providers: [
-		AuthService,
-		JwtStrategy,
-		UserAccountService,
-		TokenBlocklistService,
-	],
+	providers: [AuthService, JwtStrategy, TokenBlocklistService],
 	exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

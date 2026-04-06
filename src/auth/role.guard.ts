@@ -8,10 +8,8 @@ import {
 import { Reflector } from "@nestjs/core";
 import { RoleEnum } from "../models/types/role-enum";
 import { JwtPayloadDto } from "../models/user-account.dto";
+import { ROLES_KEY } from "./decorators/role.decorator";
 
-export const ROLES_KEY = "roles";
-
-/** @example @Roles(RoleEnum.PRINCIPAL, RoleEnum.ADMIN) */
 export const Roles = (...roles: RoleEnum[]) => SetMetadata(ROLES_KEY, roles);
 
 @Injectable()

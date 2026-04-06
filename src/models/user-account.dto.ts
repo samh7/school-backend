@@ -82,12 +82,6 @@ export class UserAccountDto {
 	@IsString()
 	@IsOptional()
 	schoolId?: string;
-
-	@Expose()
-	@IsString()
-	@IsOptional()
-	@Type(() => Date)
-	createdAt: Date;
 }
 
 export class JwtPayloadDto {

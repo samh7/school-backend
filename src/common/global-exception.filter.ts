@@ -5,6 +5,7 @@ import {
 	HttpException,
 	HttpStatus,
 	Logger,
+	PayloadTooLargeException,
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import { EntityNotFoundError, QueryFailedError } from "typeorm";
@@ -37,7 +38,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		const request = ctx.getRequest<IAuthenticatedRequest>();
 		const response = ctx.getResponse<Response>();
 		const requestId = (request.headers["x-request-id"] as string) ?? uuidv4();
-
+		const path = request.path;
 		let status = HttpStatus.INTERNAL_SERVER_ERROR;
 		let message = "Something went wrong. Please try again later.";
 
@@ -54,15 +55,30 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			} else {
 				message = exception.message;
 			}
-
-			this.logger.warn({
+			const dataToLog = {
 				requestId,
 				status,
 				message: exception.message,
-				path: request.url,
+				path,
 				method: request.method,
 				userId: request.user?.id ?? null,
-				body: this.sanitizeBody(request.body as Record<string, unknown>),
+			};
+
+			if (Number(status) >= 500) {
+				this.logger.warn({
+					...dataToLog,
+					body: this.sanitizeBody(request.body as Record<string, unknown>),
+				});
+			} else {
+				this.logger.warn({ ...dataToLog });
+			}
+		}
+
+		// PayloadTooLargeExeption
+		else if (exception instanceof PayloadTooLargeException) {
+			return response.status(413).json({
+				statusCode: 413,
+				message: "Request body too large. Maximum allowed size is 10kb.",
 			});
 		}
 
@@ -85,9 +101,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				requestId,
 				type: "QueryFailedError",
 				code: pg.code,
-				detail: pg.detail,
-				query: pg.query,
-				path: request.url,
+				detail: this.sanitizeDetail(pg.detail),
+				query: this.sanitizeQuery(pg.query),
+				path,
 				method: request.method,
 				userId: request.user?.id ?? null,
 			});
@@ -98,7 +114,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			this.logger.warn({
 				requestId,
 				type: "EntityNotFoundError",
-				path: request.url,
+				path,
 				method: request.method,
 				userId: request.user?.id ?? null,
 			});
@@ -112,7 +128,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				error:
 					exception instanceof Error ? exception.message : String(exception),
 				stack: exception instanceof Error ? exception.stack : null,
-				path: request.url,
+				path,
 				method: request.method,
 				userId: request.user?.id ?? null,
 				body: this.sanitizeBody(request.body as Record<string, unknown>),
@@ -125,21 +141,43 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			statusCode: status,
 			message,
 			timestamp: new Date().toISOString(),
-			path: request.url,
+			path,
 		});
 	}
 
+	private static readonly SENSITIVE = new Set([
+		"password",
+		"passwordHash",
+		"tempPassword",
+		"currentPassword",
+		"newPassword",
+		"token",
+		"refreshToken",
+	]);
+
 	private sanitizeBody(body: Record<string, unknown>): Record<string, unknown> {
-		if (!body) return {};
-		const SENSITIVE = new Set([
-			"password",
-			"passwordHash",
-			"tempPassword",
-			"currentPassword",
-			"newPassword",
-		]);
-		return Object.fromEntries(
-			Object.entries(body).filter(([key]) => !SENSITIVE.has(key)),
-		);
+		if (!body || typeof body !== "object") return {};
+
+		const recurse = (obj: Record<string, unknown>): Record<string, unknown> =>
+			Object.fromEntries(
+				Object.entries(obj).map(([key, val]) => {
+					if (GlobalExceptionFilter.SENSITIVE.has(key))
+						return [key, "[REDACTED]"];
+					if (val && typeof val === "object" && !Array.isArray(val))
+						return [key, recurse(val as Record<string, unknown>)];
+					return [key, val];
+				}),
+			);
+
+		return recurse(body);
+	}
+	private sanitizeQuery(query: string): string {
+		return query
+			.replace(/'[^']*'/g, "'[?]'") // quoted string literals → '[?]'
+			.replace(/\b\d+\b/g, "[?]") // standalone numeric literals → [?]
+			.substring(0, 300);
+	}
+	private sanitizeDetail(detail: string | undefined): string | undefined {
+		return detail?.replace(/=\([^)]*\)/g, "=(?)");
 	}
 }

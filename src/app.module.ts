@@ -24,7 +24,8 @@ import { BlockedUserGuard } from "./common/blocked-users";
 import { GeoBlockMiddleware } from "./common/geo-blocking";
 import { IAuthenticatedRequest } from "./common/global-exception.filter";
 import { HoneypotMiddleware } from "./common/honey-pot";
-import { IEnvironmentVariables } from "./config/env-types";
+import { EnvVariables } from "./config/env-types";
+import { validateEnv } from "./config/validate-env";
 import { AcademicYearModule } from "./controllers/academic-year.module";
 import { ClassTeacherModule } from "./controllers/class-teacher.module";
 import { GradeLevelModule } from "./controllers/grade-level.module";
@@ -42,14 +43,14 @@ import { UserAccountModule } from "./controllers/user-account.module";
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ isGlobal: true }),
+		ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
-			useFactory: (config: ConfigService<IEnvironmentVariables, true>) => ({
+			useFactory: (config: ConfigService<EnvVariables, true>) => ({
 				type: "better-sqlite3",
-				database: config.getOrThrow("DATABASE_URL"),
+				database: config.get("DATABASE_URL"),
 				entities: [__dirname + "/**/*Entity.{ts,js}"],
-				synchronize: config.getOrThrow("NODE_ENV") !== "production",
+				synchronize: config.get("NODE_ENV") === "development",
 			}),
 			inject: [ConfigService],
 		}),
@@ -74,10 +75,10 @@ import { UserAccountModule } from "./controllers/user-account.module";
 			useFactory: (config: ConfigService) => ({
 				type: "single",
 				options: {
-					host: config.getOrThrow<string>("REDIS_HOST"),
-					port: config.getOrThrow<number>("REDIS_PORT"),
-					password: config.getOrThrow<string>("REDIS_PASSWORD"),
-					db: config.getOrThrow<number>("REDIS_DB"),
+					host: config.get<string>("REDIS_HOST"),
+					port: config.get<number>("REDIS_PORT"),
+					password: config.get<string>("REDIS_PASSWORD"),
+					db: config.get<number>("REDIS_DB"),
 					lazyConnect: false,
 					maxRetriesPerRequest: 3,
 					enableOfflineQueue: false,
@@ -94,26 +95,26 @@ import { UserAccountModule } from "./controllers/user-account.module";
 						name: "short",
 						limit: 100,
 						ttl: seconds(4),
+						blockDuration: minutes(5),
+					},
+					{
+						name: "medium",
+						limit: 500,
+						ttl: seconds(30),
 						blockDuration: minutes(10),
 					},
-					{ name: "medium", limit: 500, ttl: seconds(30) },
-					{ name: "long", limit: 2000, ttl: seconds(80) },
+					{
+						name: "long",
+						limit: 2000,
+						ttl: seconds(80),
+						blockDuration: minutes(20),
+					},
 				],
 				errorMessage: "Too many requests. Try again later.",
 				storage: new ThrottlerStorageRedisService(redis),
 				getTracker: (req: IAuthenticatedRequest) => {
 					if (req.user?.id) return `user:${req.user.id}`;
-
-					const forwarded = req.headers["x-forwarded-for"];
-					const clientIp =
-						(Array.isArray(forwarded)
-							? forwarded[0] // already an array, take first
-							: forwarded?.split(",")[0]) ?? // string, split on comma
-						req.ip ??
-						req.socket.remoteAddress ??
-						"unknown";
-
-					return `ip:${clientIp}`;
+					return `ip:${req.ip ?? req.socket.remoteAddress ?? "unknown"}`;
 				},
 				generateKey: (_context, trackerString, throttlerName) => {
 					return `throttler:${throttlerName}:${trackerString}`;
@@ -125,16 +126,17 @@ import { UserAccountModule } from "./controllers/user-account.module";
 	providers: [
 		{
 			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_GUARD,
 			useClass: JwtAuthGuard,
 		},
 		{
 			provide: APP_GUARD,
 			useClass: BlockedUserGuard,
 		},
-		{
-			provide: APP_GUARD,
-			useClass: ThrottlerGuard,
-		},
+
 		{
 			provide: APP_GUARD,
 			useClass: RolesGuard,

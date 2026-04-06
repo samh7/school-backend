@@ -8,7 +8,7 @@ import { Response } from "express";
 import { map, Observable } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
-const EXCLUDED_FIELDS = new Set(["passwordHash", "tempPassword", "deletedAt"]);
+const _EXCLUDED_FIELDS = new Set(["passwordHash", "tempPassword", "deletedAt"]);
 
 interface ISuccessResponse<T> {
 	success: true;
@@ -37,25 +37,9 @@ export class ResponseInterceptor<T> implements NestInterceptor<
 				success: true as const,
 				requestId,
 				statusCode: ctx.switchToHttp().getResponse<Response>().statusCode,
-				data: this.stripFields(data) as T,
+				data,
 				timestamp: new Date().toISOString(),
 			})),
 		);
-	}
-
-	private stripFields(data: unknown): unknown {
-		if (data === null || data === undefined) return data;
-
-		if (Array.isArray(data)) return data.map((item) => this.stripFields(item));
-
-		if (typeof data === "object") {
-			return Object.fromEntries(
-				Object.entries(data as Record<string, unknown>)
-					.filter(([key]) => !EXCLUDED_FIELDS.has(key))
-					.map(([key, value]) => [key, this.stripFields(value)]),
-			);
-		}
-
-		return data;
 	}
 }

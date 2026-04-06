@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Headers, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
-import { UserAccountService } from "../controllers/user-account.service";
 import {
 	ChangePasswordDto,
 	CreateSystemAdminDto,
@@ -9,22 +8,20 @@ import {
 } from "../models/user-account.dto";
 import { AuthService } from "./auth.service";
 import { CurrentUserAccount } from "./decorators/current-user-account.decorator";
+import { GetAuthToken } from "./decorators/get-auth-token.decorator";
 import { IsPublic } from "./decorators/is-public.decorator";
 import { SkipBlockedUserCheck } from "./decorators/skip-blocked-user-check.decorator";
 
 @ApiBearerAuth()
 @Controller("auth")
 export class AuthController {
-	constructor(
-		private readonly userAccountService: UserAccountService,
-		private readonly authService: AuthService,
-	) {}
+	constructor(private readonly authService: AuthService) {}
 
 	@IsPublic()
 	@SkipBlockedUserCheck()
 	@Post("register")
 	register(@Body() createSystemAdminDto: CreateSystemAdminDto) {
-		return this.userAccountService.createSystemAdmin(createSystemAdminDto);
+		return this.authService.createSystemAdmin(createSystemAdminDto);
 	}
 
 	@IsPublic()
@@ -41,20 +38,18 @@ export class AuthController {
 
 	@Post("logout")
 	logout(
-		@CurrentUserAccount() user: UserAccountDto,
-		@Headers("authorization") auth: string,
+		@CurrentUserAccount() userAccount: UserAccountDto,
+		@GetAuthToken() authToken: string,
 	) {
-		const token = auth.replace("Bearer ", "");
-		return this.authService.logout(user, token);
+		return this.authService.logout(userAccount, authToken);
 	}
 
 	@Put("change-password")
 	changePassword(
-		@CurrentUserAccount() user: UserAccountDto,
-		@Headers("authorization") auth: string,
+		@CurrentUserAccount() userAccount: UserAccountDto,
+		@GetAuthToken() authToken: string,
 		@Body() dto: ChangePasswordDto,
 	) {
-		const token = auth.replace("Bearer ", "");
-		return this.authService.changePassword(user, token, dto);
+		return this.authService.changePassword(userAccount, authToken, dto);
 	}
 }

@@ -4,9 +4,9 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as bcrypt from "bcrypt";
 import { plainToInstance } from "class-transformer";
 import { Repository } from "typeorm";
+import { hashPassword } from "../auth/utils/auth";
 import { AcademicYear } from "../models/academic-year.entity";
 import { ClassTeacherDto } from "../models/class-teacher.dto";
 import { ClassTeacher } from "../models/class-teacher.entity";
@@ -108,7 +108,7 @@ export class StaffService {
 		const savedStaff = await this.staffRepo.save(staff);
 
 		const tempPassword = `${dto.firstName.toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`;
-		const passwordHash = await bcrypt.hash(tempPassword, 10);
+		const passwordHash = await hashPassword(tempPassword);
 
 		const userAccount = this.userAccountRepo.create({
 			email: dto.email,
